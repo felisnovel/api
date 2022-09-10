@@ -52,10 +52,17 @@
     "youch-terminal": "^2.1.4"
   },
   "dependencies": {
+    "@adonisjs/ally": "^4.1.4",
+    "@adonisjs/auth": "^8.2.1",
     "@adonisjs/core": "^5.8.0",
+    "@adonisjs/lucid": "^18.1.0",
+    "@adonisjs/lucid-slugify": "^2.2.1",
     "@adonisjs/repl": "^3.1.0",
+    "luxon": "^3.0.1",
+    "pg": "^8.7.3",
     "proxy-addr": "^2.0.7",
     "reflect-metadata": "^0.1.13",
-    "source-map-support": "^0.5.21"
+    "source-map-support": "^0.5.21",
+    "sqlite3": "^5.0.11"
   }
 }
