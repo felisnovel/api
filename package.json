@@ -20,7 +20,8 @@
     "rules": {
       "prettier/prettier": [
         "error"
-      ]
+      ],
+      "@typescript-eslint/explicit-member-accessibility": "off"
     }
   },
   "eslintIgnore": [
