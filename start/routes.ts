@@ -31,3 +31,5 @@ Route.group(() => {
   Route.get('/:provider/redirect', 'AuthController.redirect')
   Route.get('/:provider/callback', 'AuthController.callback')
 }).prefix('auth')
+
+Route.resource('/countries', 'CountryController')
