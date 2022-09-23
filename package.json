@@ -6,39 +6,14 @@
     "dev": "node ace serve --watch",
     "build": "node ace build --production",
     "start": "node server.js",
-    "lint": "eslint . --ext=.ts",
-    "format": "prettier --write ."
-  },
-  "eslintConfig": {
-    "extends": [
-      "plugin:adonis/typescriptApp",
-      "prettier"
-    ],
-    "plugins": [
-      "prettier"
-    ],
-    "rules": {
-      "prettier/prettier": [
-        "error"
-      ],
-      "@typescript-eslint/explicit-member-accessibility": "off"
-    }
-  },
-  "eslintIgnore": [
-    "build"
-  ],
-  "prettier": {
-    "trailingComma": "es5",
-    "semi": false,
-    "singleQuote": true,
-    "useTabs": false,
-    "quoteProps": "consistent",
-    "bracketSpacing": true,
-    "arrowParens": "always",
-    "printWidth": 100
+    "format": "prettier --write .",
+    "lint": "tsc --noEmit && eslint . --ext=ts",
+    "lint:fix": "eslint . --ext=ts --fix"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^5.8.1",
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
     "@japa/preset-adonis": "^1.1.0",
     "@japa/runner": "^2.0.9",
     "adonis-preset-ts": "^2.1.0",
@@ -46,8 +21,11 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-adonis": "^2.1.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
     "pino-pretty": "^8.1.0",
     "prettier": "^2.7.1",
+    "prettier-plugin-organize-imports": "^3.1.1",
     "typescript": "~4.6",
     "youch": "^3.2.0",
     "youch-terminal": "^2.1.4"
@@ -55,9 +33,9 @@
   "dependencies": {
     "@adonisjs/ally": "^4.1.4",
     "@adonisjs/auth": "^8.2.1",
+    "@adonisjs/bouncer": "^2.3.0",
     "@adonisjs/core": "^5.8.0",
     "@adonisjs/lucid": "^18.1.0",
-    "@adonisjs/bouncer": "^2.3.0",
     "@adonisjs/lucid-slugify": "^2.2.1",
     "@adonisjs/repl": "^3.1.0",
     "luxon": "^3.0.1",
