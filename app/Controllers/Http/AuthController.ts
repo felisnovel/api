@@ -1,11 +1,9 @@
-import { DateTime } from 'luxon'
-
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Hash from '@ioc:Adonis/Core/Hash'
-
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import LoginRequestValidator from 'App/Validators/Auth/LoginRequestValidator'
 import RegisterRequestValidator from 'App/Validators/Auth/RegisterRequestValidator'
+import { DateTime } from 'luxon'
 import slugify from 'slugify'
 
 export default class AuthController {

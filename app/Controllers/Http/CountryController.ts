@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
 import Country from 'App/Models/Country'
 import CountryRequestValidator from 'App/Validators/CountryRequestValidator'
 
