@@ -1,5 +1,5 @@
-import { schema, rules } from '@ioc:Adonis/Core/Validator';
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class RegisterRequestValidator {
   constructor(protected ctx: HttpContextContract) {}
@@ -15,7 +15,7 @@ export default class RegisterRequestValidator {
       }),
     ]),
     password: schema.string({}, [rules.minLength(6)]),
-  });
+  })
 
-  public messages = {};
+  public messages = {}
 }
