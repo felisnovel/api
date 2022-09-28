@@ -1,5 +1,33 @@
 {
   "commands": {
+    "crud": {
+      "settings": {
+        "loadApp": false,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/Crud",
+      "commandName": "crud",
+      "description": "Generates a whole CRUD flow to your new Entity",
+      "args": [
+        {
+          "type": "string",
+          "propertyName": "name",
+          "name": "name",
+          "required": true,
+          "description": "Name of the Entity for CRUD"
+        }
+      ],
+      "aliases": [],
+      "flags": [
+        {
+          "name": "interactive",
+          "propertyName": "interactive",
+          "type": "boolean",
+          "alias": "i",
+          "description": "Enable interactive mode"
+        }
+      ]
+    },
     "dump:rcfile": {
       "settings": {},
       "commandPath": "@adonisjs/core/build/commands/DumpRc",

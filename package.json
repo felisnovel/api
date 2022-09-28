@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "mf": "node ace migration:fresh",
+    "mfs": "node ace migration:fresh --seed",
+    "test": "node ace test",
     "dev": "node ace serve --watch",
     "build": "node ace build --production",
     "start": "node server.js",
     "format": "prettier --write .",
     "lint": "tsc --noEmit && eslint . --ext=ts",
-    "lint:fix": "eslint . --ext=ts --fix"
+    "lint:fix": "eslint . --ext=ts --fix",
+    "make:crud": "node ace crud"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^5.8.1",

@@ -1,0 +1,56 @@
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import {{Singular}} from 'App/Models/{{Singular}}'
+import {{Singular}}RequestValidator from 'App/Validators/{{Singular}}RequestValidator'
+
+export default class {{Singular}}Controller {
+  async index({ response }: HttpContextContract) {
+    const {{plural}} = await {{Singular}}.query()
+
+    return response.send({{plural}})
+  }
+
+  async show({ params, response }: HttpContextContract) {
+    const {{singular}} = await {{Singular}}.findOrFail(params.id)
+
+    return response.json({{singular}})
+  }
+
+  async store({ request, response, bouncer }: HttpContextContract) {
+    await bouncer.authorize('isAdmin')
+
+    const data = await request.validate({{Singular}}RequestValidator)
+
+    const {{singular}} = await {{Singular}}.create(data)
+
+    return response.json({{singular}})
+  }
+
+  async update({ params, request, response, bouncer }: HttpContextContract) {
+    await bouncer.authorize('isAdmin')
+
+    const data = await request.validate({{Singular}}RequestValidator)
+
+    const {{singular}} = await {{Singular}}.findOrFail(params.id)
+
+    await {{singular}}.merge(data)
+    await {{singular}}.save()
+
+    return response.json({{singular}})
+  }
+
+  public async destroy({ response, params, bouncer }: HttpContextContract) {
+    await bouncer.authorize('isAdmin')
+
+    try {
+      const deleted = await {{Singular}}.query().where('id', params.id).delete()
+
+      if (deleted.includes(1)) {
+        return response.ok(true)
+      } else {
+        return response.notFound()
+      }
+    } catch {
+      return response.badRequest()
+    }
+  }
+}

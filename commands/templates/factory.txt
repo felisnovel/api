@@ -1,0 +1,13 @@
+import Factory from '@ioc:Adonis/Lucid/Factory'
+import {{Singular}} from 'App/Models/{{Singular}}'
+
+export default Factory.define({{Singular}}, ({ faker }) => {
+  return {
+    // name: faker.internet.email(),
+    // username: faker.name.findName(),
+  }
+})
+  // .state('admin', async (item) => {
+  //  item.role = {{Singular}}Role.ADMIN
+  // })
+  .build()

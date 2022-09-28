@@ -1,0 +1,3 @@
+import { IBaseController, IBaseService, IBaseRepository } from './BaseInterface'
+
+export interface I{{Singular}}Controller extends IBaseController {}
