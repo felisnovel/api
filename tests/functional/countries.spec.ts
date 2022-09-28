@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
-import { CountryFactory, UserFactory } from 'Database/factories'
+import CountryFactory from 'Database/factories/CountryFactory'
+import UserFactory from 'Database/factories/UserFactory'
 import { cleanAll } from '../utils'
 
 const COUNTRY_EXAMPLE_DATA = {
@@ -19,10 +20,7 @@ test.group('Countries', (group) => {
   test('create a country', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
 
-    const data = {
-      name: 'Turkey',
-      key: 'TR',
-    }
+    const data = COUNTRY_EXAMPLE_DATA
 
     const response = await client.post('/countries').loginAs(admin).form(data)
 
