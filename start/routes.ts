@@ -8,6 +8,7 @@ Route.group(() => {
   Route.get('/:provider/callback', 'AuthController.callback')
 }).prefix('auth')
 
+Route.resource('/novels', 'NovelController')
 Route.resource('/tags', 'TagController')
 Route.resource('/announcements', 'AnnouncementController')
 Route.resource('/languages', 'LanguageController').except(['show'])
