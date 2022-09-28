@@ -32,4 +32,5 @@ Route.group(() => {
   Route.get('/:provider/callback', 'AuthController.callback')
 }).prefix('auth')
 
-Route.resource('/countries', 'CountryController')
+Route.resource('/announcements', 'AnnouncementController')
+Route.resource('/countries', 'CountryController').except(['show'])
