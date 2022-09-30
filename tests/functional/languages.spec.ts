@@ -29,7 +29,7 @@ test.group('Languages', (group) => {
   })
 
   test('user cannot create a language', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const data = LANGUAGE_EXAMPLE_DATA
 
@@ -58,7 +58,7 @@ test.group('Languages', (group) => {
 
   test('user cannot update a language', async ({ client }) => {
     const language = await LanguageFactory.create()
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const newData = LANGUAGE_EXAMPLE_DATA
 
@@ -80,7 +80,7 @@ test.group('Languages', (group) => {
   })
 
   test('user cannot delete a language', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
     const language = await LanguageFactory.create()
 
     const response = await client.delete(`/languages/` + language.id).loginAs(user)

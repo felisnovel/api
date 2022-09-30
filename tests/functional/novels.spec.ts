@@ -43,7 +43,7 @@ test.group('Novels', (group) => {
   })
 
   test('user cannot create a novel', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const data = NOVEL_EXAMPLE_DATA
 
@@ -78,9 +78,53 @@ test.group('Novels', (group) => {
     })
   })
 
+  test('update novel`s editor', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const novel = await NovelFactory.create()
+    const newEditor = await UserFactory.apply('editor').create()
+
+    const newData = {
+      ...NOVEL_EXAMPLE_DATA,
+      editor_id: newEditor.id,
+    }
+
+    const response = await client
+      .patch(`/novels/` + novel.id)
+      .loginAs(admin)
+      .form(newData)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      id: novel.id,
+      ...newData,
+    })
+  })
+
+  test('update novel`s translator', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const novel = await NovelFactory.create()
+    const newEditor = await UserFactory.apply('translator').create()
+
+    const newData = {
+      ...NOVEL_EXAMPLE_DATA,
+      translator_id: newEditor.id,
+    }
+
+    const response = await client
+      .patch(`/novels/` + novel.id)
+      .loginAs(admin)
+      .form(newData)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      id: novel.id,
+      ...newData,
+    })
+  })
+
   test('user cannot update a novel', async ({ client }) => {
     const novel = await NovelFactory.create()
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const newData = NOVEL_EXAMPLE_DATA
 
@@ -102,7 +146,7 @@ test.group('Novels', (group) => {
   })
 
   test('user cannot delete a novel', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
     const novel = await NovelFactory.create()
 
     const response = await client.delete(`/novels/` + novel.id).loginAs(user)

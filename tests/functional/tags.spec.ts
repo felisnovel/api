@@ -28,7 +28,7 @@ test.group('Tags', (group) => {
   })
 
   test('user cannot create a tag', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const data = TAG_EXAMPLE_DATA
 
@@ -65,7 +65,7 @@ test.group('Tags', (group) => {
 
   test('user cannot update a tag', async ({ client }) => {
     const tag = await TagFactory.create()
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const newData = TAG_EXAMPLE_DATA
 
@@ -87,7 +87,7 @@ test.group('Tags', (group) => {
   })
 
   test('user cannot delete a tag', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
     const tag = await TagFactory.create()
 
     const response = await client.delete(`/tags/` + tag.id).loginAs(user)

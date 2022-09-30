@@ -29,7 +29,7 @@ test.group('Countries', (group) => {
   })
 
   test('user cannot create a country', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const data = COUNTRY_EXAMPLE_DATA
 
@@ -55,7 +55,7 @@ test.group('Countries', (group) => {
 
   test('user cannot update a country', async ({ client }) => {
     const country = await CountryFactory.create()
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const newData = COUNTRY_EXAMPLE_DATA
 
@@ -74,7 +74,7 @@ test.group('Countries', (group) => {
   })
 
   test('user cannot delete a country', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
     const country = await CountryFactory.create()
 
     const response = await client.delete(`/countries/${country.id}`).loginAs(user)

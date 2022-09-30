@@ -31,7 +31,7 @@ test.group('Announcements', (group) => {
   })
 
   test('user cannot create a announcement', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const data = ANNOUNCEMENT_EXAMPLE_DATA
 
@@ -68,7 +68,7 @@ test.group('Announcements', (group) => {
 
   test('user cannot update a announcement', async ({ client }) => {
     const announcement = await AnnouncementFactory.create()
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const newData = ANNOUNCEMENT_EXAMPLE_DATA
 
@@ -90,7 +90,7 @@ test.group('Announcements', (group) => {
   })
 
   test('user cannot delete a announcement', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
     const announcement = await AnnouncementFactory.create()
 
     const response = await client.delete(`/announcements/` + announcement.id).loginAs(user)
