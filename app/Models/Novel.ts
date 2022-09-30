@@ -1,8 +1,9 @@
 import { slugify } from '@ioc:Adonis/Addons/LucidSlugify'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import NovelStatus from 'App/Enums/NovelStatus'
 import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
+import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 
 export default class Novel extends BaseModel {
@@ -47,10 +48,10 @@ export default class Novel extends BaseModel {
   public is_promoted: boolean
 
   @column()
-  public editor_id: number
+  public editor_id: number | null
 
   @column()
-  public translator_id: number
+  public translator_id: number | null
 
   @column()
   public status: NovelStatus
@@ -60,6 +61,16 @@ export default class Novel extends BaseModel {
 
   @column()
   public translation_status: NovelTranslationStatus
+
+  @belongsTo(() => User, {
+    foreignKey: 'editor_id',
+  })
+  public editor: BelongsTo<typeof User>
+
+  @belongsTo(() => User, {
+    foreignKey: 'translator_id',
+  })
+  public translator: BelongsTo<typeof User>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

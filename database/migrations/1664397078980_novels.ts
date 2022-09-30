@@ -26,8 +26,11 @@ export default class extends BaseSchema {
       table.boolean('is_premium').defaultTo(false)
       table.boolean('is_promoted').defaultTo(false)
 
-      table.integer('editor_id').nullable()
-      table.integer('translator_id').nullable()
+      table.integer('editor_id').nullable().unsigned()
+      table.foreign('editor_id').references('users.id').onDelete('SET NULL')
+
+      table.integer('translator_id').nullable().unsigned()
+      table.foreign('translator_id').references('users.id').onDelete('SET NULL')
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
