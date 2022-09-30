@@ -29,7 +29,7 @@ test.group('{{Plural}}', (group) => {
   })
 
   test('user cannot create a {{singular}}', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const data = {{SINGULAR}}_EXAMPLE_DATA
 
@@ -63,7 +63,7 @@ test.group('{{Plural}}', (group) => {
 
   test('user cannot update a {{singular}}', async ({ client }) => {
     const {{singular}} = await {{Singular}}Factory.create()
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
 
     const newData = {{SINGULAR}}_EXAMPLE_DATA
 
@@ -82,7 +82,7 @@ test.group('{{Plural}}', (group) => {
   })
 
   test('user cannot delete a {{singular}}', async ({ client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.apply('user').create()
     const {{singular}} = await {{Singular}}Factory.create()
 
     const response = await client.delete(`/{{plural}}/` + {{singular}}.id).loginAs(user)

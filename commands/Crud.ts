@@ -153,7 +153,7 @@ export default class Crud extends BaseCommand {
     this.generator
       .addFile(name, {
         // force filename to be plural
-        form: 'plural',
+        form: 'singular',
 
         // define ".ts" extension when not already defined
         extname: '.ts',
