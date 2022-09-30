@@ -9,6 +9,7 @@ Route.group(() => {
 }).prefix('auth')
 
 Route.resource('/novels', 'NovelController')
+Route.resource('/volumes', 'VolumeController')
 Route.resource('/tags', 'TagController')
 Route.resource('/announcements', 'AnnouncementController')
 Route.resource('/languages', 'LanguageController').except(['show'])
