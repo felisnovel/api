@@ -50,10 +50,7 @@ test.group('Languages', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: language.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('user cannot update a language', async ({ client }) => {

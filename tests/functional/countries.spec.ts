@@ -47,10 +47,7 @@ test.group('Countries', (group) => {
     const response = await client.patch(`/countries/${country.id}`).loginAs(admin).form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: country.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('user cannot update a country', async ({ client }) => {

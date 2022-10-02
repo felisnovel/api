@@ -66,10 +66,7 @@ test.group('Chapters', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: chapter.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('update chapter`s novel', async ({ client }) => {
@@ -88,10 +85,7 @@ test.group('Chapters', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: chapter.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('update chapter`s volume', async ({ client }) => {
@@ -110,10 +104,7 @@ test.group('Chapters', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: chapter.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('user cannot update a chapter', async ({ client }) => {

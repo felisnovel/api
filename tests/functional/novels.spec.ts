@@ -72,10 +72,7 @@ test.group('Novels', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: novel.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('update novel`s editor', async ({ client }) => {
@@ -94,10 +91,7 @@ test.group('Novels', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: novel.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('update novel`s translator', async ({ client }) => {
@@ -116,10 +110,7 @@ test.group('Novels', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: novel.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('user cannot update a novel', async ({ client }) => {

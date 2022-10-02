@@ -93,10 +93,7 @@ test.group('Volumes', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: volume.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('update a volume without name', async ({ client }) => {
@@ -111,10 +108,7 @@ test.group('Volumes', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: volume.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('update volume`s novel', async ({ client }) => {
@@ -133,10 +127,7 @@ test.group('Volumes', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: volume.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('user cannot update a volume', async ({ client }) => {

@@ -55,10 +55,7 @@ test.group('{{Plural}}', (group) => {
     const response = await client.patch(`/{{plural}}/` + {{singular}}.id).loginAs(admin).form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: {{singular}}.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('user cannot update a {{singular}}', async ({ client }) => {

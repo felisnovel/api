@@ -60,10 +60,7 @@ test.group('Announcements', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains({
-      id: announcement.id,
-      ...newData,
-    })
+    response.assertBodyContains(newData)
   })
 
   test('user cannot update a announcement', async ({ client }) => {
