@@ -8,6 +8,10 @@ Route.group(() => {
   Route.get('/:provider/callback', 'AuthController.callback')
 }).prefix('auth')
 
+Route.group(() => {
+  Route.resource('/users', 'UserController').except(['store', 'destroy'])
+}).middleware('isAdmin')
+
 Route.resource('/novels', 'NovelController')
 Route.resource('/chapters', 'ChapterController')
 Route.resource('/volumes', 'VolumeController')
