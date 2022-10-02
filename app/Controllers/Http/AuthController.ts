@@ -3,6 +3,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import LoginRequestValidator from 'App/Validators/Auth/LoginRequestValidator'
 import RegisterRequestValidator from 'App/Validators/Auth/RegisterRequestValidator'
+import UpdateProfileRequestValidator from 'App/Validators/Auth/UpdateProfileRequestValidator'
 import { DateTime } from 'luxon'
 import slugify from 'slugify'
 
@@ -27,13 +28,27 @@ export default class AuthController {
     return response.send(token)
   }
 
+  async me({ response, auth }: HttpContextContract) {
+    const user = await auth.authenticate()
+
+    return response.json(user)
+  }
+
+  async updateProfile({ request, response, auth }: HttpContextContract) {
+    const user = await auth.authenticate()
+
+    const data = await request.validate(UpdateProfileRequestValidator)
+
+    await user.merge(data)
+    await user.save()
+
+    return response.json(user)
+  }
+
   async register({ request, response, auth }: HttpContextContract) {
     const data = await request.validate(RegisterRequestValidator)
 
-    const user = await User.create({
-      email: data.email,
-      password: data.password,
-    })
+    const user = await User.create(data)
 
     const token = await auth.use('api').generate(user, { expiresIn: '7days' })
 

@@ -6,6 +6,11 @@ Route.group(() => {
 
   Route.get('/:provider/redirect', 'AuthController.redirect')
   Route.get('/:provider/callback', 'AuthController.callback')
+
+  Route.group(() => {
+    Route.get('/me', 'AuthController.me')
+    Route.patch('/profile', 'AuthController.updateProfile')
+  }).middleware('auth')
 }).prefix('auth')
 
 Route.group(() => {
