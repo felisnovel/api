@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
+import NovelFactory from 'Database/factories/NovelFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import { cleanAll } from '../utils'
 
@@ -69,5 +70,99 @@ test.group('Users', (group) => {
       .form(newData)
 
     response.assertStatus(403)
+  })
+})
+
+test.group('User Novel Follows', (group) => {
+  group.each.setup(cleanAll)
+
+  test('get a paginated list of followed novels', async ({ client }) => {
+    const user = await UserFactory.create()
+
+    const response = await client.get('/followed-novels').loginAs(user)
+
+    // todo: detaylandirilacak
+
+    response.assertStatus(200)
+  })
+
+  test('follow a novel', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const novel = await NovelFactory.create()
+
+    await user.load('followNovels')
+
+    assert.equal(user.followNovels.length, 0)
+
+    const response = await client.put(`/follow-novel/${novel.id}`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.load('followNovels')
+
+    assert.equal(user.followNovels.length, 1)
+    assert.equal(user.followNovels[0].id, novel.id)
+
+    // o: cok guzel yazamadik olsun.
+  })
+
+  test('unfollow a novel', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const novel = await NovelFactory.create()
+
+    user.related('followNovels').attach([novel.id])
+
+    const response = await client.put(`/unfollow-novel/${novel.id}`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.load('followNovels')
+
+    assert.equal(user.followNovels.length, 0)
+  })
+})
+
+test.group('User Like Follows', (group) => {
+  group.each.setup(cleanAll)
+
+  test('get a paginated list of liked novels', async ({ client }) => {
+    const user = await UserFactory.create()
+
+    const response = await client.get('/liked-novels').loginAs(user)
+
+    // todo: detaylandirilacak
+
+    response.assertStatus(200)
+  })
+
+  test('like a novel', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const novel = await NovelFactory.create()
+
+    await user.load('likeNovels')
+
+    assert.equal(user.likeNovels.length, 0)
+
+    const response = await client.put(`/like-novel/${novel.id}`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.load('likeNovels')
+
+    assert.equal(user.likeNovels.length, 1)
+    assert.equal(user.likeNovels[0].id, novel.id)
+
+    // o: cok guzel yazamadik olsun.
+  })
+
+  test('unlike a novel', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const novel = await NovelFactory.create()
+
+    user.related('likeNovels').attach([novel.id])
+
+    const response = await client.put(`/unlike-novel/${novel.id}`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.load('likeNovels')
+
+    assert.equal(user.likeNovels.length, 0)
   })
 })

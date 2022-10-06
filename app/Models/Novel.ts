@@ -1,5 +1,12 @@
 import { slugify } from '@ioc:Adonis/Addons/LucidSlugify'
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  BelongsTo,
+  belongsTo,
+  column,
+  ManyToMany,
+  manyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import NovelStatus from 'App/Enums/NovelStatus'
 import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
@@ -71,6 +78,16 @@ export default class Novel extends BaseModel {
     foreignKey: 'translator_id',
   })
   public translator: BelongsTo<typeof User>
+
+  @manyToMany(() => User, {
+    pivotTable: 'novel_likers',
+  })
+  public likers: ManyToMany<typeof User>
+
+  @manyToMany(() => User, {
+    pivotTable: 'novel_follows',
+  })
+  public followers: ManyToMany<typeof User>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -2,6 +2,7 @@ import Factory from '@ioc:Adonis/Lucid/Factory'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
 import User from 'App/Models/User'
+import NovelFactory from 'Database/factories/NovelFactory'
 
 export default Factory.define(User, ({ faker }) => {
   return {
@@ -14,6 +15,8 @@ export default Factory.define(User, ({ faker }) => {
     bio: faker.lorem.sentence(),
   }
 })
+  .relation('followNovels', () => NovelFactory)
+  .relation('likeNovels', () => NovelFactory)
   .state('admin', async (item) => {
     item.role = UserRole.ADMIN
   })

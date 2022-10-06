@@ -17,6 +17,16 @@ Route.group(() => {
   Route.resource('/users', 'UserController').except(['store', 'destroy'])
 }).middleware('isAdmin')
 
+Route.group(() => {
+  Route.get('/followed-novels', 'User/FollowedNovelController.index')
+  Route.put('/follow-novel/:novel', 'User/FollowNovel.invoke')
+  Route.put('/unfollow-novel/:novel', 'User/UnfollowNovel.invoke')
+
+  Route.get('/liked-novels', 'User/LikedNovelController.index')
+  Route.put('/like-novel/:novel', 'User/LikeNovel.invoke')
+  Route.put('/unlike-novel/:novel', 'User/UnlikeNovel.invoke')
+}).middleware('auth')
+
 Route.resource('/novels', 'NovelController')
 Route.resource('/chapters', 'ChapterController')
 Route.resource('/volumes', 'VolumeController')
