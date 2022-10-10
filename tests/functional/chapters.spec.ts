@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
 import ChapterFactory from 'Database/factories/ChapterFactory'
+import CommentFactory from 'Database/factories/CommentFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import VolumeFactory from 'Database/factories/VolumeFactory'
@@ -135,6 +136,87 @@ test.group('Chapters', (group) => {
     const chapter = await ChapterFactory.create()
 
     const response = await client.delete(`/chapters/` + chapter.id).loginAs(user)
+
+    response.assertStatus(403)
+  })
+})
+
+const NOVEL_COMMENT_EXAMPLE_DATA = {
+  body: 'Yüce İblis Hükümdarı sen benim için çok önemlisin',
+}
+
+const NEW_NOVEL_COMMENT_EXAMPLE_DATA = {
+  body: 'Yüce İblis Hükümdarı sen benim için artik hiç önemli değilsin',
+}
+
+test.group('Novel Comments', (group) => {
+  group.each.setup(cleanAll)
+
+  test('get a list of chapter comments for user', async ({ client }) => {
+    const chapter = await ChapterFactory.create()
+    const user = await UserFactory.create()
+
+    const response = await client.get('/comments?chapter_id=' + chapter.id).loginAs(user)
+
+    response.assertStatus(200)
+  })
+
+  test('create a chapter comment for user', async ({ client }) => {
+    const chapter = await ChapterFactory.create()
+    const user = await UserFactory.create()
+
+    const data = {
+      ...NOVEL_COMMENT_EXAMPLE_DATA,
+      chapter_id: chapter.id,
+    }
+
+    const response = await client.post(`/comments/`).loginAs(user).form(data)
+
+    response.assertStatus(200)
+    response.assertBodyContains(data)
+  })
+
+  test('update a chapter comment for user', async ({ client }) => {
+    const user = await UserFactory.create()
+    const comment = await CommentFactory.merge({
+      user_id: user.id,
+    }).create()
+
+    const data = {
+      ...NEW_NOVEL_COMMENT_EXAMPLE_DATA,
+    }
+
+    const response = await client.patch(`/comments/${comment.id}`).loginAs(user).form(data)
+
+    response.assertStatus(200)
+    response.assertBodyContains(data)
+  })
+
+  test('delete a chapter comment for user', async ({ client }) => {
+    const user = await UserFactory.apply('user').create()
+    const comment = await CommentFactory.merge({
+      user_id: user.id,
+    }).create()
+
+    const response = await client.delete(`/comments/` + comment.id).loginAs(user)
+
+    response.assertStatus(200)
+  })
+
+  test('user cannot update a comment', async ({ client }) => {
+    const user = await UserFactory.apply('user').create()
+    const comment = await CommentFactory.create()
+
+    const response = await client.patch(`/comments/` + comment.id).loginAs(user)
+
+    response.assertStatus(403)
+  })
+
+  test('user cannot delete a comment', async ({ client }) => {
+    const user = await UserFactory.apply('user').create()
+    const comment = await CommentFactory.create()
+
+    const response = await client.delete(`/comments/` + comment.id).loginAs(user)
 
     response.assertStatus(403)
   })
