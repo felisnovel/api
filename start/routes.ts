@@ -28,6 +28,7 @@ Route.group(() => {
 }).middleware('isAdmin')
 
 Route.resource('/novels', 'NovelController')
+Route.resource('/reviews', 'ReviewController').except(['show'])
 
 Route.resource('/chapters', 'ChapterController')
 Route.resource('/comments', 'CommentController').except(['show'])

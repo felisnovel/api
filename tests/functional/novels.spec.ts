@@ -3,6 +3,7 @@ import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import NovelStatus from 'App/Enums/NovelStatus'
 import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 import NovelFactory from 'Database/factories/NovelFactory'
+import ReviewFactory from 'Database/factories/ReviewFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import { cleanAll } from '../utils'
 
@@ -141,6 +142,87 @@ test.group('Novels', (group) => {
     const novel = await NovelFactory.create()
 
     const response = await client.delete(`/novels/` + novel.id).loginAs(user)
+
+    response.assertStatus(403)
+  })
+})
+
+const NOVEL_REVIEW_EXAMPLE_DATA = {
+  body: 'Yüce İblis Hükümdarı sen benim için çok önemlisin',
+}
+
+const NEW_NOVEL_REVIEW_EXAMPLE_DATA = {
+  body: 'Yüce İblis Hükümdarı sen benim için artik hiç önemli değilsin',
+}
+
+test.group('Novel Reviews', (group) => {
+  group.each.setup(cleanAll)
+
+  test('get a list of novel reviews for user', async ({ client }) => {
+    const novel = await NovelFactory.create()
+    const user = await UserFactory.create()
+
+    const response = await client.get('/reviews?novel_id=' + novel.id).loginAs(user)
+
+    response.assertStatus(200)
+  })
+
+  test('create a novel review for user', async ({ client }) => {
+    const novel = await NovelFactory.create()
+    const user = await UserFactory.create()
+
+    const data = {
+      ...NOVEL_REVIEW_EXAMPLE_DATA,
+      novel_id: novel.id,
+    }
+
+    const response = await client.post(`/reviews/`).loginAs(user).form(data)
+
+    response.assertStatus(200)
+    response.assertBodyContains(data)
+  })
+
+  test('update a novel review for user', async ({ client }) => {
+    const user = await UserFactory.create()
+    const review = await ReviewFactory.merge({
+      user_id: user.id,
+    }).create()
+
+    const data = {
+      ...NEW_NOVEL_REVIEW_EXAMPLE_DATA,
+    }
+
+    const response = await client.patch(`/reviews/${review.id}`).loginAs(user).form(data)
+
+    response.assertStatus(200)
+    response.assertBodyContains(data)
+  })
+
+  test('delete a novel review for user', async ({ client }) => {
+    const user = await UserFactory.apply('user').create()
+    const review = await ReviewFactory.merge({
+      user_id: user.id,
+    }).create()
+
+    const response = await client.delete(`/reviews/` + review.id).loginAs(user)
+
+    response.assertStatus(200)
+  })
+
+  test('user cannot update a review', async ({ client }) => {
+    const user = await UserFactory.apply('user').create()
+    const review = await ReviewFactory.create()
+
+    const response = await client.patch(`/reviews/` + review.id).loginAs(user)
+
+    response.assertStatus(403)
+  })
+
+  test('user cannot delete a review', async ({ client }) => {
+    const user = await UserFactory.apply('user').create()
+    const review = await ReviewFactory.create()
+
+    const response = await client.delete(`/reviews/` + review.id).loginAs(user)
 
     response.assertStatus(403)
   })
