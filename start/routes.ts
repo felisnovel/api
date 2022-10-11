@@ -14,14 +14,16 @@ Route.group(() => {
 }).prefix('auth')
 
 Route.group(() => {
-  Route.get('/followed-novels', 'User/FollowedNovelController.index')
-  Route.put('/follow-novel/:novel', 'User/FollowNovel.invoke')
-  Route.put('/unfollow-novel/:novel', 'User/UnfollowNovel.invoke')
+  Route.get('/followed', 'Novel/FollowedNovelController.invoke')
+  Route.put('/:novel/follow', 'Novel/FollowNovel.invoke')
+  Route.put('/:novel/unfollow', 'Novel/UnfollowNovel.invoke')
 
-  Route.get('/liked-novels', 'User/LikedNovelController.index')
-  Route.put('/like-novel/:novel', 'User/LikeNovel.invoke')
-  Route.put('/unlike-novel/:novel', 'User/UnlikeNovel.invoke')
-}).middleware('auth')
+  Route.get('/liked', 'Novel/LikedNovelController.invoke')
+  Route.put('/:novel/like', 'Novel/LikeNovel.invoke')
+  Route.put('/:novel/unlike', 'Novel/UnlikeNovel.invoke')
+})
+  .middleware('auth')
+  .prefix('/novels')
 
 Route.group(() => {
   Route.resource('/users', 'UserController').except(['store', 'destroy'])

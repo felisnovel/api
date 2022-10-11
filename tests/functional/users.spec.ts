@@ -79,7 +79,7 @@ test.group('User Novel Follows', (group) => {
   test('get a paginated list of followed novels', async ({ client }) => {
     const user = await UserFactory.create()
 
-    const response = await client.get('/followed-novels').loginAs(user)
+    const response = await client.get('/novels/followed').loginAs(user)
 
     // todo: detaylandirilacak
 
@@ -94,7 +94,7 @@ test.group('User Novel Follows', (group) => {
 
     assert.equal(user.followNovels.length, 0)
 
-    const response = await client.put(`/follow-novel/${novel.id}`).loginAs(user)
+    const response = await client.put(`/novels/${novel.id}/follow`).loginAs(user)
     response.assertStatus(200)
 
     await user.load('followNovels')
@@ -111,7 +111,7 @@ test.group('User Novel Follows', (group) => {
 
     user.related('followNovels').attach([novel.id])
 
-    const response = await client.put(`/unfollow-novel/${novel.id}`).loginAs(user)
+    const response = await client.put(`/novels/${novel.id}/unfollow`).loginAs(user)
     response.assertStatus(200)
 
     await user.load('followNovels')
@@ -126,7 +126,7 @@ test.group('User Like Follows', (group) => {
   test('get a paginated list of liked novels', async ({ client }) => {
     const user = await UserFactory.create()
 
-    const response = await client.get('/liked-novels').loginAs(user)
+    const response = await client.get('/novels/liked').loginAs(user)
 
     // todo: detaylandirilacak
 
@@ -141,7 +141,7 @@ test.group('User Like Follows', (group) => {
 
     assert.equal(user.likeNovels.length, 0)
 
-    const response = await client.put(`/like-novel/${novel.id}`).loginAs(user)
+    const response = await client.put(`/novels/${novel.id}/like`).loginAs(user)
     response.assertStatus(200)
 
     await user.load('likeNovels')
@@ -158,7 +158,7 @@ test.group('User Like Follows', (group) => {
 
     user.related('likeNovels').attach([novel.id])
 
-    const response = await client.put(`/unlike-novel/${novel.id}`).loginAs(user)
+    const response = await client.put(`/novels/${novel.id}/unlike`).loginAs(user)
     response.assertStatus(200)
 
     await user.load('likeNovels')

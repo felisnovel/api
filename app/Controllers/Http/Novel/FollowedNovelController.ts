@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class FollowedNovelController {
-  async index({ auth, response }: HttpContextContract) {
+  async invoke({ auth, response }: HttpContextContract) {
     const user = await auth.authenticate()
     await user.load('followNovels')
 
