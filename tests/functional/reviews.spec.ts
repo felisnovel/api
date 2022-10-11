@@ -41,3 +41,45 @@ test.group('Reviews', (group) => {
     response.assertStatus(200)
   })
 })
+
+test.group('Review Reactions', (group) => {
+  group.each.setup(cleanAll)
+
+  test('like a review', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const review = await ReviewFactory.create()
+
+    await user.loadCount('reviewLikes')
+
+    const prevReviewLikesCount = Number(user.$extras.reviewLikes_count)
+
+    const response = await client.put(`/reviews/${review.id}/like`).loginAs(user)
+
+    await user.loadCount('reviewLikes')
+
+    const newReviewLikesCount = Number(user.$extras.reviewLikes_count)
+
+    assert.equal(prevReviewLikesCount + 1, newReviewLikesCount)
+
+    response.assertStatus(200)
+  })
+
+  test('dislike a review', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const review = await ReviewFactory.create()
+
+    await user.loadCount('reviewDislikes')
+
+    const prevReviewDislikesCount = Number(user.$extras.reviewDislikes_count)
+
+    const response = await client.put(`/reviews/${review.id}/dislike`).loginAs(user)
+
+    await user.loadCount('reviewDislikes')
+
+    const newReviewDislikesCount = Number(user.$extras.reviewDislikes_count)
+
+    assert.equal(prevReviewDislikesCount + 1, newReviewDislikesCount)
+
+    response.assertStatus(200)
+  })
+})

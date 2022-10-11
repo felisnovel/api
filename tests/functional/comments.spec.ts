@@ -41,3 +41,45 @@ test.group('Comments', (group) => {
     response.assertStatus(200)
   })
 })
+
+test.group('Comment Reactions', (group) => {
+  group.each.setup(cleanAll)
+
+  test('like a comment', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const comment = await CommentFactory.create()
+
+    await user.loadCount('commentLikes')
+
+    const prevCommentLikesCount = Number(user.$extras.commentLikes_count)
+
+    const response = await client.put(`/comments/${comment.id}/like`).loginAs(user)
+
+    await user.loadCount('commentLikes')
+
+    const newCommentLikesCount = Number(user.$extras.commentLikes_count)
+
+    assert.equal(prevCommentLikesCount + 1, newCommentLikesCount)
+
+    response.assertStatus(200)
+  })
+
+  test('dislike a comment', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const comment = await CommentFactory.create()
+
+    await user.loadCount('commentDislikes')
+
+    const prevCommentDislikesCount = Number(user.$extras.commentDislikes_count)
+
+    const response = await client.put(`/comments/${comment.id}/dislike`).loginAs(user)
+
+    await user.loadCount('commentDislikes')
+
+    const newCommentDislikesCount = Number(user.$extras.commentDislikes_count)
+
+    assert.equal(prevCommentDislikesCount + 1, newCommentDislikesCount)
+
+    response.assertStatus(200)
+  })
+})

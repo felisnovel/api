@@ -1,10 +1,24 @@
 import Hash from '@ioc:Adonis/Core/Hash'
-import { BaseModel, beforeSave, column, manyToMany, ManyToMany } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  beforeSave,
+  column,
+  computed,
+  hasMany,
+  HasMany,
+  manyToMany,
+  ManyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
 import gravatar from 'gravatar'
 import { DateTime } from 'luxon'
+import ReactionTypeEnum from '../Enums/ReactionTypeEnum'
+import Comment from './Comment'
+import CommentReaction from './CommentReaction'
 import Novel from './Novel'
+import Review from './Review'
+import ReviewReaction from './ReviewReaction'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -73,6 +87,59 @@ export default class User extends BaseModel {
     pivotColumns: ['order'],
   })
   public favorites: ManyToMany<typeof Novel>
+
+  @hasMany(() => Comment, {
+    foreignKey: 'user_id',
+  })
+  public comments: HasMany<typeof Comment>
+
+  @hasMany(() => ReviewReaction, {
+    foreignKey: 'user_id',
+  })
+  public reviewReactions: HasMany<typeof ReviewReaction>
+
+  @hasMany(() => CommentReaction, {
+    foreignKey: 'user_id',
+  })
+  public commentReactions: HasMany<typeof CommentReaction>
+
+  @hasMany(() => ReviewReaction, {
+    foreignKey: 'user_id',
+    onQuery: (query) => {
+      query.where('type', ReactionTypeEnum.LIKE)
+    },
+  })
+  public reviewLikes: HasMany<typeof ReviewReaction>
+
+  @hasMany(() => ReviewReaction, {
+    foreignKey: 'user_id',
+    onQuery: (query) => {
+      query.where('type', ReactionTypeEnum.DISLIKE)
+    },
+  })
+  public reviewDislikes: HasMany<typeof ReviewReaction>
+
+  @hasMany(() => CommentReaction, {
+    foreignKey: 'user_id',
+    onQuery: (query) => {
+      query.where('type', ReactionTypeEnum.LIKE)
+    },
+  })
+  public commentLikes: HasMany<typeof CommentReaction>
+
+  @hasMany(() => CommentReaction, {
+    foreignKey: 'user_id',
+    onQuery: (query) => {
+      query.where('type', ReactionTypeEnum.DISLIKE)
+    },
+  })
+  public commentDislikes: HasMany<typeof CommentReaction>
+
+  @hasMany(() => Review, {
+    foreignKey: 'user_id',
+  })
+  public reviews: HasMany<typeof Review>
+
   @column.dateTime()
   public bannedAt?: DateTime
 

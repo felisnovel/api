@@ -1,25 +1,19 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'reviews'
+  protected tableName = 'comment_reactions'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.text('body').notNullable()
-
       table.integer('user_id').unsigned()
       table.foreign('user_id').references('users.id')
 
-      table.integer('novel_id').unsigned()
-      table.foreign('novel_id').references('novels.id')
+      table.integer('comment_id').unsigned()
+      table.foreign('comment_id').references('comments.id')
 
-      table.float('translation_quality').nullable()
-      table.float('stability_of_update').nullable()
-      table.float('story_development').nullable()
-      table.float('character_design').nullable()
-      table.float('world_background').nullable()
+      table.enum('type', ['like', 'dislike']).notNullable()
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

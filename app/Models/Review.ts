@@ -1,4 +1,4 @@
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
 import Novel from './Novel'
 import User from './User'
@@ -12,6 +12,32 @@ export default class Review extends BaseModel {
 
   @column()
   public novel_id: number
+
+  @column()
+  public translation_quality: number
+
+  @column()
+  public stability_of_update: number
+
+  @column()
+  public story_development: number
+
+  @column()
+  public character_design: number
+
+  @column()
+  public world_background: number
+
+  @computed()
+  public get ratings() {
+    return {
+      translation_quality: this.translation_quality,
+      stability_of_update: this.stability_of_update,
+      story_development: this.story_development,
+      character_design: this.character_design,
+      world_background: this.world_background,
+    }
+  }
 
   @belongsTo(() => Novel, {
     foreignKey: 'novel_id',

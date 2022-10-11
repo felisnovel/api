@@ -37,10 +37,24 @@ Route.group(() => {
 Route.resource('/novels', 'NovelController')
 Route.resource('/reviews', 'ReviewController').except(['show'])
 
+Route.group(() => {
+  Route.put('/like', 'Review/LikeReview.invoke')
+  Route.put('/dislike', 'Review/DislikeReview.invoke')
+})
+  .prefix('reviews/:review')
+  .middleware('auth')
+
 Route.resource('/chapters', 'ChapterController')
 Route.resource('/comments', 'CommentController').except(['show'])
 
 Route.resource('/volumes', 'VolumeController')
+Route.group(() => {
+  Route.put('/like', 'Comment/LikeComment.invoke')
+  Route.put('/dislike', 'Comment/DislikeComment.invoke')
+})
+  .prefix('comments/:comment')
+  .middleware('auth')
+
 Route.resource('/tags', 'TagController')
 Route.resource('/announcements', 'AnnouncementController')
 Route.resource('/languages', 'LanguageController').except(['show'])
