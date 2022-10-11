@@ -34,6 +34,18 @@ export default class User extends BaseModel {
   @column()
   public rememberMeToken?: string
 
+  @column()
+  public facebook_handle?: string
+
+  @column()
+  public twitter_handle?: string
+
+  @column()
+  public instagram_handle?: string
+
+  @column()
+  public youtube_handle?: string
+
   @manyToMany(() => Novel, {
     localKey: 'id',
     relatedKey: 'id',

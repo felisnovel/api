@@ -22,5 +22,9 @@ export default class UserRequestValidator {
     username: schema.string.optional(),
     password: schema.string.optional({}, [rules.confirmed(), rules.minLength(8)]),
     role: schema.enum.optional(Object.values(UserRole)),
+    facebook_handle: schema.string.optional(),
+    twitter_handle: schema.string.optional(),
+    instagram_handle: schema.string.optional(),
+    youtube_handle: schema.string.optional(),
   })
 }

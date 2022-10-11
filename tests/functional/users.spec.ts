@@ -12,6 +12,10 @@ const USER_EXAMPLE_DATA = {
   role: UserRole.ADMIN,
   bio: "I'm a bio",
   gender: UserGender.MALE,
+  facebook_handle: 'facebook.com',
+  twitter_handle: 'twitter.com',
+  instagram_handle: 'instagram.com',
+  youtube_handle: 'youtube.com',
 }
 
 const NEW_USER_EXAMPLE_DATA = {
@@ -21,6 +25,10 @@ const NEW_USER_EXAMPLE_DATA = {
   role: UserRole.EDITOR,
   bio: "Yeni I'm a bio",
   gender: UserGender.FEMALE,
+  facebook_handle: 'yeni.facebook.com',
+  twitter_handle: 'yeni.twitter.com',
+  instagram_handle: 'yeni.instagram.com',
+  youtube_handle: 'yeni.youtube.com',
 }
 
 test.group('Users', (group) => {
