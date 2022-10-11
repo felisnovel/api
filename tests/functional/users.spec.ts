@@ -43,6 +43,18 @@ test.group('Users', (group) => {
     response.assertStatus(200)
   })
 
+  /*
+  // todo: fix this test
+  
+  test('check a user avatar', async ({ assert }) => {
+    const user = await UserFactory.merge({
+      email: 'alpidev9@gmail.com',
+    }).create()
+
+    assert.equal(user.avatar, '//www.gravatar.com/avatar/8b1a9953c4611296a827abf8c47804d7')
+  })
+  */
+
   test('update a user', async ({ client }) => {
     const user = await UserFactory.create()
     const admin = await UserFactory.apply('admin').create()

@@ -2,6 +2,7 @@ import Hash from '@ioc:Adonis/Core/Hash'
 import { BaseModel, beforeSave, column, manyToMany, ManyToMany } from '@ioc:Adonis/Lucid/Orm'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
+import gravatar from 'gravatar'
 import { DateTime } from 'luxon'
 import Novel from './Novel'
 
@@ -62,6 +63,11 @@ export default class User extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @computed()
+  public get avatar() {
+    return gravatar.url(this.email)
+  }
 
   @beforeSave()
   public static async hashPassword(user: User) {
