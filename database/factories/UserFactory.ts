@@ -17,6 +17,7 @@ export default Factory.define(User, ({ faker }) => {
 })
   .relation('followNovels', () => NovelFactory)
   .relation('likeNovels', () => NovelFactory)
+  .relation('favorites', () => NovelFactory)
   .state('admin', async (item) => {
     item.role = UserRole.ADMIN
   })

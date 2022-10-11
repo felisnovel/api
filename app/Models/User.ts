@@ -64,6 +64,15 @@ export default class User extends BaseModel {
   })
   public followNovels: ManyToMany<typeof Novel>
 
+  @manyToMany(() => Novel, {
+    localKey: 'id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'novel_id',
+    pivotForeignKey: 'user_id',
+    pivotTable: 'user_favorite',
+    pivotColumns: ['order'],
+  })
+  public favorites: ManyToMany<typeof Novel>
   @column.dateTime()
   public bannedAt?: DateTime
 

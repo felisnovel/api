@@ -26,6 +26,11 @@ Route.group(() => {
   .prefix('/novels')
 
 Route.group(() => {
+  Route.resource('/favorites', 'User/FavoriteController').only(['index', 'store', 'destroy'])
+})
+  .prefix('/user')
+  .middleware('auth')
+Route.group(() => {
   Route.resource('/users', 'UserController').except(['store', 'destroy'])
 }).middleware('isAdmin')
 

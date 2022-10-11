@@ -186,3 +186,39 @@ test.group('User Like Follows', (group) => {
     assert.equal(user.likeNovels.length, 0)
   })
 })
+
+test.group('User Favorites', (group) => {
+  group.each.setup(cleanAll)
+
+  test('get a paginated list of user favorites', async ({ client }) => {
+    const user = await UserFactory.create()
+
+    const response = await client.get('/user/favorites').loginAs(user)
+
+    response.assertStatus(200)
+  })
+
+  test('favorite a novel', async ({ client }) => {
+    const user = await UserFactory.create()
+    const novel = await NovelFactory.create()
+
+    const data = {
+      novel_id: novel.id,
+      order: 1,
+    }
+
+    const response = await client.post(`/user/favorites`).loginAs(user).form(data)
+    response.assertStatus(200)
+  })
+
+  test('unfavorite a novel', async ({ client }) => {
+    const user = await UserFactory.with('favorites', 1, (favorite) => {
+      favorite.pivotAttributes({ order: 1 })
+    }).create()
+
+    const favorite = user.favorites[0]
+
+    const response = await client.delete(`/user/favorites/${favorite.id}`).loginAs(user)
+    response.assertStatus(200)
+  })
+})
