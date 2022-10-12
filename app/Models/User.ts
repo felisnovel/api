@@ -75,7 +75,7 @@ export default class User extends BaseModel {
     relatedKey: 'id',
     pivotRelatedForeignKey: 'novel_id',
     pivotForeignKey: 'user_id',
-    pivotTable: 'novel_likes',
+    pivotTable: 'novel_like',
   })
   public likeNovels: ManyToMany<typeof Novel>
 
@@ -84,7 +84,7 @@ export default class User extends BaseModel {
     relatedKey: 'id',
     pivotRelatedForeignKey: 'novel_id',
     pivotForeignKey: 'user_id',
-    pivotTable: 'novel_follows',
+    pivotTable: 'novel_follow',
   })
   public followNovels: ManyToMany<typeof Novel>
 
