@@ -4,6 +4,8 @@ import {
   BelongsTo,
   belongsTo,
   column,
+  hasMany,
+  HasMany,
   ManyToMany,
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
@@ -12,6 +14,7 @@ import NovelStatus from 'App/Enums/NovelStatus'
 import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
+import Chapter from './Chapter'
 
 export default class Novel extends BaseModel {
   @column({ isPrimary: true })
@@ -88,6 +91,11 @@ export default class Novel extends BaseModel {
     pivotTable: 'novel_follows',
   })
   public followers: ManyToMany<typeof User>
+
+  @hasMany(() => Chapter, {
+    foreignKey: 'novel_id',
+  })
+  public chapters: HasMany<typeof Chapter>
 
   public async getLatestReadChapter(userId: number) {
     const chapter = await Chapter.query()
