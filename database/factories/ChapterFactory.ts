@@ -20,4 +20,5 @@ export default Factory.define(Chapter, ({ faker }) => {
   .relation('volume', () => VolumeFactory)
   .relation('translator', () => UserFactory)
   .relation('editor', () => UserFactory)
+  .relation('readUsers', () => UserFactory)
   .build()

@@ -14,6 +14,7 @@ import UserRole from 'App/Enums/UserRole'
 import gravatar from 'gravatar'
 import { DateTime } from 'luxon'
 import ReactionTypeEnum from '../Enums/ReactionTypeEnum'
+import Chapter from './Chapter'
 import Comment from './Comment'
 import CommentReaction from './CommentReaction'
 import Novel from './Novel'
@@ -59,6 +60,15 @@ export default class User extends BaseModel {
 
   @column()
   public youtube_handle?: string
+
+  @manyToMany(() => Chapter, {
+    localKey: 'id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'chapter_id',
+    pivotForeignKey: 'user_id',
+    pivotTable: 'chapter_read',
+  })
+  public readChapters: ManyToMany<typeof Chapter>
 
   @manyToMany(() => Novel, {
     localKey: 'id',

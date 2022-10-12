@@ -89,6 +89,19 @@ export default class Novel extends BaseModel {
   })
   public followers: ManyToMany<typeof User>
 
+  public async getLatestReadChapter(userId: number) {
+    const chapter = await Chapter.query()
+      .where('novel_id', this.id)
+      .leftJoin('chapter_read', (query) => {
+        query.on('chapters.id', 'chapter_read.chapter_id')
+      })
+      .where('chapter_read.user_id', userId)
+      .orderBy('chapter_read.created_at', 'desc')
+      .first()
+
+    return chapter
+  }
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

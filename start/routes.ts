@@ -44,6 +44,13 @@ Route.group(() => {
   .prefix('reviews/:review')
   .middleware('auth')
 
+Route.group(() => {
+  Route.put('/read', 'Chapter/ReadChapter.invoke')
+  Route.put('/unread', 'Chapter/UnreadChapter.invoke')
+})
+  .prefix('chapters/:chapter')
+  .middleware('auth')
+
 Route.resource('/chapters', 'ChapterController')
 Route.resource('/comments', 'CommentController').except(['show'])
 

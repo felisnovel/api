@@ -61,6 +61,15 @@ test.group('Novels', (group) => {
     response.assertStatus(200)
   })
 
+  test('show a novel for user', async ({ client }) => {
+    const novel = await NovelFactory.create()
+    const user = await UserFactory.create()
+
+    const response = await client.get(`/novels/` + novel.id).loginAs(user)
+
+    response.assertStatus(200)
+  })
+
   test('update a novel', async ({ client }) => {
     const novel = await NovelFactory.create()
     const admin = await UserFactory.apply('admin').create()
@@ -225,5 +234,25 @@ test.group('Novel Reviews', (group) => {
     const response = await client.delete(`/reviews/` + review.id).loginAs(user)
 
     response.assertStatus(403)
+  })
+})
+
+test.group('Novel Read Chapters', (group) => {
+  group.each.setup(cleanAll)
+
+  test('check latest read chapter', async ({ client }) => {
+    const novel = await NovelFactory.with('chapters', 1, (chapter) => {
+      chapter.with('readUsers', 1)
+    }).create()
+
+    const user = novel.chapters[0].readUsers[0]
+
+    const response = await client.get(`/novels/${novel.id}`).loginAs(user)
+    response.assertStatus(200)
+    response.assertBodyContains({
+      latest_read_chapter: {
+        id: novel.chapters[0].id,
+      },
+    })
   })
 })

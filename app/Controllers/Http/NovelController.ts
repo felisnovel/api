@@ -9,10 +9,21 @@ export default class NovelController {
     return response.send(novels)
   }
 
-  async show({ params, response }: HttpContextContract) {
+  async show({ params, auth, response }: HttpContextContract) {
     const novel = await Novel.findOrFail(params.id)
 
-    return response.json(novel)
+    const user = await auth.authenticate()
+
+    let latestReadChapter
+
+    if (user) {
+      latestReadChapter = await novel.getLatestReadChapter(user.id)
+    }
+
+    return response.json({
+      novel,
+      latest_read_chapter: latestReadChapter,
+    })
   }
 
   async store({ request, response, bouncer }: HttpContextContract) {

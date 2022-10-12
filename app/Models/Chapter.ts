@@ -1,4 +1,11 @@
-import { BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  belongsTo,
+  BelongsTo,
+  column,
+  manyToMany,
+  ManyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import Novel from './Novel'
@@ -63,6 +70,16 @@ export default class Chapter extends BaseModel {
     foreignKey: 'volume_id',
   })
   public volume: BelongsTo<typeof Volume>
+
+  @manyToMany(() => User, {
+    localKey: 'id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'user_id',
+    pivotForeignKey: 'chapter_id',
+    pivotTable: 'chapter_read',
+    pivotColumns: ['created_at', 'updated_at'],
+  })
+  public readUsers: ManyToMany<typeof User>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

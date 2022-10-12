@@ -2,6 +2,7 @@ import Factory from '@ioc:Adonis/Lucid/Factory'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
 import User from 'App/Models/User'
+import ChapterFactory from 'Database/factories/ChapterFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
 
 export default Factory.define(User, ({ faker }) => {
@@ -16,6 +17,7 @@ export default Factory.define(User, ({ faker }) => {
   }
 })
   .relation('followNovels', () => NovelFactory)
+  .relation('readChapters', () => ChapterFactory)
   .relation('likeNovels', () => NovelFactory)
   .relation('favorites', () => NovelFactory)
   .state('admin', async (item) => {

@@ -221,3 +221,44 @@ test.group('Novel Comments', (group) => {
     response.assertStatus(403)
   })
 })
+
+test.group('Chapter Reads', (group) => {
+  group.each.setup(cleanAll)
+
+  test('read a chapter', async ({ assert, client }) => {
+    const user = await UserFactory.create()
+    await user.loadCount('readChapters')
+
+    const prevReadChaptersCount = Number(user.$extras.readChapters_count)
+
+    const chapter = await ChapterFactory.create()
+
+    const response = await client.put(`/chapters/${chapter.id}/read`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.loadCount('readChapters')
+
+    const newReadChaptersCount = Number(user.$extras.readChapters_count)
+
+    assert.equal(newReadChaptersCount, prevReadChaptersCount + 1)
+  })
+
+  test('unread a chapter', async ({ assert, client }) => {
+    const chapter = await ChapterFactory.with('readUsers', 1).create()
+
+    const user = chapter.readUsers[0]
+
+    await user.loadCount('readChapters')
+
+    const prevReadChaptersCount = Number(user.$extras.readChapters_count)
+
+    const response = await client.put(`/chapters/${chapter.id}/unread`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.loadCount('readChapters')
+
+    const newReadChaptersCount = Number(user.$extras.readChapters_count)
+
+    assert.equal(newReadChaptersCount, prevReadChaptersCount - 1)
+  })
+})

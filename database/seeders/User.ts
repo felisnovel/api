@@ -7,6 +7,7 @@ export default class extends BaseSeeder {
     await UserFactory.merge({ password: 'password' })
       .with('followNovels', 10)
       .with('likeNovels', 10)
+      .with('readChapters', 10)
       .createMany(5)
 
     await User.createMany([
