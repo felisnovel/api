@@ -7,5 +7,7 @@ export default class MainSeeder extends BaseSeeder {
 
   public async run() {
     await this.runSeeder(await import('../User'))
+    await this.runSeeder(await import('../Novel'))
+    await this.runSeeder(await import('../Announcement'))
   }
 }
