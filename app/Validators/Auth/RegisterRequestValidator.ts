@@ -6,9 +6,9 @@ export default class RegisterRequestValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    full_name: schema.string({ trim: true }),
-    gender: schema.enum(Object.values(UserGender)),
-    bio: schema.string({ trim: true }),
+    full_name: schema.string.nullable({ trim: true }),
+    gender: schema.enum.nullable(Object.values(UserGender)),
+    bio: schema.string.nullable({ trim: true }),
     username: schema.string({ trim: true }, [rules.minLength(5)]),
     email: schema.string({ trim: true }, [
       rules.email(),

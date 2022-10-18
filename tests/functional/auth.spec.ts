@@ -49,6 +49,24 @@ test.group('Auth', (group) => {
     response.assertStatus(200)
   })
 
+  test('register with only username, password.', async ({ client }) => {
+    const data = {
+      email: USER_EXAMPLE_DATA.email,
+    }
+
+    const response = await client.post(`/auth/register`).form({
+      ...data,
+      password: 'password',
+      password_confirmation: 'password',
+    })
+
+    response.assertBodyContains({
+      user: data,
+    })
+
+    response.assertStatus(200)
+  })
+
   test('me', async ({ client }) => {
     const user = await UserFactory.create()
     const response = await client.get('/auth/me').loginAs(user)
