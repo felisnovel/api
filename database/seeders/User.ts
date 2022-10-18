@@ -5,9 +5,9 @@ import UserFactory from 'Database/factories/UserFactory'
 export default class extends BaseSeeder {
   public async run() {
     await UserFactory.merge({ password: 'password' })
-      .with('followNovels', 10)
-      .with('likeNovels', 10)
-      .with('readChapters', 10)
+      //.with('followNovels', 10)
+      //.with('likeNovels', 10)
+      //.with('readChapters', 10)
       .createMany(5)
 
     await User.createMany([
