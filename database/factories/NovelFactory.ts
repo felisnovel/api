@@ -5,6 +5,7 @@ import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 import Novel from 'App/Models/Novel'
 import ChapterFactory from 'Database/factories/ChapterFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import VolumeFactory from 'Database/factories/VolumeFactory'
 
 export default Factory.define(Novel, ({ faker }) => {
   return {
@@ -25,5 +26,7 @@ export default Factory.define(Novel, ({ faker }) => {
 })
   .relation('editor', () => UserFactory)
   .relation('translator', () => UserFactory)
+  .relation('volumes', () => VolumeFactory)
+  .relation('latest_volume', () => VolumeFactory)
   .relation('chapters', () => ChapterFactory)
   .build()

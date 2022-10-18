@@ -6,6 +6,8 @@ import {
   column,
   hasMany,
   HasMany,
+  HasOne,
+  hasOne,
   ManyToMany,
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
@@ -15,6 +17,7 @@ import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import Chapter from './Chapter'
+import Volume from './Volume'
 
 export default class Novel extends BaseModel {
   @column({ isPrimary: true })
@@ -96,6 +99,27 @@ export default class Novel extends BaseModel {
     foreignKey: 'novel_id',
   })
   public chapters: HasMany<typeof Chapter>
+
+  @hasMany(() => Volume, {
+    foreignKey: 'volume_novel_id',
+  })
+  public volumes: HasMany<typeof Volume>
+
+  @hasOne(() => Volume, {
+    foreignKey: 'volume_novel_id',
+    onQuery: (query) => query.orderBy('volume_number', 'desc'),
+  })
+  public latest_volume: HasOne<typeof Volume>
+
+  @hasOne(() => Chapter, {
+    foreignKey: 'novel_id',
+    onQuery: (query) =>
+      query
+        .leftJoin('volumes', 'chapters.volume_id', 'volumes.id')
+        .orderBy('volumes.volume_number', 'desc')
+        .orderBy('chapters.number', 'desc'),
+  })
+  public latest_chapter: HasOne<typeof Chapter>
 
   public async getLatestReadChapter(userId: number) {
     const chapter = await Chapter.query()

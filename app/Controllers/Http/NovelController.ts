@@ -3,8 +3,12 @@ import Novel from 'App/Models/Novel'
 import NovelRequestValidator from 'App/Validators/NovelRequestValidator'
 
 export default class NovelController {
-  async index({ response }: HttpContextContract) {
+  async index({ response, request }: HttpContextContract) {
     const novels = await Novel.query()
+      .preload('latest_chapter', (query) => {
+        query.preload('volume')
+      })
+      .paginate(request.input('page', 1))
 
     return response.send(novels)
   }
