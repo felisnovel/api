@@ -4,7 +4,7 @@ import AnnouncementRequestValidator from 'App/Validators/AnnouncementRequestVali
 
 export default class AnnouncementController {
   async index({ response }: HttpContextContract) {
-    const announcements = await Announcement.query()
+    const announcements = await Announcement.query().limit(4).orderBy('created_at', 'desc')
 
     return response.send(announcements)
   }
