@@ -34,6 +34,11 @@ Route.group(() => {
   Route.resource('/users', 'UserController').except(['store', 'destroy'])
 }).middleware('isAdmin')
 
+Route.get('/popular-novels', 'NovelController.popular')
+Route.get('/random-novels', 'NovelController.random')
+Route.get('/promoted-novels', 'NovelController.promoted')
+Route.get('/last-updated-novels', 'NovelController.lastUpdated')
+
 Route.resource('/novels', 'NovelController')
 Route.resource('/reviews', 'ReviewController').except(['show'])
 

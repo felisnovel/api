@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Database from '@ioc:Adonis/Lucid/Database'
 import Novel from 'App/Models/Novel'
 import NovelRequestValidator from 'App/Validators/NovelRequestValidator'
 
@@ -67,5 +68,70 @@ export default class NovelController {
     } catch {
       return response.badRequest()
     }
+  }
+
+  async popular({ response }: HttpContextContract) {
+    const novels = await Novel.query()
+      .preload('latest_chapter', (query) => {
+        query.preload('volume')
+      })
+      .withCount('likers')
+      .orderBy('view_count', 'desc')
+      .limit(7)
+
+    return response.send(novels)
+  }
+
+  async promoted({ response }: HttpContextContract) {
+    const novels = await Novel.query()
+      .preload('latest_chapter', (query) => {
+        query.preload('volume')
+      })
+      .where('is_promoted', true)
+      .limit(10)
+
+    return response.send(novels)
+  }
+
+  async random({ response }: HttpContextContract) {
+    const novels = await Novel.query()
+      .preload('latest_chapter', (query) => {
+        query.preload('volume')
+      })
+      .withCount('likers')
+      .orderByRaw('RANDOM()')
+      .limit(4)
+
+    return response.send(novels)
+  }
+
+  async lastUpdated({ response }: HttpContextContract) {
+    const lastUpdatedNovels = await Database.from('novels')
+      .joinRaw(
+        'LEFT JOIN (SELECT novel_id, MAX(created_at) AS last_chapter FROM chapters GROUP BY novel_id, volume_id) ' +
+          'AS last_chapters ON last_chapters.novel_id = novels.id ' +
+          'LEFT JOIN chapters ON chapters.novel_id = last_chapters.novel_id ' +
+          'AND chapters.created_at = last_chapters.last_chapter'
+      )
+      .select(
+        'novels.*',
+        'chapters.number as last_chapter_number',
+        'chapters.title as last_chapter_title'
+      )
+      .orderBy('chapters.created_at', 'desc')
+      .limit(8)
+
+    return response.send(
+      lastUpdatedNovels.map((novel) => ({
+        ...novel,
+        latest_chapter: {
+          title: novel.last_chapter_title,
+          number: novel.last_chapter_number,
+          volume: {
+            volume_number: novel.last_chapter_volume_number,
+          },
+        },
+      }))
+    )
   }
 }
