@@ -10,16 +10,16 @@ export default class Volume extends BaseModel {
   public name: string | null | undefined
 
   @column()
-  public number: number
+  public volume_number: number
 
   @column()
-  public novel_id: number
+  public volume_novel_id: number
 
   @column()
   public publish_status: string
 
   @belongsTo(() => Novel, {
-    foreignKey: 'novel_id',
+    foreignKey: 'volume_novel_id',
   })
   public novel: BelongsTo<typeof Novel>
 

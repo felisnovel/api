@@ -7,8 +7,8 @@ export default class VolumeRequestValidator {
 
   public schema = schema.create({
     name: schema.string.nullableAndOptional({ trim: true }),
-    number: schema.number(),
+    volume_number: schema.number(),
     publish_status: schema.enum(Object.values(VolumePublishStatus)),
-    novel_id: schema.number.optional([rules.exists({ table: 'novels', column: 'id' })]),
+    volume_novel_id: schema.number.optional([rules.exists({ table: 'novels', column: 'id' })]),
   })
 }

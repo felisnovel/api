@@ -6,7 +6,7 @@ import VolumeFactory from 'Database/factories/VolumeFactory'
 import { cleanAll } from '../utils'
 
 const VOLUME_BASE_DATA = {
-  number: 1,
+  volume_number: 1,
   publish_status: VolumePublishStatus.PUBLISHED,
 }
 
@@ -34,7 +34,7 @@ test.group('Volumes', (group) => {
     const novel = await NovelFactory.create()
 
     const data = {
-      novel_id: novel.id,
+      volume_novel_id: novel.id,
       ...VOLUME_EXAMPLE_DATA,
     }
 
@@ -49,7 +49,7 @@ test.group('Volumes', (group) => {
     const novel = await NovelFactory.create()
 
     const data = {
-      novel_id: novel.id,
+      volume_novel_id: novel.id,
       ...VOLUME_NOT_NAME_EXAMPLE_DATA,
     }
 
@@ -64,7 +64,7 @@ test.group('Volumes', (group) => {
     const novel = await NovelFactory.create()
 
     const data = {
-      novel_id: novel.id,
+      volume_novel_id: novel.id,
       ...VOLUME_EXAMPLE_DATA,
     }
 
@@ -118,7 +118,7 @@ test.group('Volumes', (group) => {
 
     const newData = {
       ...VOLUME_EXAMPLE_DATA,
-      novel_id: newNovel.id,
+      volume_novel_id: newNovel.id,
     }
 
     const response = await client

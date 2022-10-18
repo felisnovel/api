@@ -7,11 +7,11 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.integer('novel_id').unsigned()
-      table.foreign('novel_id').references('novels.id').onDelete('CASCADE')
+      table.integer('volume_novel_id').unsigned().notNullable()
+      table.foreign('volume_novel_id').references('novels.id').onDelete('CASCADE')
 
       table.string('name').nullable()
-      table.integer('number')
+      table.integer('volume_number')
 
       table.enu('publish_status', ['draft', 'published', 'unpublished'])
 
