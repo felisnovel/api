@@ -49,9 +49,10 @@ test.group('Auth', (group) => {
     response.assertStatus(200)
   })
 
-  test('register with only username, password.', async ({ client }) => {
+  test('register with only email, username, password', async ({ client }) => {
     const data = {
       email: USER_EXAMPLE_DATA.email,
+      username: USER_EXAMPLE_DATA.username,
     }
 
     const response = await client.post(`/auth/register`).form({

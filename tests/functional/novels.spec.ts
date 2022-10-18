@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import NovelStatus from 'App/Enums/NovelStatus'
 import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
+import ChapterFactory from 'Database/factories/ChapterFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
 import UserFactory from 'Database/factories/UserFactory'
@@ -241,17 +242,22 @@ test.group('Novel Read Chapters', (group) => {
   group.each.setup(cleanAll)
 
   test('check latest read chapter', async ({ client }) => {
-    const novel = await NovelFactory.with('chapters', 1, (chapter) => {
-      chapter.with('readUsers', 1)
-    }).create()
+    const novel = await NovelFactory.with('volumes', 1).create()
 
-    const user = novel.chapters[0].readUsers[0]
+    const chapter = await ChapterFactory.with('readUsers', 1)
+      .merge({
+        novel_id: novel.id,
+        volume_id: novel.volumes[0].id,
+      })
+      .create()
+
+    const user = chapter.readUsers[0]
 
     const response = await client.get(`/novels/${novel.id}`).loginAs(user)
     response.assertStatus(200)
     response.assertBodyContains({
       latest_read_chapter: {
-        id: novel.chapters[0].id,
+        id: chapter.id,
       },
     })
   })

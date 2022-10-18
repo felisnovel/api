@@ -74,7 +74,7 @@ test.group('Volumes', (group) => {
   })
 
   test('show a volume', async ({ client }) => {
-    const volume = await VolumeFactory.create()
+    const volume = await VolumeFactory.with('novel', 1).create()
 
     const response = await client.get(`/volumes/` + volume.id)
 
@@ -82,7 +82,7 @@ test.group('Volumes', (group) => {
   })
 
   test('update a volume', async ({ client }) => {
-    const volume = await VolumeFactory.create()
+    const volume = await VolumeFactory.with('novel', 1).create()
     const admin = await UserFactory.apply('admin').create()
 
     const newData = VOLUME_EXAMPLE_DATA
@@ -97,7 +97,7 @@ test.group('Volumes', (group) => {
   })
 
   test('update a volume without name', async ({ client }) => {
-    const volume = await VolumeFactory.create()
+    const volume = await VolumeFactory.with('novel', 1).create()
     const admin = await UserFactory.apply('admin').create()
 
     const newData = VOLUME_NOT_NAME_EXAMPLE_DATA
@@ -113,7 +113,7 @@ test.group('Volumes', (group) => {
 
   test('update volume`s novel', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const volume = await VolumeFactory.create()
+    const volume = await VolumeFactory.with('novel', 1).create()
     const newNovel = await NovelFactory.create()
 
     const newData = {
@@ -131,7 +131,7 @@ test.group('Volumes', (group) => {
   })
 
   test('user cannot update a volume', async ({ client }) => {
-    const volume = await VolumeFactory.create()
+    const volume = await VolumeFactory.with('novel', 1).create()
     const user = await UserFactory.apply('user').create()
 
     const newData = VOLUME_EXAMPLE_DATA
@@ -146,7 +146,7 @@ test.group('Volumes', (group) => {
 
   test('delete a volume', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const volume = await VolumeFactory.create()
+    const volume = await VolumeFactory.with('novel', 1).create()
 
     const response = await client.delete(`/volumes/` + volume.id).loginAs(admin)
 
@@ -155,7 +155,7 @@ test.group('Volumes', (group) => {
 
   test('user cannot delete a volume', async ({ client }) => {
     const user = await UserFactory.apply('user').create()
-    const volume = await VolumeFactory.create()
+    const volume = await VolumeFactory.with('novel', 1).create()
 
     const response = await client.delete(`/volumes/` + volume.id).loginAs(user)
 

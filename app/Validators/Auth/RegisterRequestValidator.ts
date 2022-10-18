@@ -9,7 +9,7 @@ export default class RegisterRequestValidator {
     full_name: schema.string.nullableAndOptional({ trim: true }),
     gender: schema.enum.nullableAndOptional(Object.values(UserGender)),
     bio: schema.string.nullableAndOptional({ trim: true }),
-    username: schema.string.nullableAndOptional({ trim: true }, [rules.minLength(5)]),
+    username: schema.string({ trim: true }, [rules.minLength(5)]),
     email: schema.string({ trim: true }, [
       rules.email(),
       rules.unique({

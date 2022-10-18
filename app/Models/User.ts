@@ -32,7 +32,7 @@ export default class User extends BaseModel {
   public full_name?: string | null | undefined
 
   @column()
-  public username?: string | null | undefined
+  public username: string
 
   @column({ serializeAs: null })
   public password: string
