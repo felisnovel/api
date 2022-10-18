@@ -18,14 +18,20 @@ export default class AuthController {
     const hashValidate = await Hash.verify(user.password, password)
 
     if (!hashValidate) {
-      return response.badRequest('Invalid credentials')
+      return response.unauthorized({
+        status: 'failure',
+        message: 'Invalid credentials',
+      })
     }
 
     const token = await auth.use('api').generate(user, {
       expiresIn: '7days',
     })
 
-    return response.send(token)
+    return response.json({
+      user,
+      token,
+    })
   }
 
   async me({ response, auth }: HttpContextContract) {
