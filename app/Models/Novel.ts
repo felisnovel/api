@@ -20,6 +20,8 @@ import Chapter from './Chapter'
 import Volume from './Volume'
 
 export default class Novel extends BaseModel {
+  public serializeExtras = true
+
   @column({ isPrimary: true })
   public id: number
 
@@ -86,7 +88,7 @@ export default class Novel extends BaseModel {
   public translator: BelongsTo<typeof User>
 
   @manyToMany(() => User, {
-    pivotTable: 'novel_likers',
+    pivotTable: 'novel_like',
   })
   public likers: ManyToMany<typeof User>
 
