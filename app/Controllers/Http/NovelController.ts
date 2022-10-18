@@ -105,33 +105,45 @@ export default class NovelController {
     return response.send(novels)
   }
 
+  /*
+  select * from (select novels.* , ca.* from novels 
+inner join (select max(created_at) as last_chapter, novel_id from chapters group by novel_id) maxchapters on (novels.id = maxchapters.novel_id)    
+inner join chapters ca on (maxchapters.last_chapter = ca.created_at and novels.id = ca.novel_id) order by ca.created_at desc limit 8) r left join volumes v on r.volume_id = v.id
+*/
   async lastUpdated({ response }: HttpContextContract) {
-    const lastUpdatedNovels = await Database.from('novels')
-      .joinRaw(
-        'LEFT JOIN (SELECT novel_id, MAX(created_at) AS last_chapter FROM chapters GROUP BY novel_id, volume_id) ' +
-          'AS last_chapters ON last_chapters.novel_id = novels.id ' +
-          'LEFT JOIN chapters ON chapters.novel_id = last_chapters.novel_id ' +
-          'AND chapters.created_at = last_chapters.last_chapter'
-      )
+    const latestUpdatedNovels = await Database.query()
       .select(
         'novels.*',
-        'chapters.number as last_chapter_number',
-        'chapters.title as last_chapter_title'
+        'chapters.number as latest_chapter_number',
+        'chapters.title as latest_chapter_title',
+        'volumes.volume_number as latest_chapter_volume_number'
       )
+      .from('novels')
+      .joinRaw(
+        'inner join (select max(created_at) as last_chapter, novel_id from chapters group by novel_id) maxchapters on (novels.id = maxchapters.novel_id)'
+      )
+      .innerJoin('chapters', (query) => {
+        query
+          .on('maxchapters.last_chapter', '=', 'chapters.created_at')
+          .on('novels.id', '=', 'chapters.novel_id')
+      })
+      .leftJoin('volumes', 'chapters.volume_id', 'volumes.id')
       .orderBy('chapters.created_at', 'desc')
       .limit(8)
 
     return response.send(
-      lastUpdatedNovels.map((novel) => ({
-        ...novel,
-        latest_chapter: {
-          title: novel.last_chapter_title,
-          number: novel.last_chapter_number,
-          volume: {
-            volume_number: novel.last_chapter_volume_number,
+      latestUpdatedNovels.map((novel) => {
+        return {
+          ...novel,
+          latest_chapter: {
+            number: novel.latest_chapter_number,
+            title: novel.latest_chapter_title,
+            volume: {
+              volume_number: novel.latest_chapter_volume_number,
+            },
           },
-        },
-      }))
+        }
+      })
     )
   }
 }
