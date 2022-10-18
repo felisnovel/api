@@ -29,10 +29,10 @@ export default class User extends BaseModel {
   public email: string
 
   @column()
-  public full_name?: string | null
+  public full_name?: string | null | undefined
 
   @column()
-  public username: string
+  public username?: string | null | undefined
 
   @column({ serializeAs: null })
   public password: string
@@ -41,10 +41,10 @@ export default class User extends BaseModel {
   public role: UserRole
 
   @column()
-  public bio?: string | null
+  public bio?: string | null | undefined
 
   @column()
-  public gender?: UserGender | null
+  public gender?: UserGender | null | undefined
 
   @column()
   public rememberMeToken?: string
