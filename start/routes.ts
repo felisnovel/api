@@ -38,6 +38,7 @@ Route.get('/popular-novels', 'NovelController.popular')
 Route.get('/random-novels', 'NovelController.random')
 Route.get('/promoted-novels', 'NovelController.promoted')
 Route.get('/last-updated-novels', 'NovelController.lastUpdated')
+Route.get('/last-novels', 'NovelController.lastNovels')
 
 Route.resource('/novels', 'NovelController')
 Route.resource('/reviews', 'ReviewController').except(['show'])

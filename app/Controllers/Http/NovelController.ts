@@ -105,11 +105,6 @@ export default class NovelController {
     return response.send(novels)
   }
 
-  /*
-  select * from (select novels.* , ca.* from novels 
-inner join (select max(created_at) as last_chapter, novel_id from chapters group by novel_id) maxchapters on (novels.id = maxchapters.novel_id)    
-inner join chapters ca on (maxchapters.last_chapter = ca.created_at and novels.id = ca.novel_id) order by ca.created_at desc limit 8) r left join volumes v on r.volume_id = v.id
-*/
   async lastUpdated({ response }: HttpContextContract) {
     const latestUpdatedNovels = await Database.query()
       .select(
@@ -145,5 +140,16 @@ inner join chapters ca on (maxchapters.last_chapter = ca.created_at and novels.i
         }
       })
     )
+  }
+
+  async lastNovels({ response }: HttpContextContract) {
+    const novels = await Novel.query()
+      .preload('latest_chapter', (query) => {
+        query.preload('volume')
+      })
+      .orderBy('created_at', 'desc')
+      .limit(3)
+
+    return response.send(novels)
   }
 }
