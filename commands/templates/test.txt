@@ -1,0 +1,89 @@
+import { test } from '@japa/runner'
+import { cleanAll } from '../utils'
+import UserFactory from 'Database/factories/UserFactory'
+import {{Singular}}Factory from 'Database/factories/{{Singular}}Factory'
+
+const {{SINGULAR}}_EXAMPLE_DATA = {
+  name: 'Turkey',
+  key: 'TR',
+}
+
+test.group('{{Plural}}', (group) => {
+  group.each.setup(cleanAll)
+
+  test('get a paginated list of {{plural}}', async ({ client }) => {
+    const response = await client.get('/{{plural}}')
+
+    response.assertStatus(200)
+  })
+
+  test('create a {{singular}}', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+
+    const data = {{SINGULAR}}_EXAMPLE_DATA
+
+    const response = await client.post('/{{plural}}').loginAs(admin).form(data)
+
+    response.assertStatus(200)
+    response.assertBodyContains(data)
+  })
+
+  test('user cannot create a {{singular}}', async ({ client }) => {
+    const user = await UserFactory.apply('user').create()
+
+    const data = {{SINGULAR}}_EXAMPLE_DATA
+
+    const response = await client.post('/{{plural}}').loginAs(user).form(data)
+
+    response.assertStatus(403)
+  })
+
+  test('show a {{singular}}', async ({ client }) => {
+    const {{singular}} = await {{Singular}}Factory.create()
+
+    const response = await client.get(`/{{plural}}/` + {{singular}}.id)
+
+    response.assertStatus(200)
+  })
+
+  test('update a {{singular}}', async ({ client }) => {
+    const {{singular}} = await {{Singular}}Factory.create()
+    const admin = await UserFactory.apply('admin').create()
+
+    const newData = {{SINGULAR}}_EXAMPLE_DATA
+
+    const response = await client.patch(`/{{plural}}/` + {{singular}}.id).loginAs(admin).form(newData)
+
+    response.assertStatus(200)
+    response.assertBodyContains(newData)
+  })
+
+  test('user cannot update a {{singular}}', async ({ client }) => {
+    const {{singular}} = await {{Singular}}Factory.create()
+    const user = await UserFactory.apply('user').create()
+
+    const newData = {{SINGULAR}}_EXAMPLE_DATA
+
+    const response = await client.patch(`/{{plural}}/` + {{singular}}.id).loginAs(user).form(newData)
+
+    response.assertStatus(403)
+  })
+
+  test('delete a {{singular}}', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const {{singular}} = await {{Singular}}Factory.create()
+
+    const response = await client.delete(`/{{plural}}/` + {{singular}}.id).loginAs(admin)
+
+    response.assertStatus(200)
+  })
+
+  test('user cannot delete a {{singular}}', async ({ client }) => {
+    const user = await UserFactory.apply('user').create()
+    const {{singular}} = await {{Singular}}Factory.create()
+
+    const response = await client.delete(`/{{plural}}/` + {{singular}}.id).loginAs(user)
+
+    response.assertStatus(403)
+  })
+})
