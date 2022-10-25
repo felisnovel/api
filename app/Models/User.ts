@@ -22,6 +22,9 @@ import Review from './Review'
 import ReviewReaction from './ReviewReaction'
 
 export default class User extends BaseModel {
+  public serializeExtras = true
+  public serializeComputeds = ['socials']
+
   @column({ isPrimary: true })
   public id: number
 
@@ -60,6 +63,16 @@ export default class User extends BaseModel {
 
   @column()
   public youtube_handle?: string
+
+  @computed()
+  public get socials() {
+    return {
+      facebook_handle: this.facebook_handle,
+      twitter_handle: this.twitter_handle,
+      instagram_handle: this.instagram_handle,
+      youtube_handle: this.youtube_handle,
+    }
+  }
 
   @manyToMany(() => Chapter, {
     localKey: 'id',
