@@ -17,6 +17,7 @@ import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import Chapter from './Chapter'
+import Tag from './Tag'
 import Volume from './Volume'
 
 export default class Novel extends BaseModel {
@@ -86,6 +87,11 @@ export default class Novel extends BaseModel {
     foreignKey: 'translator_id',
   })
   public translator: BelongsTo<typeof User>
+
+  @manyToMany(() => Tag, {
+    pivotTable: 'novel_tag',
+  })
+  public tags: ManyToMany<typeof Tag>
 
   @manyToMany(() => User, {
     pivotTable: 'novel_like',

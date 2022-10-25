@@ -5,6 +5,7 @@ import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 import ChapterFactory from 'Database/factories/ChapterFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
+import TagFactory from 'Database/factories/TagFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import { cleanAll } from '../utils'
 
@@ -35,13 +36,19 @@ test.group('Novels', (group) => {
 
   test('create a novel', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
+    const tags = await TagFactory.createMany(3)
 
-    const data = NOVEL_EXAMPLE_DATA
+    const data = { ...NOVEL_EXAMPLE_DATA, tags: tags.map((tag) => tag.id) }
 
     const response = await client.post('/novels').loginAs(admin).form(data)
 
     response.assertStatus(200)
-    response.assertBodyContains(data)
+    response.assertBodyContains({
+      ...data,
+      tags: tags.map((tag) => ({
+        id: tag.id,
+      })),
+    })
   })
 
   test('user cannot create a novel', async ({ client }) => {
@@ -72,10 +79,14 @@ test.group('Novels', (group) => {
   })
 
   test('update a novel', async ({ client }) => {
+    const tags = await TagFactory.createMany(3)
     const novel = await NovelFactory.create()
     const admin = await UserFactory.apply('admin').create()
 
-    const newData = NOVEL_EXAMPLE_DATA
+    const newData = {
+      ...NOVEL_EXAMPLE_DATA,
+      tags: tags.map((tag) => tag.id),
+    }
 
     const response = await client
       .patch(`/novels/` + novel.id)
@@ -83,7 +94,12 @@ test.group('Novels', (group) => {
       .form(newData)
 
     response.assertStatus(200)
-    response.assertBodyContains(newData)
+    response.assertBodyContains({
+      ...newData,
+      tags: tags.map((tag) => ({
+        id: tag.id,
+      })),
+    })
   })
 
   test('update novel`s editor', async ({ client }) => {

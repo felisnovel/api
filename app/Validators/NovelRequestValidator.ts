@@ -23,5 +23,6 @@ export default class NovelRequestValidator {
     is_promoted: schema.boolean(),
     editor_id: schema.number.optional(),
     translator_id: schema.number.optional(),
+    tags: schema.array.optional().members(schema.number()),
   })
 }

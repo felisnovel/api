@@ -38,6 +38,12 @@ export default class NovelController {
 
     const novel = await Novel.create(data)
 
+    if (data?.tags) {
+      await novel.related('tags').sync(data.tags)
+    }
+
+    await novel.load('tags')
+
     return response.json(novel)
   }
 
@@ -50,6 +56,12 @@ export default class NovelController {
 
     await novel.merge(data)
     await novel.save()
+
+    if (data?.tags) {
+      await novel.related('tags').sync(data.tags)
+    }
+
+    await novel.load('tags')
 
     return response.json(novel)
   }
