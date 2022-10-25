@@ -61,10 +61,18 @@ test.group('Novels', (group) => {
     response.assertStatus(403)
   })
 
-  test('show a novel', async ({ client }) => {
+  test('show a novel with id', async ({ client }) => {
     const novel = await NovelFactory.create()
 
-    const response = await client.get(`/novels/` + novel.id)
+    const response = await client.get(`/novels/${novel.id}`)
+
+    response.assertStatus(200)
+  })
+
+  test('show a novel with slug', async ({ client }) => {
+    const novel = await NovelFactory.create()
+
+    const response = await client.get(`/novels/${novel.slug}`)
 
     response.assertStatus(200)
   })
@@ -73,7 +81,7 @@ test.group('Novels', (group) => {
     const novel = await NovelFactory.create()
     const user = await UserFactory.create()
 
-    const response = await client.get(`/novels/` + novel.id).loginAs(user)
+    const response = await client.get(`/novels/${novel.id}`).loginAs(user)
 
     response.assertStatus(200)
   })

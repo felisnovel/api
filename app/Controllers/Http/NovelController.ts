@@ -1,7 +1,9 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
+import { ModelObject } from '@ioc:Adonis/Lucid/Orm'
 import Novel from 'App/Models/Novel'
 import NovelRequestValidator from 'App/Validators/NovelRequestValidator'
+import { isNumeric } from '../../../utils'
 
 export default class NovelController {
   async index({ response, request }: HttpContextContract) {
@@ -15,7 +17,22 @@ export default class NovelController {
   }
 
   async show({ params, auth, response }: HttpContextContract) {
-    const novel = await Novel.findOrFail(params.id)
+    const { id } = params
+
+    let novel: ModelObject | Novel
+    if (isNumeric(id)) {
+      novel = await Novel.query()
+        .where('id', params.id)
+        .withCount('likers')
+        .withCount('followers')
+        .firstOrFail()
+    } else {
+      novel = await Novel.query()
+        .where('slug', params.id)
+        .withCount('likers')
+        .withCount('followers')
+        .firstOrFail()
+    }
 
     const user = await auth.authenticate()
 

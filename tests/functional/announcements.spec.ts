@@ -40,10 +40,18 @@ test.group('Announcements', (group) => {
     response.assertStatus(403)
   })
 
-  test('show a announcement', async ({ client }) => {
+  test('show a announcement with id', async ({ client }) => {
     const announcement = await AnnouncementFactory.create()
 
     const response = await client.get(`/announcements/` + announcement.id)
+
+    response.assertStatus(200)
+  })
+
+  test('show a announcement with slug', async ({ client }) => {
+    const announcement = await AnnouncementFactory.create()
+
+    const response = await client.get(`/announcements/` + announcement.slug)
 
     response.assertStatus(200)
   })

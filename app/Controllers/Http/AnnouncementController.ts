@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Announcement from 'App/Models/Announcement'
 import AnnouncementRequestValidator from 'App/Validators/AnnouncementRequestValidator'
+import { isNumeric } from '../../../utils'
 
 export default class AnnouncementController {
   async index({ response }: HttpContextContract) {
@@ -10,7 +11,14 @@ export default class AnnouncementController {
   }
 
   async show({ params, response }: HttpContextContract) {
-    const announcement = await Announcement.findOrFail(params.id)
+    const { id } = params
+
+    let announcement: Announcement
+    if (isNumeric(id)) {
+      announcement = await Announcement.query().where('id', params.id).firstOrFail()
+    } else {
+      announcement = await Announcement.query().where('slug', params.id).firstOrFail()
+    }
 
     return response.json(announcement)
   }
