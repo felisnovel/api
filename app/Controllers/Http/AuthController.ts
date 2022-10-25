@@ -28,6 +28,10 @@ export default class AuthController {
       expiresIn: '7days',
     })
 
+    await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')
+
+    await user.serialize()
+
     return response.json({
       user,
       token,
@@ -36,6 +40,8 @@ export default class AuthController {
 
   async me({ response, auth }: HttpContextContract) {
     const user = await auth.authenticate()
+    await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')
+    await user.serialize()
 
     return response.json(user)
   }
@@ -55,6 +61,9 @@ export default class AuthController {
     const data = await request.validate(RegisterRequestValidator)
 
     const user = await User.create(data)
+    await user.serialize()
+
+    await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')
 
     const token = await auth.use('api').generate(user, { expiresIn: '7days' })
 

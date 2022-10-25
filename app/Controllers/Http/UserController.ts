@@ -12,13 +12,14 @@ export default class UserController {
   async show({ params, response }: HttpContextContract) {
     const user = await User.findOrFail(params.id)
 
-    await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')
-
     const lastFiveComments = await user
       .related('comments')
       .query()
       .orderBy('created_at', 'desc')
       .limit(5)
+
+    await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')
+    await user.serialize()
 
     return response.json({
       user,
