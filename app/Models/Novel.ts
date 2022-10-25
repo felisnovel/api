@@ -99,7 +99,7 @@ export default class Novel extends BaseModel {
   public likers: ManyToMany<typeof User>
 
   @manyToMany(() => User, {
-    pivotTable: 'novel_follows',
+    pivotTable: 'novel_follow',
   })
   public followers: ManyToMany<typeof User>
 
