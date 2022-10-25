@@ -3,7 +3,9 @@ import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
 import User from 'App/Models/User'
 import ChapterFactory from 'Database/factories/ChapterFactory'
+import CommentFactory from 'Database/factories/CommentFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
+import ReviewFactory from 'Database/factories/ReviewFactory'
 
 export default Factory.define(User, ({ faker }) => {
   return {
@@ -14,12 +16,18 @@ export default Factory.define(User, ({ faker }) => {
     role: faker.helpers.arrayElement(Object.values(UserRole)),
     gender: faker.helpers.arrayElement(Object.values(UserGender)),
     bio: faker.lorem.sentence(),
+    facebook_handle: faker.internet.userName(),
+    twitter_handle: faker.internet.userName(),
+    instagram_handle: faker.internet.userName(),
+    youtube_handle: faker.internet.userName(),
   }
 })
   .relation('followNovels', () => NovelFactory)
   .relation('readChapters', () => ChapterFactory)
   .relation('likeNovels', () => NovelFactory)
   .relation('favorites', () => NovelFactory)
+  .relation('reviews', () => ReviewFactory)
+  .relation('comments', () => CommentFactory)
   .state('admin', async (item) => {
     item.role = UserRole.ADMIN
   })
