@@ -142,6 +142,11 @@ export default class Novel extends BaseModel {
     return chapter
   }
 
+  public async isLike(user: User): Promise<boolean> {
+    const like = await user.related('likeNovels').query().where('id', this.id).first()
+    return like ? true : false
+  }
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

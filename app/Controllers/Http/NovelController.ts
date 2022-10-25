@@ -7,6 +7,22 @@ import { isNumeric } from '../../../utils'
 
 export default class NovelController {
   async index({ response, request }: HttpContextContract) {
+    /*
+    const novels = (
+      await Novel.query()
+        .preload('latest_chapter', (query) => {
+          query.preload('volume')
+        })
+        .paginate(request.input('page', 1))
+    ).toJSON()
+
+    const user = await auth.authenticate()
+
+    if (user) {
+      novels.data = await Promise.all(novels.data.map(async (item: Novel) => item.getForUser(user)))
+    }
+    */
+
     const novels = await Novel.query()
       .preload('latest_chapter', (query) => {
         query.preload('volume')
@@ -37,13 +53,18 @@ export default class NovelController {
     const user = await auth.authenticate()
 
     let latestReadChapter
+    let isLike
 
     if (user) {
       latestReadChapter = await novel.getLatestReadChapter(user.id)
+
+      // todo: remove to json in model
+      isLike = novel.isLike(user)
     }
 
     return response.json({
-      novel,
+      ...novel.toJSON(),
+      is_like: isLike,
       latest_read_chapter: latestReadChapter,
     })
   }
