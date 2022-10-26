@@ -3,8 +3,10 @@ import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 
 export default class ChapterController {
-  async index({ response }: HttpContextContract) {
-    const chapters = await Chapter.query()
+  async index({ request, response }: HttpContextContract) {
+    const chaptersQuery = Chapter.query()
+    if (request.input('volume')) chaptersQuery.where('volume_id', request.input('volume'))
+    const chapters = await chaptersQuery.paginate(request.input('page', 1))
 
     return response.send(chapters)
   }

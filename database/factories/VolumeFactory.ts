@@ -2,6 +2,7 @@ import Factory from '@ioc:Adonis/Lucid/Factory'
 import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Volume from 'App/Models/Volume'
 import NovelFactory from 'Database/factories/NovelFactory'
+import ChapterFactory from './ChapterFactory'
 
 export default Factory.define(Volume, ({ faker }) => {
   return {
@@ -11,4 +12,5 @@ export default Factory.define(Volume, ({ faker }) => {
   }
 })
   .relation('novel', () => NovelFactory)
+  .relation('chapters', () => ChapterFactory)
   .build()

@@ -1,6 +1,7 @@
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Novel from 'App/Models/Novel'
 import { DateTime } from 'luxon'
+import Chapter from './Chapter'
 
 export default class Volume extends BaseModel {
   @column({ isPrimary: true })
@@ -22,6 +23,11 @@ export default class Volume extends BaseModel {
     foreignKey: 'volume_novel_id',
   })
   public novel: BelongsTo<typeof Novel>
+
+  @hasMany(() => Chapter, {
+    foreignKey: 'volume_id',
+  })
+  public chapters: HasMany<typeof Chapter>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -157,8 +157,34 @@ test.group('Volumes', (group) => {
     const user = await UserFactory.apply('user').create()
     const volume = await VolumeFactory.with('novel', 1).create()
 
-    const response = await client.delete(`/volumes/` + volume.id).loginAs(user)
+    const response = await client.delete(`/volumes/${volume.id}`).loginAs(user)
 
     response.assertStatus(403)
+  })
+})
+
+test.group('Volume Chapters', (group) => {
+  group.each.setup(cleanAll)
+
+  test('get a paginated list of chapters', async ({ client }) => {
+    const novel = await NovelFactory.create()
+    const volumes = await VolumeFactory.merge({
+      volume_novel_id: novel.id,
+    })
+      .with('chapters', 10, (chapterFactory) =>
+        chapterFactory.merge({
+          novel_id: novel.id,
+        })
+      )
+      .createMany(3)
+
+    const response = await client.get(`/chapters?volume=${volumes[0].id}`)
+
+    response.assertBodyContains({
+      meta: {
+        total: 10,
+      },
+    })
+    response.assertStatus(200)
   })
 })
