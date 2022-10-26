@@ -12,6 +12,7 @@ export default Factory.define(Novel, ({ faker }) => {
   return {
     shorthand: faker.lorem.word(3),
     name: faker.lorem.words(3),
+    other_names: faker.lorem.words(3),
     image: faker.image.imageUrl(300, 500),
     cover_image: faker.image.imageUrl(),
     description: faker.lorem.paragraphs(3),

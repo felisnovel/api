@@ -12,6 +12,7 @@ import { cleanAll } from '../utils'
 const NOVEL_EXAMPLE_DATA = {
   name: 'Yüce İblis Hükümdarı',
   shorthand: 'YIH',
+  other_names: 'Yüce İblis Hükümdarı, The Great Demon Lord',
   image: 'https://i.imgur.com/1ZQZ1Zm.jpg',
   cover_image: 'https://i.imgur.com/1ZQZ1Zm.jpg',
   description: 'Yüce İblis Hükümdarı',

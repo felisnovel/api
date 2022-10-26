@@ -9,6 +9,7 @@ export default class NovelRequestValidator {
 
   public schema = schema.create({
     name: schema.string(),
+    other_names: schema.string.nullable(),
     shorthand: schema.string(),
     image: schema.string.optional(),
     cover_image: schema.string.optional(),
