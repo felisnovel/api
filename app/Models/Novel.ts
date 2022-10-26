@@ -30,6 +30,9 @@ export default class Novel extends BaseModel {
   public name: string
 
   @column()
+  public other_names: string | null
+
+  @column()
   @slugify({
     strategy: 'dbIncrement',
     fields: ['name'],
@@ -144,6 +147,11 @@ export default class Novel extends BaseModel {
 
   public async isLike(user: User): Promise<boolean> {
     const like = await user.related('likeNovels').query().where('id', this.id).first()
+    return like ? true : false
+  }
+
+  public async isFollowed(user: User): Promise<boolean> {
+    const like = await user.related('followNovels').query().where('id', this.id).first()
     return like ? true : false
   }
 

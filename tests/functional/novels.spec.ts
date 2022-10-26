@@ -77,13 +77,26 @@ test.group('Novels', (group) => {
     response.assertStatus(200)
   })
 
-  test('show a novel for user', async ({ client }) => {
+  test('show a novel for user with followed, liked', async ({ client }) => {
     const novel = await NovelFactory.create()
     const user = await UserFactory.create()
 
-    const response = await client.get(`/novels/${novel.id}`).loginAs(user)
+    const firstResponse = await client.get(`/novels/${novel.id}`).loginAs(user)
+    firstResponse.assertBodyContains({
+      is_liked: false,
+      is_followed: false,
+    })
+    firstResponse.assertStatus(200)
 
-    response.assertStatus(200)
+    await user.related('likeNovels').sync([novel.id], false)
+    await user.related('followNovels').sync([novel.id], false)
+
+    const secondResponse = await client.get(`/novels/${novel.id}`).loginAs(user)
+    secondResponse.assertBodyContains({
+      is_liked: true,
+      is_followed: true,
+    })
+    secondResponse.assertStatus(200)
   })
 
   test('update a novel', async ({ client }) => {

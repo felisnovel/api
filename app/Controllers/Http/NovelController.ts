@@ -53,19 +53,22 @@ export default class NovelController {
 
     const user = await auth.authenticate()
 
-    let latestReadChapter
-    let isLike
+    let latestReadChapter = false
+    let isLike = false
+    let isFollowed = false
 
     if (user) {
       latestReadChapter = await novel.getLatestReadChapter(user.id)
 
       // todo: remove to json in model
-      isLike = novel.isLike(user)
+      isLike = await novel.isLike(user)
+      isFollowed = await novel.isFollowed(user)
     }
 
     return response.json({
       ...novel.toJSON(),
-      is_like: isLike,
+      is_liked: isLike,
+      is_followed: isFollowed,
       latest_read_chapter: latestReadChapter,
     })
   }
