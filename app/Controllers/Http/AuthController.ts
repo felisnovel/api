@@ -60,7 +60,9 @@ export default class AuthController {
   async register({ request, response, auth }: HttpContextContract) {
     const data = await request.validate(RegisterRequestValidator)
 
-    const user = await User.create(data)
+    const { rules, ...newData } = data
+
+    const user = await User.create(newData)
     await user.serialize()
 
     await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')

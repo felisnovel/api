@@ -19,6 +19,7 @@ export default class RegisterRequestValidator {
       }),
     ]),
     password: schema.string({}, [rules.minLength(5)]),
+    rules: schema.string({}, [rules.equalTo('true')]),
   })
 
   public messages = {}

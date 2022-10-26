@@ -40,6 +40,7 @@ test.group('Auth', (group) => {
       ...data,
       password: 'password',
       password_confirmation: 'password',
+      rules: 'true',
     })
 
     response.assertBodyContains({
@@ -59,6 +60,7 @@ test.group('Auth', (group) => {
       ...data,
       password: 'password',
       password_confirmation: 'password',
+      rules: 'true',
     })
 
     response.assertBodyContains({
