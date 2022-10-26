@@ -35,20 +35,21 @@ export default class NovelController {
   async show({ params, auth, response }: HttpContextContract) {
     const { id } = params
 
-    let novel: ModelObject | Novel
+    const novelQuery = Novel.query()
     if (isNumeric(id)) {
-      novel = await Novel.query()
-        .where('id', params.id)
-        .withCount('likers')
-        .withCount('followers')
-        .firstOrFail()
+      novelQuery.where('id', params.id)
     } else {
-      novel = await Novel.query()
-        .where('slug', params.id)
-        .withCount('likers')
-        .withCount('followers')
-        .firstOrFail()
+      novelQuery.where('slug', params.id)
     }
+    const novel: ModelObject | Novel = await novelQuery
+      .preload('volumes')
+      .preload('editor')
+      .preload('translator')
+      .preload('tags')
+      .withCount('chapters')
+      .withCount('likers')
+      .withCount('followers')
+      .firstOrFail()
 
     const user = await auth.authenticate()
 

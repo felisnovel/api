@@ -13,12 +13,13 @@ export default class AnnouncementController {
   async show({ params, response }: HttpContextContract) {
     const { id } = params
 
-    let announcement: Announcement
+    const announcementQuery = Announcement.query()
     if (isNumeric(id)) {
-      announcement = await Announcement.query().where('id', params.id).firstOrFail()
+      announcementQuery.where('id', params.id)
     } else {
-      announcement = await Announcement.query().where('slug', params.id).firstOrFail()
+      announcementQuery.where('slug', params.id)
     }
+    const announcement = await announcementQuery.firstOrFail()
 
     return response.json(announcement)
   }
