@@ -3,7 +3,9 @@ import User from 'App/Models/User'
 import UserRequestValidator from 'App/Validators/UserRequestValidator'
 
 export default class UserController {
-  async index({ response }: HttpContextContract) {
+  async index({ bouncer, response }: HttpContextContract) {
+    await bouncer.authorize('isAdmin')
+
     const users = await User.query()
 
     return response.send(users)

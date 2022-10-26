@@ -30,9 +30,8 @@ Route.group(() => {
 })
   .prefix('/user')
   .middleware('auth')
-Route.group(() => {
-  Route.resource('/users', 'UserController').except(['store', 'destroy'])
-}).middleware('isAdmin')
+
+Route.resource('/users', 'UserController').except(['store', 'destroy'])
 
 Route.get('/popular-novels', 'NovelController.popular')
 Route.get('/random-novels', 'NovelController.random')
