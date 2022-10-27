@@ -41,6 +41,7 @@ export default class NovelController {
     } else {
       novelQuery.where('slug', params.id)
     }
+
     const novel: ModelObject | Novel = await novelQuery
       .preload('volumes')
       .preload('editor')

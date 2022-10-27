@@ -5,7 +5,12 @@ export default class FollowedNovelController {
     const user = await auth.authenticate()
     await user.load('followNovels')
 
-    const followedNovels = user.followNovels
+    const followedNovels = user
+      .related('followNovels')
+      .query()
+      .preload('latest_chapter', (query) => {
+        query.preload('volume')
+      })
 
     return response.send(followedNovels)
   }

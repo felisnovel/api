@@ -12,13 +12,13 @@ export default class ReviewController {
       return response.badRequest()
     }
 
-    let reviews
+    const reviewsQuery = Review.query()
 
     if (request.input('novel_id')) {
-      reviews = await Review.query().where('novel_id', request.input('novel_id'))
-    } else {
-      reviews = await Review.query()
+      reviewsQuery.where('novel_id', request.input('novel_id'))
     }
+
+    const reviews = await reviewsQuery.preload('user').withCount('likes').withCount('dislikes')
 
     return response.send(reviews)
   }

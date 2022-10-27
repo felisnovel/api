@@ -12,13 +12,13 @@ export default class CommentController {
       return response.badRequest()
     }
 
-    let comments
+    const commentsQuery = Comment.query()
 
     if (request.input('chapter_id')) {
-      comments = await Comment.query().where('chapter_id', request.input('chapter_id'))
-    } else {
-      comments = await Comment.query()
+      commentsQuery.where('chapter_id', request.input('chapter_id'))
     }
+
+    const comments = await commentsQuery.preload('user').withCount('likes').withCount('dislikes')
 
     return response.send(comments)
   }

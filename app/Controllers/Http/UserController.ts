@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import UserRequestValidator from 'App/Validators/UserRequestValidator'
+import { isNumeric } from '../../../utils/index'
 
 export default class UserController {
   async index({ bouncer, response }: HttpContextContract) {
@@ -12,7 +13,16 @@ export default class UserController {
   }
 
   async show({ params, response }: HttpContextContract) {
-    const user = await User.findOrFail(params.id)
+    const { id } = params
+
+    const userQuery = User.query()
+    if (isNumeric(id)) {
+      userQuery.where('id', params.id)
+    } else {
+      userQuery.where('slug', params.id)
+    }
+
+    const user = await userQuery.firstOrFail()
 
     const lastFiveComments = await user
       .related('comments')
