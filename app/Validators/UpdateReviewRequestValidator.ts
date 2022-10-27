@@ -6,5 +6,6 @@ export default class UpdateReviewRequestValidator {
 
   public schema = schema.create({
     body: schema.string({ trim: true }),
+    is_spoiler: schema.boolean.optional(),
   })
 }

@@ -14,6 +14,9 @@ export default class Comment extends BaseModel {
   public is_pinned: boolean
 
   @column()
+  public is_spoiler: boolean
+
+  @column()
   public parent_id: number
 
   @belongsTo(() => Comment, {

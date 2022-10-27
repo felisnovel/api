@@ -11,6 +11,8 @@ export default class extends BaseSchema {
 
       table.boolean('is_pinned').defaultTo(false)
 
+      table.boolean('is_spoiler').defaultTo(false)
+
       table.integer('user_id').unsigned()
       table.foreign('user_id').references('users.id')
 
