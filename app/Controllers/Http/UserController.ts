@@ -20,7 +20,7 @@ export default class UserController {
     if (isNumeric(id)) {
       userQuery.where('id', params.id)
     } else {
-      userQuery.where('slug', params.id)
+      userQuery.where('username', params.id)
     }
 
     const user = await userQuery.firstOrFail()
