@@ -14,6 +14,9 @@ export default class Review extends BaseModel {
   public novel_id: number
 
   @column()
+  public is_pinned: boolean
+
+  @column()
   public translation_quality: number
 
   @column()

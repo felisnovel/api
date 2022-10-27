@@ -9,6 +9,8 @@ export default class extends BaseSchema {
 
       table.text('body').notNullable()
 
+      table.boolean('is_pinned').defaultTo(false)
+
       table.integer('parent_id').unsigned().nullable()
       table.foreign('parent_id').references('comments.id')
 
