@@ -1,6 +1,8 @@
-import { BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, belongsTo, BelongsTo, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import ReactionTypeEnum from 'App/Enums/ReactionTypeEnum'
 import { DateTime } from 'luxon'
 import Chapter from './Chapter'
+import CommentReaction from './CommentReaction'
 import User from './User'
 
 export default class Comment extends BaseModel {
@@ -23,6 +25,18 @@ export default class Comment extends BaseModel {
     foreignKey: 'parent_id',
   })
   public parent: BelongsTo<typeof Comment>
+
+  @hasMany(() => CommentReaction, {
+    foreignKey: 'comment_id',
+    onQuery: (query) => query.where('type', ReactionTypeEnum.LIKE),
+  })
+  public likes: HasMany<typeof CommentReaction>
+
+  @hasMany(() => CommentReaction, {
+    foreignKey: 'comment_id',
+    onQuery: (query) => query.where('type', ReactionTypeEnum.DISLIKE),
+  })
+  public dislikes: HasMany<typeof CommentReaction>
 
   @column()
   public chapter_id: number

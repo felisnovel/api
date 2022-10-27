@@ -1,6 +1,16 @@
-import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  BelongsTo,
+  belongsTo,
+  column,
+  computed,
+  hasMany,
+  HasMany,
+} from '@ioc:Adonis/Lucid/Orm'
+import ReactionTypeEnum from 'App/Enums/ReactionTypeEnum'
 import { DateTime } from 'luxon'
 import Novel from './Novel'
+import ReviewReaction from './ReviewReaction'
 import User from './User'
 
 export default class Review extends BaseModel {
@@ -49,6 +59,18 @@ export default class Review extends BaseModel {
     foreignKey: 'novel_id',
   })
   public novel: BelongsTo<typeof Novel>
+
+  @hasMany(() => ReviewReaction, {
+    foreignKey: 'review_id',
+    onQuery: (query) => query.where('type', ReactionTypeEnum.LIKE),
+  })
+  public likes: HasMany<typeof ReviewReaction>
+
+  @hasMany(() => ReviewReaction, {
+    foreignKey: 'review_id',
+    onQuery: (query) => query.where('type', ReactionTypeEnum.DISLIKE),
+  })
+  public dislikes: HasMany<typeof ReviewReaction>
 
   @column()
   public user_id: number
