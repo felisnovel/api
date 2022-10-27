@@ -83,3 +83,39 @@ test.group('Review Reactions', (group) => {
     response.assertStatus(200)
   })
 })
+
+test.group('Review Pinned', (group) => {
+  group.each.setup(cleanAll)
+
+  test('set pinned review to true', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const review = await ReviewFactory.merge({
+      is_pinned: false,
+    }).create()
+
+    const response = await client.put(`/reviews/${review.id}/set-pinned`).loginAs(admin).form({
+      is_pinned: true,
+    })
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      is_pinned: true,
+    })
+  })
+
+  test('set pinned review to false', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const review = await ReviewFactory.merge({
+      is_pinned: true,
+    }).create()
+
+    const response = await client.put(`/reviews/${review.id}/set-pinned`).loginAs(admin).form({
+      is_pinned: false,
+    })
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      is_pinned: false,
+    })
+  })
+})
