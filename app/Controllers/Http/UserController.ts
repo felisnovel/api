@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Database from '@ioc:Adonis/Lucid/Database'
 import User from 'App/Models/User'
 import UserRequestValidator from 'App/Validators/UserRequestValidator'
 import { isNumeric } from '../../../utils/index'
@@ -30,13 +31,25 @@ export default class UserController {
       .orderBy('created_at', 'desc')
       .limit(5)
 
+    const mostLikedComments = await Database.query()
+      .select(
+        'comments.*',
+        Database.rawQuery(
+          '(SELECT COUNT(*) FROM comment_reactions WHERE type = ? AND comment_reactions.comment_id = comments.id) AS comments_reactions_count',
+          ['like']
+        )
+      )
+      .from('comments')
+      .orderBy('comments_reactions_count', 'desc')
+      .limit(2)
+
     await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')
     await user.serialize()
 
     return response.json({
       user,
-      lastFiveComments,
-      // mostLikedComment,
+      last_five_comments: lastFiveComments,
+      most_liked_comments: mostLikedComments,
     })
   }
 
