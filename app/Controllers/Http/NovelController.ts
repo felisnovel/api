@@ -58,7 +58,6 @@ export default class NovelController {
     if (user) {
       latestReadChapter = await novel.getLatestReadChapter(user.id)
 
-      // todo: remove to json in model
       isLike = await novel.isLike(user)
       isFollowed = await novel.isFollowed(user)
     }
@@ -158,7 +157,7 @@ export default class NovelController {
   }
 
   async lastUpdated({ auth, request, response }: HttpContextContract) {
-    const latestUpdatedNovelsQuery = Database.query()
+    const lastUpdatedNovelsQuery = Database.query()
       .select(
         'novels.*',
         'chapters.number as latest_chapter_number',
@@ -185,18 +184,18 @@ export default class NovelController {
         return response.unauthorized()
       }
 
-      latestUpdatedNovelsQuery
+      lastUpdatedNovelsQuery
         .join('novel_follow', 'novels.id', 'novel_follow.novel_id')
         .where('novel_follow.user_id', user.id)
         .limit(5)
     } else {
-      latestUpdatedNovelsQuery.limit(8)
+      lastUpdatedNovelsQuery.limit(8)
     }
 
-    const latestUpdatedNovels = await latestUpdatedNovelsQuery
+    const lastUpdatedNovels = await lastUpdatedNovelsQuery
 
     return response.send(
-      latestUpdatedNovels.map((novel) => {
+      lastUpdatedNovels.map((novel) => {
         return {
           ...novel,
           latest_chapter: {
