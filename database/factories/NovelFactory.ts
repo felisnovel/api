@@ -31,5 +31,6 @@ export default Factory.define(Novel, ({ faker }) => {
   .relation('volumes', () => VolumeFactory)
   .relation('latest_volume', () => VolumeFactory)
   .relation('chapters', () => ChapterFactory)
+  .relation('reviews', () => ReviewFactory)
   .relation('tags', () => TagFactory)
   .build()

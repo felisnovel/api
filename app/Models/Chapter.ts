@@ -81,6 +81,11 @@ export default class Chapter extends BaseModel {
   })
   public readUsers: ManyToMany<typeof User>
 
+  @hasMany(() => Comment, {
+    foreignKey: 'chapter_id',
+  })
+  public comments: HasMany<typeof Comment>
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

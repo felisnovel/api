@@ -17,6 +17,7 @@ import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import Chapter from './Chapter'
+import Review from './Review'
 import Tag from './Tag'
 import Volume from './Volume'
 
@@ -110,6 +111,11 @@ export default class Novel extends BaseModel {
     foreignKey: 'novel_id',
   })
   public chapters: HasMany<typeof Chapter>
+
+  @hasMany(() => Review, {
+    foreignKey: 'novel_id',
+  })
+  public reviews: HasMany<typeof Review>
 
   @hasMany(() => Volume, {
     foreignKey: 'volume_novel_id',
