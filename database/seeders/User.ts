@@ -1,53 +1,34 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
-import ReactionTypeEnum from 'App/Enums/ReactionTypeEnum'
-import CommentReactionFactory from 'Database/factories/CommentReactionFactory'
+import ChapterFactory from 'Database/factories/ChapterFactory'
 import UserFactory from 'Database/factories/UserFactory'
 
 export default class extends BaseSeeder {
   public async run() {
-    const user = await UserFactory.merge({
-      username: 'lexor',
-      email: 'emre@nerdesin.dev',
-      password: 'secret',
+    const admin1 = await UserFactory.merge({
+      username: 'admin',
+      email: 'admin@felis.dev',
+      password: 'admin',
     })
-      .with('reviews', 2)
-      .with('comments', 3)
-      .with('followNovels', 4)
-      .with('comments', 10)
+      .with('followNovels', 8, (novelFactory) =>
+        novelFactory
+          .apply('published')
+          .with('volumes', 1, (volumeFactory) => volumeFactory.apply('published'))
+      )
       .create()
 
-    await CommentReactionFactory.with('user', 1)
-      .merge({
-        comment_id: user.comments[1].id,
-        type: ReactionTypeEnum.LIKE,
-      })
-      .createMany(5)
+    admin1.followNovels.forEach(async (novel) => {
+      await ChapterFactory.apply('published')
+        .merge({
+          novel_id: novel.id,
+          volume_id: novel.volumes[0].id,
+        })
+        .createMany(2)
+    })
 
-    await CommentReactionFactory.with('user', 1)
-      .merge({
-        comment_id: user.comments[2].id,
-        type: ReactionTypeEnum.LIKE,
-      })
-      .createMany(10)
-
-    await CommentReactionFactory.with('user', 1)
-      .merge({
-        comment_id: user.comments[3].id,
-        type: ReactionTypeEnum.LIKE,
-      })
-      .createMany(3)
-
-    await CommentReactionFactory.with('user', 1)
-      .merge({
-        comment_id: user.comments[4].id,
-        type: ReactionTypeEnum.LIKE,
-      })
-      .createMany(1)
-
-    await UserFactory.merge({ password: 'password' })
-      //.with('followNovels', 10)
-      //.with('likeNovels', 10)
-      //.with('readChapters', 10)
-      .createMany(5)
+    await UserFactory.merge({
+      username: 'manager',
+      email: 'manager@felis.dev',
+      password: 'manager',
+    }).create()
   }
 }

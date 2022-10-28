@@ -13,4 +13,7 @@ export default Factory.define(Volume, ({ faker }) => {
 })
   .relation('novel', () => NovelFactory)
   .relation('chapters', () => ChapterFactory)
+  .state('published', async (item) => {
+    item.publish_status = VolumePublishStatus.PUBLISHED
+  })
   .build()

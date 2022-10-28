@@ -5,16 +5,16 @@ import { cleanAll } from '../utils'
 
 const USER_EXAMPLE_DATA = {
   full_name: 'Ahmet Mehmet',
-  email: 'admin@felisnovel.com',
-  username: 'admin',
+  email: 'email@felisnovel.com',
+  username: 'username',
   bio: "I'm a bio",
   gender: UserGender.MALE,
 }
 
 const NEW_USER_EXAMPLE_DATA = {
   full_name: 'Yeni Ahmet Mehmet',
-  email: 'yeniadmin@felisnovel.com',
-  username: 'yeniadmin',
+  email: 'newemail@felisnovel.com',
+  username: 'newusername',
   bio: "Yeni I'm a bio",
   gender: UserGender.FEMALE,
 }

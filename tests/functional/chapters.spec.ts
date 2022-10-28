@@ -53,14 +53,22 @@ test.group('Chapters', (group) => {
   })
 
   test('show a chapter', async ({ client }) => {
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.apply('published')
+      .with('volumes', 1, (volumeFactory) => {
+        volumeFactory.apply('published')
+      })
+      .create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
       volume_id: novel.volumes[0].id,
-    }).create()
+    })
+      .apply('published')
+      .create()
 
-    const response = await client.get(`/chapters/` + chapter.id)
+    const response = await client.get(
+      `/novel/${novel.slug}/${novel.shorthand}-chapter-${chapter.number}`
+    )
 
     response.assertStatus(200)
   })

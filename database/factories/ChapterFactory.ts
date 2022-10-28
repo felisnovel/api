@@ -1,6 +1,7 @@
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
 import Chapter from 'App/Models/Chapter'
+import CommentFactory from 'Database/factories/CommentFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import VolumeFactory from 'Database/factories/VolumeFactory'
@@ -22,4 +23,7 @@ export default Factory.define(Chapter, ({ faker }) => {
   .relation('editor', () => UserFactory)
   .relation('readUsers', () => UserFactory)
   .relation('comments', () => CommentFactory)
+  .state('published', async (item) => {
+    item.publish_status = ChapterPublishStatus.PUBLISHED
+  })
   .build()

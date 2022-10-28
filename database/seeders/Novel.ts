@@ -7,7 +7,7 @@ export default class extends BaseSeeder {
   public async run() {
     await NovelFactory.merge({
       is_promoted: true,
-    }).createMany(50)
+    }).createMany(10)
 
     const novels = await Novel.all()
 

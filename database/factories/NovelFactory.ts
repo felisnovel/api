@@ -4,6 +4,7 @@ import NovelStatus from 'App/Enums/NovelStatus'
 import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 import Novel from 'App/Models/Novel'
 import ChapterFactory from 'Database/factories/ChapterFactory'
+import ReviewFactory from 'Database/factories/ReviewFactory'
 import TagFactory from 'Database/factories/TagFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import VolumeFactory from 'Database/factories/VolumeFactory'
@@ -33,4 +34,7 @@ export default Factory.define(Novel, ({ faker }) => {
   .relation('chapters', () => ChapterFactory)
   .relation('reviews', () => ReviewFactory)
   .relation('tags', () => TagFactory)
+  .state('published', async (item) => {
+    item.publish_status = NovelPublishStatus.PUBLISHED
+  })
   .build()

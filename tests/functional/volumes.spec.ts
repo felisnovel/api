@@ -67,14 +67,6 @@ test.group('Volumes', (group) => {
     response.assertStatus(403)
   })
 
-  test('show a volume', async ({ client }) => {
-    const volume = await VolumeFactory.with('novel', 1).create()
-
-    const response = await client.get(`/volumes/` + volume.id)
-
-    response.assertStatus(200)
-  })
-
   test('update a volume', async ({ client }) => {
     const volume = await VolumeFactory.with('novel', 1).create()
     const admin = await UserFactory.apply('admin').create()
@@ -161,18 +153,19 @@ test.group('Volume Chapters', (group) => {
   group.each.setup(cleanAll)
 
   test('get a paginated list of chapters', async ({ client }) => {
-    const novel = await NovelFactory.create()
-    const volumes = await VolumeFactory.merge({
-      volume_novel_id: novel.id,
-    })
+    const novel = await NovelFactory.apply('published').create()
+    const volumes = await VolumeFactory.apply('published')
+      .merge({
+        volume_novel_id: novel.id,
+      })
       .with('chapters', 10, (chapterFactory) =>
-        chapterFactory.merge({
+        chapterFactory.apply('published').merge({
           novel_id: novel.id,
         })
       )
       .createMany(3)
 
-    const response = await client.get(`/chapters?volume=${volumes[0].id}`)
+    const response = await client.get(`/chapters?volume_id=${volumes[0].id}`)
 
     response.assertBodyContains({
       meta: {
