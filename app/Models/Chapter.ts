@@ -3,11 +3,14 @@ import {
   belongsTo,
   BelongsTo,
   column,
+  hasMany,
+  HasMany,
   manyToMany,
   ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
+import Comment from './Comment'
 import Novel from './Novel'
 import Volume from './Volume'
 
@@ -80,6 +83,11 @@ export default class Chapter extends BaseModel {
     pivotColumns: ['created_at', 'updated_at'],
   })
   public readUsers: ManyToMany<typeof User>
+
+  public async isRead(user: User): Promise<boolean> {
+    const read = await user.related('readChapters').query().where('id', this.id).first()
+    return read ? true : false
+  }
 
   @hasMany(() => Comment, {
     foreignKey: 'chapter_id',
