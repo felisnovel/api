@@ -8,7 +8,11 @@ export default class CommentController {
   async index({ response, auth, request }: HttpContextContract) {
     const user = await auth.authenticate()
 
-    if (!request.input('chapter_id') && user?.role !== UserRole.ADMIN) {
+    if (
+      !request.input('chapter_id') &&
+      !request.input('parent_id') &&
+      user?.role !== UserRole.ADMIN
+    ) {
       return response.badRequest()
     }
 
@@ -18,7 +22,15 @@ export default class CommentController {
       commentsQuery.where('chapter_id', request.input('chapter_id'))
     }
 
-    const comments = await commentsQuery.preload('user').withCount('likes').withCount('dislikes')
+    if (request.input('parent_id')) {
+      commentsQuery.where('parent_id', request.input('parent_id'))
+    }
+
+    const comments = await commentsQuery
+      .preload('user')
+      .withCount('subComments')
+      .withCount('likes')
+      .withCount('dislikes')
 
     return response.send(comments)
   }
