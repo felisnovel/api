@@ -3,18 +3,6 @@ import Volume from 'App/Models/Volume'
 import VolumeRequestValidator from 'App/Validators/VolumeRequestValidator'
 
 export default class VolumeController {
-  async index({ response }: HttpContextContract) {
-    const volumes = await Volume.query()
-
-    return response.send(volumes)
-  }
-
-  async show({ params, response }: HttpContextContract) {
-    const volume = await Volume.findOrFail(params.id)
-
-    return response.json(volume)
-  }
-
   async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.authorize('isAdmin')
 
