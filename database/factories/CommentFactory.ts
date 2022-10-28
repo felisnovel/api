@@ -9,6 +9,7 @@ export default Factory.define(Comment, ({ faker }) => {
     body: faker.lorem.paragraph(),
   }
 })
+  .relation('subComments', () => CommentFactory)
   .relation('chapter', () => ChapterFactory)
   .relation('parent', () => CommentFactory)
   .relation('user', () => UserFactory)

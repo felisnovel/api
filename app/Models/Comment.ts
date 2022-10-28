@@ -26,6 +26,11 @@ export default class Comment extends BaseModel {
   })
   public parent: BelongsTo<typeof Comment>
 
+  @hasMany(() => Comment, {
+    foreignKey: 'parent_id',
+  })
+  public subComments: HasMany<typeof Comment>
+
   @hasMany(() => CommentReaction, {
     foreignKey: 'comment_id',
     onQuery: (query) => query.where('type', ReactionTypeEnum.LIKE),
