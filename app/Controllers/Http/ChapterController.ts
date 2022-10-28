@@ -1,20 +1,78 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
+import UserRole from 'App/Enums/UserRole'
 import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 
 export default class ChapterController {
-  async index({ request, response }: HttpContextContract) {
+  async index({ auth, request, response }: HttpContextContract) {
     const chaptersQuery = Chapter.query()
-    if (request.input('volume')) chaptersQuery.where('volume_id', request.input('volume'))
+
+    const user = await auth.authenticate()
+
+    if (user?.role !== UserRole.ADMIN) {
+      chaptersQuery.where('publish_status', ChapterPublishStatus.PUBLISHED)
+    }
+
+    if (request.input('fields')) {
+      chaptersQuery.select(request.input('fields'))
+    }
+
+    if (request.input('volume_id')) chaptersQuery.where('volume_id', request.input('volume_id'))
+
     const chapters = await chaptersQuery.paginate(request.input('page', 1))
 
-    return response.send(chapters)
+    const chaptersJson = chapters.toJSON()
+
+    if (user) {
+      chaptersJson.data = await Promise.all(
+        chaptersJson.data.map(async (item) => {
+          const isRead = await item.isRead(user)
+
+          return {
+            ...item.toJSON(),
+            is_read: isRead,
+          }
+        })
+      )
+    }
+
+    return response.send(chaptersJson)
   }
 
-  async show({ params, response }: HttpContextContract) {
-    const chapter = await Chapter.findOrFail(params.id)
+  async show({ auth, params, response }: HttpContextContract) {
+    const { novel, '*': slug } = params
 
-    return response.json(chapter)
+    const [shorthand, number] = slug[0].split('-chapter-')
+
+    const chapterQuery = Chapter.query()
+      .where('number', number)
+      .whereHas('novel', (query) => {
+        query.where('slug', novel).where('shorthand', shorthand)
+      })
+      .preload('volume')
+      .preload('novel')
+      .preload('translator')
+      .preload('editor')
+
+    const user = await auth.authenticate()
+
+    if (user?.role !== UserRole.ADMIN) {
+      chapterQuery.where('publish_status', ChapterPublishStatus.PUBLISHED)
+    }
+
+    const chapter = await chapterQuery.firstOrFail()
+
+    let isRead = false
+
+    if (user) {
+      isRead = await novel.isRead(user)
+    }
+
+    return response.json({
+      ...chapter.toJSON(),
+      isRead,
+    })
   }
 
   async store({ request, response, bouncer }: HttpContextContract) {
