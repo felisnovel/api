@@ -15,6 +15,7 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('/followed', 'Novel/FollowedNovelController.invoke')
+  Route.get('/last-updated-followed', 'Novel/FollowedNovelController.invoke')
   Route.put('/:novel/follow', 'Novel/FollowNovel.invoke')
   Route.put('/:novel/unfollow', 'Novel/UnfollowNovel.invoke')
 
@@ -57,10 +58,13 @@ Route.group(() => {
   .prefix('chapters/:chapter')
   .middleware('auth')
 
-Route.resource('/chapters', 'ChapterController')
+Route.resource('/chapters', 'ChapterController').except(['show'])
+
+Route.get('/novel/:novel/*', 'ChapterController.show')
+
 Route.resource('/comments', 'CommentController').except(['show'])
 
-Route.resource('/volumes', 'VolumeController')
+Route.resource('/volumes', 'VolumeController').only(['store', 'update', 'destroy'])
 Route.group(() => {
   Route.put('/like', 'Comment/LikeComment.invoke')
   Route.put('/dislike', 'Comment/DislikeComment.invoke')
