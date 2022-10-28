@@ -1,29 +1,22 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
-import { ModelObject } from '@ioc:Adonis/Lucid/Orm'
+import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
+import UserRole from 'App/Enums/UserRole'
 import Novel from 'App/Models/Novel'
 import NovelRequestValidator from 'App/Validators/NovelRequestValidator'
 import { isNumeric } from '../../../utils'
 
 export default class NovelController {
-  async index({ response, request }: HttpContextContract) {
-    /*
-    const novels = (
-      await Novel.query()
-        .preload('latest_chapter', (query) => {
-          query.preload('volume')
-        })
-        .paginate(request.input('page', 1))
-    ).toJSON()
+  async index({ auth, response, request }: HttpContextContract) {
+    const novelsQuery = Novel.query()
 
     const user = await auth.authenticate()
 
-    if (user) {
-      novels.data = await Promise.all(novels.data.map(async (item: Novel) => item.getForUser(user)))
+    if (user?.role !== UserRole.ADMIN) {
+      novelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
     }
-    */
 
-    const novels = await Novel.query()
+    const novels = await novelsQuery
       .preload('latest_chapter', (query) => {
         query.preload('volume')
       })
@@ -42,7 +35,13 @@ export default class NovelController {
       novelQuery.where('slug', params.id)
     }
 
-    const novel: ModelObject | Novel = await novelQuery
+    const user = await auth.authenticate()
+
+    if (user?.role !== UserRole.ADMIN) {
+      novelQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
+    }
+
+    const novel: Novel = await novelQuery
       .preload('volumes')
       .preload('editor')
       .preload('translator')
@@ -52,9 +51,7 @@ export default class NovelController {
       .withCount('followers')
       .firstOrFail()
 
-    const user = await auth.authenticate()
-
-    let latestReadChapter = false
+    let latestReadChapter
     let isLike = false
     let isFollowed = false
 
@@ -160,8 +157,8 @@ export default class NovelController {
     return response.send(novels)
   }
 
-  async lastUpdated({ response }: HttpContextContract) {
-    const latestUpdatedNovels = await Database.query()
+  async lastUpdated({ auth, request, response }: HttpContextContract) {
+    const latestUpdatedNovelsQuery = Database.query()
       .select(
         'novels.*',
         'chapters.number as latest_chapter_number',
@@ -179,7 +176,23 @@ export default class NovelController {
       })
       .leftJoin('volumes', 'chapters.volume_id', 'volumes.id')
       .orderBy('chapters.created_at', 'desc')
-      .limit(8)
+
+    if (request.input('followed')) {
+      const user = await auth.authenticate()
+
+      if (!user) {
+        return response.unauthorized()
+      }
+
+      latestUpdatedNovelsQuery
+        .join('novel_follow', 'novels.id', 'novel_follow.novel_id')
+        .where('novel_follow.user_id', user.id)
+        .limit(5)
+    } else {
+      latestUpdatedNovelsQuery.limit(8)
+    }
+
+    const latestUpdatedNovels = await latestUpdatedNovelsQuery
 
     return response.send(
       latestUpdatedNovels.map((novel) => {
