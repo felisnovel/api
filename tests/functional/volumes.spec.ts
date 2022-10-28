@@ -23,12 +23,6 @@ const VOLUME_NOT_NAME_EXAMPLE_DATA = {
 test.group('Volumes', (group) => {
   group.each.setup(cleanAll)
 
-  test('get a paginated list of volumes', async ({ client }) => {
-    const response = await client.get('/volumes')
-
-    response.assertStatus(200)
-  })
-
   test('create a volume', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
     const novel = await NovelFactory.create()
