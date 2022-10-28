@@ -163,7 +163,8 @@ export default class NovelController {
         'novels.*',
         'chapters.number as latest_chapter_number',
         'chapters.title as latest_chapter_title',
-        'volumes.volume_number as latest_chapter_volume_number'
+        'volumes.volume_number as latest_chapter_volume_number',
+        'volumes.created_at as latest_chapter_created_at'
       )
       .from('novels')
       .joinRaw(
@@ -199,6 +200,7 @@ export default class NovelController {
         return {
           ...novel,
           latest_chapter: {
+            created_at: novel.latest_chapter_created_at,
             number: novel.latest_chapter_number,
             title: novel.latest_chapter_title,
             volume: {
