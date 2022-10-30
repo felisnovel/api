@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class FollowedNovelController {
-  async invoke({ auth, response }: HttpContextContract) {
+  async invoke({ request, auth, response }: HttpContextContract) {
     const user = await auth.authenticate()
     await user.load('followNovels')
 
@@ -11,6 +11,7 @@ export default class FollowedNovelController {
       .preload('latest_chapter', (query) => {
         query.preload('volume')
       })
+      .limit(request.input('limit', 10))
 
     return response.send(followedNovels)
   }
