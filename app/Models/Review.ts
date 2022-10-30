@@ -14,6 +14,8 @@ import ReviewReaction from './ReviewReaction'
 import User from './User'
 
 export default class Review extends BaseModel {
+  public serializeExtras = true
+
   @column({ isPrimary: true })
   public id: number
 

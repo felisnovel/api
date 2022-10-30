@@ -6,6 +6,8 @@ import CommentReaction from './CommentReaction'
 import User from './User'
 
 export default class Comment extends BaseModel {
+  public serializeExtras = true
+
   @column({ isPrimary: true })
   public id: number
 
