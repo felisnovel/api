@@ -15,6 +15,7 @@ export default class extends BaseSeeder {
           .with('tags', 2)
           .with('volumes', 1, (volumeFactory) => volumeFactory.apply('published'))
       )
+      .apply('admin')
       .create()
 
     admin1.followNovels.forEach(async (novel) => {
@@ -30,6 +31,8 @@ export default class extends BaseSeeder {
       username: 'manager',
       email: 'manager@felis.dev',
       password: 'manager',
-    }).create()
+    })
+      .apply('admin')
+      .create()
   }
 }
