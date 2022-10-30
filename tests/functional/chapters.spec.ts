@@ -67,7 +67,7 @@ test.group('Chapters', (group) => {
       .create()
 
     const response = await client.get(
-      `/novel/${novel.slug}/${novel.shorthand}-chapter-${chapter.number}`
+      `/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}`
     )
 
     response.assertStatus(200)

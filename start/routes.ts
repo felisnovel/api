@@ -65,9 +65,7 @@ Route.group(() => {
   .prefix('chapters/:chapter')
   .middleware('auth')
 
-Route.resource('/chapters', 'ChapterController').except(['show'])
-
-Route.get('/novel/:novel/*', 'ChapterController.show')
+Route.resource('/chapters', 'ChapterController')
 
 Route.resource('/comments', 'CommentController').except(['show'])
 

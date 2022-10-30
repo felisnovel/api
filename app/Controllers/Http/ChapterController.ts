@@ -40,10 +40,14 @@ export default class ChapterController {
     return response.send(chaptersJson)
   }
 
-  async show({ auth, params, response }: HttpContextContract) {
-    const { novel, '*': slug } = params
+  async show({ auth, request, params, response }: HttpContextContract) {
+    const novel = request.input('novel')
+    const shorthand = request.input('shorthand')
+    const number = params.id
 
-    const [shorthand, number] = slug[0].split('-chapter-')
+    if (!novel || !shorthand) {
+      return response.badRequest('Missing number or shorthand')
+    }
 
     const chapterQuery = Chapter.query()
       .where('number', number)
