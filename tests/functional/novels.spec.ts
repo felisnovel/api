@@ -63,7 +63,7 @@ test.group('Novels', (group) => {
   })
 
   test('show a novel with id', async ({ client }) => {
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.apply('published').create()
 
     const response = await client.get(`/novels/${novel.id}`)
 
@@ -71,7 +71,7 @@ test.group('Novels', (group) => {
   })
 
   test('show a novel with slug', async ({ client }) => {
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.apply('published').create()
 
     const response = await client.get(`/novels/${novel.slug}`)
 
@@ -79,7 +79,7 @@ test.group('Novels', (group) => {
   })
 
   test('show a novel for user with followed, liked', async ({ client }) => {
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.apply('published').create()
     const user = await UserFactory.create()
 
     const firstResponse = await client.get(`/novels/${novel.id}`).loginAs(user)
@@ -252,7 +252,7 @@ test.group('Novel Reviews', (group) => {
       user_id: user.id,
     }).create()
 
-    const response = await client.delete(`/reviews/` + review.id).loginAs(user)
+    const response = await client.delete(`/reviews/${review.id}`).loginAs(user)
 
     response.assertStatus(200)
   })
@@ -261,7 +261,7 @@ test.group('Novel Reviews', (group) => {
     const user = await UserFactory.apply('user').create()
     const review = await ReviewFactory.create()
 
-    const response = await client.patch(`/reviews/` + review.id).loginAs(user)
+    const response = await client.patch(`/reviews/${review.id}`).loginAs(user)
 
     response.assertStatus(403)
   })
@@ -270,7 +270,7 @@ test.group('Novel Reviews', (group) => {
     const user = await UserFactory.apply('user').create()
     const review = await ReviewFactory.create()
 
-    const response = await client.delete(`/reviews/` + review.id).loginAs(user)
+    const response = await client.delete(`/reviews/${review.id}`).loginAs(user)
 
     response.assertStatus(403)
   })
@@ -280,7 +280,7 @@ test.group('Novel Read Chapters', (group) => {
   group.each.setup(cleanAll)
 
   test('check latest read chapter', async ({ client }) => {
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.apply('published').with('volumes', 1).create()
 
     const chapter = await ChapterFactory.with('readUsers', 1)
       .merge({
