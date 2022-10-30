@@ -5,9 +5,11 @@ import NovelFactory from 'Database/factories/NovelFactory'
 
 export default class extends BaseSeeder {
   public async run() {
-    await NovelFactory.merge({
-      is_promoted: true,
-    }).createMany(10)
+    await NovelFactory.with('tags', 2)
+      .merge({
+        is_promoted: true,
+      })
+      .createMany(10)
 
     const novels = await Novel.all()
 

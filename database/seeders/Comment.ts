@@ -7,7 +7,7 @@ import NovelFactory from 'Database/factories/NovelFactory'
 
 export default class extends BaseSeeder {
   public async run() {
-    const novel = await NovelFactory.apply('published').create()
+    const novel = await NovelFactory.with('tags', 2).apply('published').create()
 
     const chapters = await ChapterFactory.with('volume', 1, (volumeFactory) =>
       volumeFactory

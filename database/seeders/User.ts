@@ -12,6 +12,7 @@ export default class extends BaseSeeder {
       .with('followNovels', 8, (novelFactory) =>
         novelFactory
           .apply('published')
+          .with('tags', 2)
           .with('volumes', 1, (volumeFactory) => volumeFactory.apply('published'))
       )
       .create()
