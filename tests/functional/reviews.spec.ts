@@ -119,3 +119,18 @@ test.group('Review Pinned', (group) => {
     })
   })
 })
+
+test.group('Review Report', (group) => {
+  group.each.setup(cleanAll)
+
+  test('create a report for comment', async ({ client }) => {
+    const user = await UserFactory.create()
+    const review = await ReviewFactory.create()
+
+    const response = await client.put(`/reviews/${review.id}/report`).loginAs(user).form({
+      body: 'This comment is offensive',
+    })
+
+    response.assertStatus(200)
+  })
+})

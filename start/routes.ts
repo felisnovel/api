@@ -40,6 +40,11 @@ Route.get('/promoted-novels', 'NovelController.promoted')
 Route.get('/last-updated-novels', 'NovelController.lastUpdated')
 Route.get('/last-novels', 'NovelController.lastNovels')
 
+Route.group(() => {
+  Route.resource('/comments/reports', 'CommentReportController').only(['index', 'destroy'])
+  Route.resource('/reviews/reports', 'ReviewReportController').only(['index', 'destroy'])
+}).middleware('isAdmin')
+
 Route.resource('/novels', 'NovelController')
 Route.resource('/reviews', 'ReviewController').except(['show'])
 
@@ -47,6 +52,8 @@ Route.group(() => {
   Route.put('/like', 'Review/LikeReview.invoke')
   Route.put('/dislike', 'Review/DislikeReview.invoke')
   Route.put('/set-pinned', 'Review/SetPinnedReview.invoke')
+
+  Route.put('/report', 'Review/ReportReview.invoke')
 })
   .prefix('reviews/:review')
   .middleware('auth')
@@ -69,6 +76,8 @@ Route.group(() => {
   Route.put('/like', 'Comment/LikeComment.invoke')
   Route.put('/dislike', 'Comment/DislikeComment.invoke')
   Route.put('/set-pinned', 'Comment/SetPinnedComment.invoke')
+
+  Route.put('/report', 'Comment/ReportComment.invoke')
 })
   .prefix('comments/:comment')
   .middleware('auth')

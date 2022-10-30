@@ -119,3 +119,18 @@ test.group('Comment Pinned', (group) => {
     })
   })
 })
+
+test.group('Comment Report', (group) => {
+  group.each.setup(cleanAll)
+
+  test('create a report for comment', async ({ client }) => {
+    const user = await UserFactory.create()
+    const comment = await CommentFactory.create()
+
+    const response = await client.put(`/comments/${comment.id}/report`).loginAs(user).form({
+      body: 'This comment is offensive',
+    })
+
+    response.assertStatus(200)
+  })
+})
