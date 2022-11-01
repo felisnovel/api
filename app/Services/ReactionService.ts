@@ -4,7 +4,7 @@ import CommentReaction from '../Models/CommentReaction'
 import Review from '../Models/Review'
 import ReviewReaction from '../Models/ReviewReaction'
 
-const reverseReactionType = {
+const reverseReactionTypes = {
   like: 'dislike',
   dislike: 'like',
 }
@@ -22,6 +22,7 @@ export async function runReaction({
   let reaction = await ModelReaction.query().where('user_id', user.id).where(key, item.id).first()
 
   const reactionType = ReactionTypeEnum[value.toUpperCase()]
+  const reverseReactionType = ReactionTypeEnum[reverseReactionTypes[value].toUpperCase()]
 
   if (!reaction) {
     reaction = await ModelReaction.create({
@@ -29,9 +30,11 @@ export async function runReaction({
       user_id: user.id,
       type: reactionType,
     })
-  } else if (reaction.type === ReactionTypeEnum[reverseReactionType[value].toUpperCase()]) {
+  } else if (reaction.type === reverseReactionType) {
     reaction.type = reactionType
     await reaction.save()
+  } else {
+    await reaction.delete()
   }
 }
 
