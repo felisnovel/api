@@ -61,19 +61,19 @@ export default class NovelController {
       .firstOrFail()
 
     let latestReadChapter
-    let isLike = false
+    let isLiked = false
     let isFollowed = false
 
     if (user) {
       latestReadChapter = await novel.getLatestReadChapter(user.id)
 
-      isLike = await novel.isLike(user)
+      isLiked = await novel.isLiked(user)
       isFollowed = await novel.isFollowed(user)
     }
 
     return response.json({
       ...novel.toJSON(),
-      is_liked: isLike,
+      is_liked: isLiked,
       is_followed: isFollowed,
       latest_read_chapter: latestReadChapter,
     })

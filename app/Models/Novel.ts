@@ -151,14 +151,14 @@ export default class Novel extends BaseModel {
     return chapter
   }
 
-  public async isLike(user: User): Promise<boolean> {
-    const like = await user.related('likeNovels').query().where('id', this.id).first()
-    return like ? true : false
+  public async isLiked(user: User): Promise<boolean> {
+    const liked = await user.related('likeNovels').query().where('id', this.id).first()
+    return liked ? true : false
   }
 
   public async isFollowed(user: User): Promise<boolean> {
-    const like = await user.related('followNovels').query().where('id', this.id).first()
-    return like ? true : false
+    const followed = await user.related('followNovels').query().where('id', this.id).first()
+    return followed ? true : false
   }
 
   @column.dateTime({ autoCreate: true })
