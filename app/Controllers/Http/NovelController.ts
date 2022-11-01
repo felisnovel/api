@@ -37,7 +37,7 @@ export default class NovelController {
 
     const user = await auth.authenticate()
 
-    const isAdmin = user?.role !== UserRole.ADMIN
+    const isAdmin = user?.role === UserRole.ADMIN
     if (isAdmin) {
       novelQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
     }
@@ -52,9 +52,7 @@ export default class NovelController {
       .preload('translator')
       .preload('tags')
       .withCount('chapters', (query) => {
-        if (!isAdmin) {
-          query.where('publish_status', NovelPublishStatus.PUBLISHED)
-        }
+        query.where('publish_status', NovelPublishStatus.PUBLISHED)
       })
       .withCount('likers')
       .withCount('followers')
