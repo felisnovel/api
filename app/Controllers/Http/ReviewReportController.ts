@@ -3,7 +3,12 @@ import ReviewReport from 'App/Models/ReviewReport'
 
 export default class ReviewReportController {
   async index({ response }: HttpContextContract) {
-    const reviewReports = await ReviewReport.query().preload('review')
+    const reviewReports = await ReviewReport.query()
+      .preload('review')
+      .preload('review', (query) => {
+        query.preload('user')
+      })
+      .preload('user')
 
     return response.send(reviewReports)
   }
