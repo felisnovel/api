@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import UserRole from 'App/Enums/UserRole'
 import Review from 'App/Models/Review'
 import UpdateReviewRequestValidator from 'App/Validators/UpdateReviewRequestValidator'
 import CreateReviewRequestValidator from '../../Validators/CreateReviewRequestValidator'
@@ -8,9 +7,9 @@ export default class ReviewController {
   async index({ request, auth, response }: HttpContextContract) {
     const user = await auth.authenticate()
 
-    if (!request.input('novel_id') && user?.role !== UserRole.ADMIN) {
-      return response.badRequest()
-    }
+    // if (!request.input('novel_id') && user?.role !== UserRole.ADMIN) {
+    //  return response.badRequest()
+    // }
 
     const reviewsQuery = Review.query()
 
@@ -18,9 +17,31 @@ export default class ReviewController {
       reviewsQuery.where('novel_id', request.input('novel_id'))
     }
 
-    const reviews = await reviewsQuery.preload('user').withCount('likes').withCount('dislikes')
+    const reviews = await reviewsQuery
+      .preload('user')
+      .withCount('likes')
+      .withCount('dislikes')
+      .orderBy('created_at', 'desc')
+      .paginate(request.input('page', 1))
 
-    return response.send(reviews)
+    const reviewsJson = reviews.toJSON()
+
+    if (user) {
+      reviewsJson.data = await Promise.all(
+        reviewsJson.data.map(async (item) => {
+          const isLiked = await item.isLiked(user)
+          const isDisliked = await item.isDisliked(user)
+
+          return {
+            ...item.toJSON(),
+            is_liked: isLiked,
+            is_disliked: isDisliked,
+          }
+        })
+      )
+    }
+
+    return response.send(reviewsJson)
   }
 
   async store({ request, auth, response }: HttpContextContract) {
