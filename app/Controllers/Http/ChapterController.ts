@@ -70,7 +70,7 @@ export default class ChapterController {
     let isRead = false
 
     if (user) {
-      isRead = await novel.isRead(user)
+      isRead = await chapter.isRead(user)
     }
 
     return response.json({
