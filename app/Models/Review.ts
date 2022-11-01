@@ -87,4 +87,14 @@ export default class Review extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  public async isLiked(user: User): Promise<boolean> {
+    const liked = await user.related('reviewLikes').query().where('id', this.id).first()
+    return liked ? true : false
+  }
+
+  public async isDisliked(user: User): Promise<boolean> {
+    const disliked = await user.related('reviewDislikes').query().where('id', this.id).first()
+    return disliked ? true : false
+  }
 }

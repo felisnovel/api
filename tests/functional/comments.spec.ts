@@ -18,6 +18,25 @@ test.group('Comments', (group) => {
     response.assertStatus(200)
   })
 
+  test('get a paginated list of comments for user and is liked', async ({ client }) => {
+    const user = await UserFactory.apply('admin').create()
+    const comment = await CommentFactory.create()
+
+    await client.put(`/comments/${comment.id}/like`).loginAs(user)
+
+    const response = await client.get('/comments').loginAs(user)
+
+    response.assertBodyContains({
+      data: [
+        {
+          is_liked: true,
+        },
+      ],
+    })
+
+    response.assertStatus(200)
+  })
+
   test('update a novel comment for admin', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
     const comment = await CommentFactory.create()

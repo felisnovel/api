@@ -10,10 +10,29 @@ const NEW_REVIEW_EXAMPLE_DATA = {
 test.group('Reviews', (group) => {
   group.each.setup(cleanAll)
 
-  test('get a paginated list of reviews for admin', async ({ client }) => {
-    const admin = await UserFactory.apply('admin').create()
+  test('get a paginated list of reviews for user', async ({ client }) => {
+    const user = await UserFactory.apply('user').create()
 
-    const response = await client.get('/reviews').loginAs(admin)
+    const response = await client.get('/reviews').loginAs(user)
+
+    response.assertStatus(200)
+  })
+
+  test('get a paginated list of reviews for user and is liked', async ({ client }) => {
+    const user = await UserFactory.apply('admin').create()
+    const review = await ReviewFactory.create()
+
+    await client.put(`/reviews/${review.id}/like`).loginAs(user)
+
+    const response = await client.get('/reviews').loginAs(user)
+
+    response.assertBodyContains({
+      data: [
+        {
+          is_liked: true,
+        },
+      ],
+    })
 
     response.assertStatus(200)
   })
