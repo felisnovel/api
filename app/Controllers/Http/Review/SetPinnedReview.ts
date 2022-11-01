@@ -10,6 +10,8 @@ export default class SetPinnedReview {
 
     const data = await request.validate(SetPinnedValidator)
 
+    await Review.query().where('novel_id', review.novel_id).update({ is_pinned: false })
+
     await review.merge({
       is_pinned: data.is_pinned,
     })
