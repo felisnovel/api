@@ -68,12 +68,16 @@ export default class Comment extends BaseModel {
   public updatedAt: DateTime
 
   public async isLiked(user: User): Promise<boolean> {
-    const liked = await user.related('commentLikes').query().where('id', this.id).first()
+    const liked = await user.related('commentLikes').query().where('comment_id', this.id).first()
     return liked ? true : false
   }
 
   public async isDisliked(user: User): Promise<boolean> {
-    const disliked = await user.related('commentDislikes').query().where('id', this.id).first()
+    const disliked = await user
+      .related('commentDislikes')
+      .query()
+      .where('comment_id', this.id)
+      .first()
     return disliked ? true : false
   }
 }
