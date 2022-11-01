@@ -10,6 +10,8 @@ export default class SetPinnedComment {
 
     const data = await request.validate(SetPinnedValidator)
 
+    await Comment.query().where('chapter_id', comment.chapter_id).update({ is_pinned: false })
+
     await comment.merge({
       is_pinned: data.is_pinned,
     })
