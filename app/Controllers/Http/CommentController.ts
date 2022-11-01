@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import UserRole from 'App/Enums/UserRole'
 import Comment from 'App/Models/Comment'
 import UpdateCommentRequestValidator from 'App/Validators/UpdateCommentRequestValidator'
 import CreateCommentRequestValidator from '../../Validators/CreateCommentRequestValidator'
@@ -8,13 +7,13 @@ export default class CommentController {
   async index({ response, auth, request }: HttpContextContract) {
     const user = await auth.authenticate()
 
-    if (
-      !request.input('chapter_id') &&
-      !request.input('parent_id') &&
-      user?.role !== UserRole.ADMIN
-    ) {
-      return response.badRequest()
-    }
+    // if (
+    //  !request.input('chapter_id') &&
+    //  !request.input('parent_id') &&
+    //  user?.role !== UserRole.ADMIN
+    //) {
+    //  return response.badRequest()
+    //}
 
     const commentsQuery = Comment.query()
 
@@ -31,8 +30,28 @@ export default class CommentController {
       .withCount('subComments')
       .withCount('likes')
       .withCount('dislikes')
+      .orderBy('is_pinned', 'desc')
+      .orderBy('created_at', 'desc')
+      .paginate(request.input('page', 1))
 
-    return response.send(comments)
+    const commentsJson = comments.toJSON()
+
+    if (user) {
+      commentsJson.data = await Promise.all(
+        commentsJson.data.map(async (item) => {
+          const isLiked = await item.isLiked(user)
+          const isDisliked = await item.isDisliked(user)
+
+          return {
+            ...item.toJSON(),
+            is_liked: isLiked,
+            is_disliked: isDisliked,
+          }
+        })
+      )
+    }
+
+    return response.send(commentsJson)
   }
 
   async store({ request, auth, response }: HttpContextContract) {
