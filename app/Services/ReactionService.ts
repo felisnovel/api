@@ -29,7 +29,7 @@ export async function runReaction({
       user_id: user.id,
       type: reactionType,
     })
-  } else if (reaction.type === ReactionTypeEnum[reverseReactionType[value]]) {
+  } else if (reaction.type === ReactionTypeEnum[reverseReactionType[value].toUpperCase()]) {
     reaction.type = reactionType
     await reaction.save()
   }
