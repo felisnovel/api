@@ -3,7 +3,11 @@ import CommentReport from 'App/Models/CommentReport'
 
 export default class CommentReportController {
   async index({ response }: HttpContextContract) {
-    const commentReports = await CommentReport.query().preload('comment')
+    const commentReports = await CommentReport.query()
+      .preload('comment', (query) => {
+        query.preload('user')
+      })
+      .preload('user')
 
     return response.send(commentReports)
   }
