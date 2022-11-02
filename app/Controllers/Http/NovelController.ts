@@ -57,6 +57,7 @@ export default class NovelController {
       })
       .withCount('likers')
       .withCount('followers')
+      .where('publish_status', NovelPublishStatus.PUBLISHED)
       .firstOrFail()
 
     let latestReadChapter
