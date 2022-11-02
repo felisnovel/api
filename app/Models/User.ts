@@ -75,6 +75,7 @@ export default class User extends BaseModel {
   }
 
   @manyToMany(() => Chapter, {
+    pivotTimestamps: true,
     localKey: 'id',
     relatedKey: 'id',
     pivotRelatedForeignKey: 'chapter_id',
