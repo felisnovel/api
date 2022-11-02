@@ -51,6 +51,7 @@ export default class NovelController {
       .preload('editor')
       .preload('translator')
       .preload('tags')
+      .preload('first_chapter')
       .withCount('chapters', (query) => {
         query.where('publish_status', NovelPublishStatus.PUBLISHED)
       })

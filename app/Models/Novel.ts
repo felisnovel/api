@@ -133,6 +133,16 @@ export default class Novel extends BaseModel {
     onQuery: (query) =>
       query
         .leftJoin('volumes', 'chapters.volume_id', 'volumes.id')
+        .orderBy('volumes.volume_number', 'asc')
+        .orderBy('chapters.number', 'asc'),
+  })
+  public first_chapter: HasOne<typeof Chapter>
+
+  @hasOne(() => Chapter, {
+    foreignKey: 'novel_id',
+    onQuery: (query) =>
+      query
+        .leftJoin('volumes', 'chapters.volume_id', 'volumes.id')
         .orderBy('volumes.volume_number', 'desc')
         .orderBy('chapters.number', 'desc'),
   })
