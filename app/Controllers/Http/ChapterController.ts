@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
 import UserRole from 'App/Enums/UserRole'
+import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 
@@ -67,6 +68,34 @@ export default class ChapterController {
 
     const chapter = await chapterQuery.firstOrFail()
 
+    const prevChapter = await chapter.novel
+      .related('publishedChapters')
+      .query()
+      .where(function (query) {
+        query.where('volume_id', '!=', chapter.volume_id).orWhere(function (orQuery) {
+          orQuery.where('number', '<', chapter.number)
+        })
+      })
+      .join('volumes', 'volumes.volume_novel_id', 'chapters.novel_id')
+      .where('volumes.publish_status', VolumePublishStatus.PUBLISHED)
+      .orderBy('volumes.volume_number', 'desc')
+      .orderBy('number', 'desc')
+      .first()
+
+    const nextChapter = await chapter.novel
+      .related('publishedChapters')
+      .query()
+      .where(function (query) {
+        query.where('volume_id', '!=', chapter.volume_id).orWhere(function (orQuery) {
+          orQuery.where('number', '>', chapter.number)
+        })
+      })
+      .join('volumes', 'volumes.volume_novel_id', 'chapters.novel_id')
+      .where('volumes.publish_status', VolumePublishStatus.PUBLISHED)
+      .orderBy('volumes.volume_number', 'asc')
+      .orderBy('number', 'asc')
+      .first()
+
     let isRead = false
 
     if (user) {
@@ -76,6 +105,8 @@ export default class ChapterController {
     return response.json({
       ...chapter.toJSON(),
       isRead,
+      prev_chapter: prevChapter,
+      next_chapter: nextChapter,
     })
   }
 
