@@ -112,6 +112,14 @@ export default class Novel extends BaseModel {
   })
   public chapters: HasMany<typeof Chapter>
 
+  @hasMany(() => Chapter, {
+    foreignKey: 'novel_id',
+    onQuery: (query) => {
+      query.where('chapters.publish_status', NovelPublishStatus.PUBLISHED)
+    },
+  })
+  public publishedChapters: HasMany<typeof Chapter>
+
   @hasMany(() => Review, {
     foreignKey: 'novel_id',
   })
