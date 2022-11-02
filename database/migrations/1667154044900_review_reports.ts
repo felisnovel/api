@@ -13,7 +13,7 @@ export default class extends BaseSchema {
       table.foreign('review_id').references('reviews.id').onDelete('CASCADE')
 
       table.integer('user_id').unsigned()
-      table.foreign('user_id').references('users.id')
+      table.foreign('user_id').references('users.id').onDelete('CASCADE')
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

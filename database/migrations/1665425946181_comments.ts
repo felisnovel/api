@@ -14,13 +14,13 @@ export default class extends BaseSchema {
       table.boolean('is_spoiler').defaultTo(false)
 
       table.integer('parent_id').unsigned().nullable()
-      table.foreign('parent_id').references('comments.id')
+      table.foreign('parent_id').references('comments.id').onDelete('CASCADE')
 
       table.integer('user_id').unsigned()
       table.foreign('user_id').references('users.id')
 
       table.integer('chapter_id').unsigned()
-      table.foreign('chapter_id').references('chapters.id')
+      table.foreign('chapter_id').references('chapters.id').onDelete('CASCADE')
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

@@ -5,10 +5,10 @@ export default class extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.integer('novel_id').unsigned()
-      table.foreign('novel_id').references('novels.id')
+      table.integer('novel_id').unsigned().notNullable()
+      table.foreign('novel_id').references('novels.id').onDelete('CASCADE')
 
-      table.integer('tag_id').unsigned()
+      table.integer('tag_id').unsigned().notNullable()
       table.foreign('tag_id').references('tags.id')
     })
   }

@@ -8,10 +8,10 @@ export default class extends BaseSchema {
       table.increments('id')
 
       table.integer('user_id').unsigned()
-      table.foreign('user_id').references('users.id')
+      table.foreign('user_id').references('users.id').onDelete('CASCADE')
 
       table.integer('review_id').unsigned()
-      table.foreign('review_id').references('reviews.id')
+      table.foreign('review_id').references('reviews.id').onDelete('CASCADE')
 
       table.enum('type', ['like', 'dislike']).notNullable()
 
