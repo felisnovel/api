@@ -21,6 +21,7 @@ export default class ReviewController {
       .preload('user')
       .withCount('likes')
       .withCount('dislikes')
+      .orderBy('is_pinned', 'desc')
       .orderBy('created_at', 'desc')
       .paginate(request.input('page', 1))
 
