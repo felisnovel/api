@@ -35,6 +35,28 @@ test.group('Novels', (group) => {
     response.assertStatus(200)
   })
 
+  test('get a paginated list of novels for filter', async ({ assert, client }) => {
+    const novel1 = await NovelFactory.merge({
+      publish_status: NovelPublishStatus.PUBLISHED,
+      name: 'Yüce İblis Hükümdarı',
+    }).create()
+    await NovelFactory.merge({
+      publish_status: NovelPublishStatus.PUBLISHED,
+    }).createMany(5)
+
+    const response = await client.get('/novels?filter=Yüce')
+
+    assert.equal(response.response.body.meta.total, 1)
+    response.assertBodyContains({
+      data: [
+        {
+          id: novel1.id,
+        },
+      ],
+    })
+    response.assertStatus(200)
+  })
+
   test('create a novel', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
     const tags = await TagFactory.createMany(3)

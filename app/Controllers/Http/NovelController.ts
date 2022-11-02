@@ -16,6 +16,13 @@ export default class NovelController {
       novelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
     }
 
+    if (request.input('filter')) {
+      novelsQuery
+        .where('name', 'like', `%${request.input('filter')}%`)
+        .orWhere('other_names', 'like', `%${request.input('filter')}%`)
+        .orWhere('shorthand', 'like', `%${request.input('filter')}%`)
+    }
+
     const novels = await novelsQuery
       .preload('latest_chapter', (query) => {
         query.preload('volume')
