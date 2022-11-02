@@ -62,39 +62,55 @@ export default class ChapterController {
 
     const user = await auth.authenticate()
 
-    if (user?.role !== UserRole.ADMIN) {
+    const isAdmin = user?.role === UserRole.ADMIN
+
+    if (!isAdmin) {
       chapterQuery.where('publish_status', ChapterPublishStatus.PUBLISHED)
     }
 
     const chapter = await chapterQuery.firstOrFail()
 
-    const prevChapter = await chapter.novel
-      .related('publishedChapters')
-      .query()
+    const prevChapterQuery = chapter.novel.related('chapters').query()
+
+    prevChapterQuery
       .where(function (query) {
         query.where('volume_id', '!=', chapter.volume_id).orWhere(function (orQuery) {
           orQuery.where('number', '<', chapter.number)
         })
       })
-      .join('volumes', 'volumes.volume_novel_id', 'chapters.novel_id')
-      .where('volumes.publish_status', VolumePublishStatus.PUBLISHED)
+      .leftJoin('volumes', 'volumes.id', 'chapters.volume_id')
+      .where('volumes.volume_number', '<=', chapter.volume.volume_number)
       .orderBy('volumes.volume_number', 'desc')
       .orderBy('number', 'desc')
-      .first()
 
-    const nextChapter = await chapter.novel
-      .related('publishedChapters')
-      .query()
+    if (!isAdmin) {
+      prevChapterQuery
+        .where('volumes.publish_status', VolumePublishStatus.PUBLISHED)
+        .where('chapters.publish_status', ChapterPublishStatus.PUBLISHED)
+    }
+
+    const prevChapter = await prevChapterQuery.first()
+
+    const nextChapterQuery = chapter.novel.related('chapters').query()
+
+    nextChapterQuery
       .where(function (query) {
         query.where('volume_id', '!=', chapter.volume_id).orWhere(function (orQuery) {
           orQuery.where('number', '>', chapter.number)
         })
       })
-      .join('volumes', 'volumes.volume_novel_id', 'chapters.novel_id')
-      .where('volumes.publish_status', VolumePublishStatus.PUBLISHED)
+      .leftJoin('volumes', 'volumes.id', 'chapters.volume_id')
+      .where('volumes.volume_number', '>=', chapter.volume.volume_number)
       .orderBy('volumes.volume_number', 'asc')
       .orderBy('number', 'asc')
-      .first()
+
+    if (!isAdmin) {
+      nextChapterQuery
+        .where('volumes.publish_status', VolumePublishStatus.PUBLISHED)
+        .where('chapters.publish_status', ChapterPublishStatus.PUBLISHED)
+    }
+
+    const nextChapter = await nextChapterQuery.first()
 
     let isRead = false
 
