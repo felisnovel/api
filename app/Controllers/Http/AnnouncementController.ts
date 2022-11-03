@@ -4,8 +4,16 @@ import AnnouncementRequestValidator from 'App/Validators/AnnouncementRequestVali
 import { isNumeric } from '../../../utils'
 
 export default class AnnouncementController {
-  async index({ response }: HttpContextContract) {
-    const announcements = await Announcement.query().limit(4).orderBy('created_at', 'desc')
+  async index({ request, response }: HttpContextContract) {
+    const announcementsQuery = Announcement.query()
+
+    if (request.input('category')) {
+      announcementsQuery.where('category', request.input('category'))
+    }
+
+    const announcements = await announcementsQuery
+      .orderBy('created_at', 'desc')
+      .paginate(request.input('page', 1), request.input('take', 8))
 
     return response.send(announcements)
   }
