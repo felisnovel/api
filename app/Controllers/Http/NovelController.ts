@@ -139,8 +139,17 @@ export default class NovelController {
     }
   }
 
-  async popular({ response }: HttpContextContract) {
-    const novels = await Novel.query()
+  async popular({ auth, response }: HttpContextContract) {
+    const novelsQuery = Novel.query()
+
+    const user = await auth.authenticate()
+
+    const isAdmin = user?.role === UserRole.ADMIN
+    if (!isAdmin) {
+      novelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
+    }
+
+    const novels = await novelsQuery
       .preload('latest_chapter', (query) => {
         query.preload('volume')
       })
@@ -151,8 +160,17 @@ export default class NovelController {
     return response.send(novels)
   }
 
-  async promoted({ response }: HttpContextContract) {
-    const novels = await Novel.query()
+  async promoted({ auth, response }: HttpContextContract) {
+    const novelsQuery = Novel.query()
+
+    const user = await auth.authenticate()
+
+    const isAdmin = user?.role === UserRole.ADMIN
+    if (!isAdmin) {
+      novelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
+    }
+
+    const novels = await novelsQuery
       .preload('latest_chapter', (query) => {
         query.preload('volume')
       })
@@ -162,8 +180,17 @@ export default class NovelController {
     return response.send(novels)
   }
 
-  async random({ response }: HttpContextContract) {
-    const novels = await Novel.query()
+  async random({ auth, response }: HttpContextContract) {
+    const novelsQuery = Novel.query()
+
+    const user = await auth.authenticate()
+
+    const isAdmin = user?.role === UserRole.ADMIN
+    if (!isAdmin) {
+      novelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
+    }
+
+    const novels = await novelsQuery
       .preload('latest_chapter', (query) => {
         query.preload('volume')
       })
@@ -195,9 +222,12 @@ export default class NovelController {
       .leftJoin('volumes', 'chapters.volume_id', 'volumes.id')
       .orderBy('chapters.created_at', 'desc')
 
+    const user = await auth.authenticate()
+    const isAdmin = user?.role === UserRole.ADMIN
+    if (!isAdmin) {
+      lastUpdatedNovelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
+    }
     if (request.input('followed')) {
-      const user = await auth.authenticate()
-
       if (!user) {
         return response.unauthorized()
       }
@@ -229,8 +259,17 @@ export default class NovelController {
     )
   }
 
-  async lastNovels({ response }: HttpContextContract) {
-    const novels = await Novel.query()
+  async lastNovels({ auth, response }: HttpContextContract) {
+    const novelsQuery = Novel.query()
+
+    const user = await auth.authenticate()
+
+    const isAdmin = user?.role === UserRole.ADMIN
+    if (!isAdmin) {
+      novelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
+    }
+
+    const novels = await novelsQuery
       .preload('latest_chapter', (query) => {
         query.preload('volume')
       })

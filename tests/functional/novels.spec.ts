@@ -35,6 +35,41 @@ test.group('Novels', (group) => {
     response.assertStatus(200)
   })
 
+  test('get a promoted novels for admin', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const response = await client.get('/promoted-novels').loginAs(admin)
+
+    response.assertStatus(200)
+  })
+
+  test('get a last updated novels for admin', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const response = await client.get('/last-updated-novels').loginAs(admin)
+
+    response.assertStatus(200)
+  })
+
+  test('get a popular novels for admin', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const response = await client.get('/popular-novels').loginAs(admin)
+
+    response.assertStatus(200)
+  })
+
+  test('get a last novels for admin', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const response = await client.get('/last-novels').loginAs(admin)
+
+    response.assertStatus(200)
+  })
+
+  test('get a random novels for admin', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const response = await client.get('/random-novels').loginAs(admin)
+
+    response.assertStatus(200)
+  })
+
   test('get a paginated list of novels for filter', async ({ assert, client }) => {
     const novel1 = await NovelFactory.merge({
       publish_status: NovelPublishStatus.PUBLISHED,
