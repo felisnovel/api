@@ -12,7 +12,8 @@ export default class NovelController {
 
     const user = await auth.authenticate()
 
-    if (user?.role !== UserRole.ADMIN) {
+    const isAdmin = user?.role === UserRole.ADMIN
+    if (!isAdmin) {
       novelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
     }
 
@@ -45,7 +46,7 @@ export default class NovelController {
     const user = await auth.authenticate()
 
     const isAdmin = user?.role === UserRole.ADMIN
-    if (isAdmin) {
+    if (!isAdmin) {
       novelQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
     }
 
