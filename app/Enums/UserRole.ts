@@ -5,6 +5,7 @@ enum UserRole {
   TRANSLATOR = 'translator',
   MODERATOR = 'moderator',
   ADMIN = 'admin',
+  PUBLISHER = 'publisher',
 }
 
 export default UserRole

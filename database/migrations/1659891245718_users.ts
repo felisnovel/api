@@ -27,6 +27,7 @@ export default class UsersSchema extends BaseSchema {
           UserRole.MODERATOR,
           UserRole.WRITER,
           UserRole.TRANSLATOR,
+          UserRole.PUBLISHER,
         ])
         .defaultTo(UserRole.USER)
 
