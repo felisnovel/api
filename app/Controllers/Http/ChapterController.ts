@@ -20,25 +20,40 @@ export default class ChapterController {
     }
 
     if (request.input('volume_id')) chaptersQuery.where('volume_id', request.input('volume_id'))
+    if (request.input('novel_id')) chaptersQuery.where('novel_id', request.input('novel_id'))
 
-    const chapters = await chaptersQuery.paginate(request.input('page', 1))
+    if (request.input('all')) {
+      const chapters = await chaptersQuery.preload('volume')
 
-    const chaptersJson = chapters.toJSON()
-
-    if (user) {
-      chaptersJson.data = await Promise.all(
-        chaptersJson.data.map(async (item) => {
-          const isRead = await item.isRead(user)
-
-          return {
-            ...item.toJSON(),
-            is_read: isRead,
-          }
-        })
+      return response.send(
+        chapters.map((chapter) => ({
+          id: chapter.id,
+          title: chapter.title,
+          number: chapter.number,
+          volume_number: chapter.volume.volume_number,
+          volume_name: chapter.volume.name,
+        }))
       )
-    }
+    } else {
+      const chapters = await chaptersQuery.paginate(request.input('page', 1))
 
-    return response.send(chaptersJson)
+      const chaptersJson = chapters.toJSON()
+
+      if (user) {
+        chaptersJson.data = await Promise.all(
+          chaptersJson.data.map(async (item) => {
+            const isRead = await item.isRead(user)
+
+            return {
+              ...item.toJSON(),
+              is_read: isRead,
+            }
+          })
+        )
+      }
+
+      return response.send(chaptersJson)
+    }
   }
 
   async show({ auth, request, params, response }: HttpContextContract) {
