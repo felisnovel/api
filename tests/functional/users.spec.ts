@@ -222,3 +222,125 @@ test.group('User Favorites', (group) => {
     response.assertStatus(200)
   })
 })
+
+test.group('User Novel Follows', (group) => {
+  group.each.setup(cleanAll)
+
+  test('get a paginated list of followed novels', async ({ client }) => {
+    const user = await UserFactory.create()
+
+    const response = await client.get('/novels/followed').loginAs(user)
+
+    // todo: detaylandirilacak
+
+    response.assertStatus(200)
+  })
+
+  test('follow a novel', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const novel = await NovelFactory.create()
+
+    await user.load('followNovels')
+
+    assert.equal(user.followNovels.length, 0)
+
+    const response = await client.put(`/novels/${novel.id}/follow`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.load('followNovels')
+
+    assert.equal(user.followNovels.length, 1)
+    assert.equal(user.followNovels[0].id, novel.id)
+
+    // o: cok guzel yazamadik olsun.
+  })
+
+  test('unfollow a novel', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const novel = await NovelFactory.create()
+
+    user.related('followNovels').attach([novel.id])
+
+    const response = await client.put(`/novels/${novel.id}/unfollow`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.load('followNovels')
+
+    assert.equal(user.followNovels.length, 0)
+  })
+})
+
+test.group('User Like Follows', (group) => {
+  group.each.setup(cleanAll)
+
+  test('get a paginated list of liked novels', async ({ client }) => {
+    const user = await UserFactory.create()
+
+    const response = await client.get('/novels/liked').loginAs(user)
+
+    // todo: detaylandirilacak
+
+    response.assertStatus(200)
+  })
+
+  test('like a novel', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const novel = await NovelFactory.create()
+
+    await user.load('likeNovels')
+
+    assert.equal(user.likeNovels.length, 0)
+
+    const response = await client.put(`/novels/${novel.id}/like`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.load('likeNovels')
+
+    assert.equal(user.likeNovels.length, 1)
+    assert.equal(user.likeNovels[0].id, novel.id)
+
+    // o: cok guzel yazamadik olsun.
+  })
+
+  test('unlike a novel', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const novel = await NovelFactory.create()
+
+    user.related('likeNovels').attach([novel.id])
+
+    const response = await client.put(`/novels/${novel.id}/unlike`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.load('likeNovels')
+
+    assert.equal(user.likeNovels.length, 0)
+  })
+})
+
+const NEW_USER_DATA = {
+  bio: 'new bio',
+  email: 'newemail@gmail.com',
+  gender: UserGender.OTHER,
+}
+
+test.group('User Actions', (group) => {
+  group.each.setup(cleanAll)
+
+  test('update user', async ({ client }) => {
+    const user = await UserFactory.merge({
+      password: 'password',
+    }).create()
+
+    const newData = {
+      password: 'newpassword',
+      password_confirmation: 'newpassword',
+      old_password: 'password',
+      ...NEW_USER_DATA,
+    }
+
+    const response = await client.put(`/user/update`).loginAs(user).form(newData)
+
+    response.assertBodyContains(NEW_USER_DATA)
+    response.assertStatus(200)
+  })
+})
