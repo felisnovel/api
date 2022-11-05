@@ -24,6 +24,20 @@ export default class NovelController {
         .orWhere('shorthand', 'like', `%${request.input('filter')}%`)
     }
 
+    if (request.input('tags')) {
+      const tags = request.input('tags').split(',')
+
+      for (const tag of tags) {
+        novelsQuery.whereExists((query) => {
+          query
+            .select('*')
+            .from('novel_tag')
+            .whereColumn('novel_tag.novel_id', 'novels.id')
+            .where('novel_tag.tag_id', tag)
+        })
+      }
+    }
+
     const novels = await novelsQuery
       .preload('latest_chapter', (query) => {
         query.preload('volume')
