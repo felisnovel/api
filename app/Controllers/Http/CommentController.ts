@@ -29,12 +29,15 @@ export default class CommentController {
 
     const comments = await commentsQuery
       .preload('user')
+      .preload('subComments', (query) => {
+        query.preload('user').withCount('likes').withCount('dislikes')
+      })
       .withCount('subComments')
       .withCount('likes')
       .withCount('dislikes')
       .orderBy('is_pinned', 'desc')
       .orderBy('created_at', 'desc')
-      .paginate(request.input('page', 1))
+      .paginate(request.input('page', 1), request.input('take', 10))
 
     const commentsJson = comments.toJSON()
 
@@ -44,8 +47,22 @@ export default class CommentController {
           const isLiked = await item.isLiked(user)
           const isDisliked = await item.isDisliked(user)
 
+          const subComments = await Promise.all(
+            item.subComments.map(async (subComment) => {
+              const isSubCommentLiked = await subComment.isLiked(user)
+              const isSubCommentDisliked = await subComment.isDisliked(user)
+
+              return {
+                ...subComment.toJSON(),
+                is_liked: isSubCommentLiked,
+                is_disliked: isSubCommentDisliked,
+              }
+            })
+          )
+
           return {
             ...item.toJSON(),
+            subComments,
             is_liked: isLiked,
             is_disliked: isDisliked,
           }
