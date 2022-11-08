@@ -2,6 +2,7 @@ import { slugify } from '@ioc:Adonis/Addons/LucidSlugify'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import AnnouncementCategory from 'App/Enums/AnnouncementCategory'
 import { DateTime } from 'luxon'
+import AnnouncementPublishStatus from '../Enums/AnnouncementPublishStatus'
 
 export default class Announcement extends BaseModel {
   @column({ isPrimary: true })
@@ -16,6 +17,9 @@ export default class Announcement extends BaseModel {
     fields: ['title'],
   })
   public slug: string
+
+  @column()
+  public publish_status: AnnouncementPublishStatus
 
   @column()
   public content: string

@@ -1,14 +1,28 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import AnnouncementPublishStatus from 'App/Enums/AnnouncementPublishStatus'
+import UserRole from 'App/Enums/UserRole'
 import Announcement from 'App/Models/Announcement'
 import AnnouncementRequestValidator from 'App/Validators/AnnouncementRequestValidator'
 import { isNumeric } from '../../../utils'
 
 export default class AnnouncementController {
-  async index({ request, response }: HttpContextContract) {
+  async index({ auth, request, response }: HttpContextContract) {
     const announcementsQuery = Announcement.query()
 
     if (request.input('category')) {
       announcementsQuery.where('category', request.input('category'))
+    }
+
+    const user = await auth.authenticate()
+
+    const isAdmin = user?.role === UserRole.ADMIN
+
+    if (!isAdmin) {
+      announcementsQuery.where('publish_status', AnnouncementPublishStatus.PUBLISHED)
+    } else {
+      if (request.input('publish_status')) {
+        announcementsQuery.where('announcements.publish_status', request.input('publish_status'))
+      }
     }
 
     const announcements = await announcementsQuery

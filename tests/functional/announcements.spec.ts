@@ -2,12 +2,14 @@ import { test } from '@japa/runner'
 import AnnouncementCategory from 'App/Enums/AnnouncementCategory'
 import AnnouncementFactory from 'Database/factories/AnnouncementFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import AnnouncementPublishStatus from '../../app/Enums/AnnouncementPublishStatus'
 import { cleanAll } from '../utils'
 
 const ANNOUNCEMENT_EXAMPLE_DATA = {
   title: 'Felisnovel arkadaşları arıyor!',
   content: 'Felisnovel arkadaşları arıyor!',
   category: AnnouncementCategory.GENERAL,
+  publish_status: AnnouncementPublishStatus.PUBLISHED,
 }
 
 test.group('Announcements', (group) => {

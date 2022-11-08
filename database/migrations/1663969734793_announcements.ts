@@ -1,5 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 import AnnouncementCategory from 'App/Enums/AnnouncementCategory'
+import AnnouncementPublishStatus from '../../app/Enums/AnnouncementPublishStatus'
 
 export default class extends BaseSchema {
   protected tableName = 'announcements'
@@ -12,6 +13,8 @@ export default class extends BaseSchema {
       table.string('title')
       table.text('content')
       table.enu('category', Object.values(AnnouncementCategory)).notNullable()
+
+      table.enu('publish_status', Object.values(AnnouncementPublishStatus))
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
