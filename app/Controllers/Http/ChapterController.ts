@@ -8,11 +8,14 @@ import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 export default class ChapterController {
   async index({ auth, request, response }: HttpContextContract) {
     const chaptersQuery = Chapter.query()
+      .leftJoin('volumes', 'chapters.volume_id', 'volumes.id')
+      .orderBy('volumes.volume_number', 'asc')
+      .orderBy('chapters.number', 'asc')
 
     const user = await auth.authenticate()
 
     if (user?.role !== UserRole.ADMIN) {
-      chaptersQuery.where('publish_status', ChapterPublishStatus.PUBLISHED)
+      chaptersQuery.where('chapters.publish_status', ChapterPublishStatus.PUBLISHED)
     }
 
     if (request.input('fields')) {
