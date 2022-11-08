@@ -101,6 +101,22 @@ test.group('Review Reactions', (group) => {
 
     response.assertStatus(200)
   })
+
+  test('like and dislike a review', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+    const review = await ReviewFactory.create()
+
+    await client.put(`/reviews/${review.id}/like`).loginAs(user)
+    const response = await client.put(`/reviews/${review.id}/dislike`).loginAs(user)
+
+    await user.loadCount('reviewLikes')
+
+    const reviewLikesCount = Number(user.$extras.reviewLikes_count)
+
+    assert.equal(reviewLikesCount, 0)
+
+    response.assertStatus(200)
+  })
 })
 
 test.group('Review Pinned', (group) => {
