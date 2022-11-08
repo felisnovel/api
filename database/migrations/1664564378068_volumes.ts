@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 
 export default class extends BaseSchema {
   protected tableName = 'volumes'
@@ -13,7 +14,7 @@ export default class extends BaseSchema {
       table.string('name').nullable()
       table.integer('volume_number')
 
-      table.enu('publish_status', ['draft', 'published', 'unpublished'])
+      table.enu('publish_status', Object.values(VolumePublishStatus))
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

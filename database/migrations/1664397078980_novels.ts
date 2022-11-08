@@ -1,4 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
+import NovelStatus from 'App/Enums/NovelStatus'
+import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 
 export default class extends BaseSchema {
   protected tableName = 'novels'
@@ -17,9 +20,9 @@ export default class extends BaseSchema {
       table.string('author')
       table.string('license_holder').nullable()
 
-      table.enu('status', ['ongoing', 'completed'])
-      table.enu('publish_status', ['draft', 'published', 'unpublished'])
-      table.enu('translation_status', ['soon', 'ongoing', 'completed', 'dropped'])
+      table.enu('status', Object.values(NovelStatus))
+      table.enu('publish_status', Object.values(NovelPublishStatus))
+      table.enu('translation_status', Object.values(NovelTranslationStatus))
 
       table.integer('view_count').defaultTo(0)
 

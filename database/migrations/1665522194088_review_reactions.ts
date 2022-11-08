@@ -13,7 +13,7 @@ export default class extends BaseSchema {
       table.integer('review_id').unsigned()
       table.foreign('review_id').references('reviews.id').onDelete('CASCADE')
 
-      table.enum('type', ['like', 'dislike']).notNullable()
+      table.enum('type', Object.values(ReactionTypeEnum)).notNullable()
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

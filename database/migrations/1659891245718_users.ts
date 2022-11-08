@@ -33,7 +33,7 @@ export default class UsersSchema extends BaseSchema {
 
       table.string('bio', 255).nullable()
 
-      table.enu('gender', [UserGender.FEMALE, UserGender.MALE, UserGender.OTHER]).nullable()
+      table.enu('gender', Object.values(UserGender)).nullable()
 
       table.string('remember_me_token').nullable()
 

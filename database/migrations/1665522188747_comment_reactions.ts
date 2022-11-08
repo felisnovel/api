@@ -13,7 +13,7 @@ export default class extends BaseSchema {
       table.integer('comment_id').unsigned().notNullable()
       table.foreign('comment_id').references('comments.id')
 
-      table.enum('type', ['like', 'dislike']).notNullable()
+      table.enum('type', Object.values(ReactionTypeEnum)).notNullable()
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
 
 export default class extends BaseSchema {
   protected tableName = 'chapters'
@@ -22,7 +23,7 @@ export default class extends BaseSchema {
 
       table.integer('view_count').defaultTo(0)
 
-      table.enu('publish_status', ['draft', 'published', 'unpublished'])
+      table.enu('publish_status', Object.values(ChapterPublishStatus))
 
       table.integer('editor_id').nullable().unsigned()
       table.foreign('editor_id').references('users.id').onDelete('SET NULL')
