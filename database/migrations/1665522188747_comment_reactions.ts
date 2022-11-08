@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import ReactionTypeEnum from 'App/Enums/ReactionTypeEnum'
 
 export default class extends BaseSchema {
   protected tableName = 'comment_reactions'
@@ -8,10 +9,10 @@ export default class extends BaseSchema {
       table.increments('id')
 
       table.integer('user_id').unsigned().notNullable()
-      table.foreign('user_id').references('users.id')
+      table.foreign('user_id').references('users.id').onDelete('CASCADE')
 
       table.integer('comment_id').unsigned().notNullable()
-      table.foreign('comment_id').references('comments.id')
+      table.foreign('comment_id').references('comments.id').onDelete('CASCADE')
 
       table.enum('type', Object.values(ReactionTypeEnum)).notNullable()
 
