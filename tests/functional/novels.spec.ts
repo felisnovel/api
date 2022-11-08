@@ -135,6 +135,24 @@ test.group('Novels', (group) => {
     response.assertStatus(200)
   })
 
+  test('show a unpublished novel for admin', async ({ client }) => {
+    const novel = await NovelFactory.apply('unpublished').create()
+    const admin = await UserFactory.apply('admin').create()
+
+    const response = await client.get(`/novels/${novel.id}`).loginAs(admin)
+
+    response.assertStatus(200)
+  })
+
+  test('show a unpublished novel for user', async ({ client }) => {
+    const novel = await NovelFactory.apply('unpublished').create()
+    const user = await UserFactory.apply('user').create()
+
+    const response = await client.get(`/novels/${novel.id}`).loginAs(user)
+
+    response.assertStatus(404)
+  })
+
   test('show a novel for user with followed, liked', async ({ client }) => {
     const novel = await NovelFactory.apply('published').create()
     const user = await UserFactory.create()

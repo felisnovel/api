@@ -37,4 +37,7 @@ export default Factory.define(Novel, ({ faker }) => {
   .state('published', async (item) => {
     item.publish_status = NovelPublishStatus.PUBLISHED
   })
+  .state('unpublished', async (item) => {
+    item.publish_status = NovelPublishStatus.UNPUBLISHED
+  })
   .build()

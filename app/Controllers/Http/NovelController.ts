@@ -60,6 +60,7 @@ export default class NovelController {
     const user = await auth.authenticate()
 
     const isAdmin = user?.role === UserRole.ADMIN
+
     if (!isAdmin) {
       novelQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
     }
@@ -80,7 +81,6 @@ export default class NovelController {
       })
       .withCount('likers')
       .withCount('followers')
-      .where('publish_status', NovelPublishStatus.PUBLISHED)
       .firstOrFail()
 
     let latestReadChapter
