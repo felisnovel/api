@@ -10,7 +10,9 @@ import TagFactory from 'Database/factories/TagFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import VolumeFactory from 'Database/factories/VolumeFactory'
 
-export default Factory.define(Novel, ({ faker }) => {
+export default Factory.define(Novel, async ({ faker }) => {
+  const user = await UserFactory.create()
+
   return {
     shorthand: faker.lorem.word(3),
     name: faker.lorem.words(3),
@@ -26,7 +28,7 @@ export default Factory.define(Novel, ({ faker }) => {
     is_mature: faker.datatype.boolean(),
     is_premium: faker.datatype.boolean(),
     is_promoted: faker.datatype.boolean(),
-    user: () => UserFactory.create(),
+    user_id: user.id,
   }
 })
   .relation('country', () => CountryFactory)

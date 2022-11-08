@@ -39,7 +39,7 @@ export default class extends BaseSchema {
       table.integer('country_id').nullable().unsigned()
       table.foreign('country_id').references('countries.id').onDelete('SET NULL')
 
-      table.integer('user_id').nullable().unsigned()
+      table.integer('user_id').notNullable().unsigned()
       table.foreign('user_id').references('users.id').onDelete('SET NULL')
 
       table.timestamp('created_at', { useTz: true })
