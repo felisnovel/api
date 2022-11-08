@@ -16,6 +16,10 @@ export default class ChapterController {
 
     if (user?.role !== UserRole.ADMIN) {
       chaptersQuery.where('chapters.publish_status', ChapterPublishStatus.PUBLISHED)
+    } else {
+      if (request.input('publish_status')) {
+        chaptersQuery.where('chapters.publish_status', request.input('publish_status'))
+      }
     }
 
     if (request.input('fields')) {

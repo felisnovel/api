@@ -13,8 +13,15 @@ export default class NovelController {
     const user = await auth.authenticate()
 
     const isAdmin = user?.role === UserRole.ADMIN
+
     if (!isAdmin) {
       novelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
+    } else {
+      novelsQuery.preload('user')
+
+      if (request.input('publish_status')) {
+        novelsQuery.where('novels.publish_status', request.input('publish_status'))
+      }
     }
 
     if (request.input('filter')) {
@@ -102,12 +109,17 @@ export default class NovelController {
     })
   }
 
-  async store({ request, response, bouncer }: HttpContextContract) {
+  async store({ request, auth, response, bouncer }: HttpContextContract) {
     await bouncer.authorize('isAdmin')
 
     const data = await request.validate(NovelRequestValidator)
 
-    const novel = await Novel.create(data)
+    const user = await auth.authenticate()
+
+    const novel = await Novel.create({
+      user_id: user.id,
+      ...data,
+    })
 
     if (data?.tags) {
       await novel.related('tags').sync(data.tags)
