@@ -36,6 +36,9 @@ export default class extends BaseSchema {
       table.integer('translator_id').nullable().unsigned()
       table.foreign('translator_id').references('users.id').onDelete('SET NULL')
 
+      table.integer('country_id').nullable().unsigned()
+      table.foreign('country_id').references('countries.id').onDelete('SET NULL')
+
       table.integer('user_id').nullable().unsigned()
       table.foreign('user_id').references('users.id').onDelete('SET NULL')
 

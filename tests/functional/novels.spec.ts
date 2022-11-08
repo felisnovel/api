@@ -3,6 +3,7 @@ import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import NovelStatus from 'App/Enums/NovelStatus'
 import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 import ChapterFactory from 'Database/factories/ChapterFactory'
+import CountryFactory from 'Database/factories/CountryFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
 import TagFactory from 'Database/factories/TagFactory'
@@ -197,6 +198,25 @@ test.group('Novels', (group) => {
         id: tag.id,
       })),
     })
+  })
+
+  test('update novel`s country', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const novel = await NovelFactory.create()
+    const newCountry = await CountryFactory.create()
+
+    const newData = {
+      ...NOVEL_EXAMPLE_DATA,
+      country_id: newCountry.id,
+    }
+
+    const response = await client
+      .patch(`/novels/` + novel.id)
+      .loginAs(admin)
+      .form(newData)
+
+    response.assertStatus(200)
+    response.assertBodyContains(newData)
   })
 
   test('update novel`s editor', async ({ client }) => {

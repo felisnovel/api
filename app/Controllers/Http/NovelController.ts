@@ -46,6 +46,7 @@ export default class NovelController {
     }
 
     const novels = await novelsQuery
+      .preload('country')
       .preload('latest_chapter', (query) => {
         query.preload('volume')
       })
@@ -82,6 +83,7 @@ export default class NovelController {
       .preload('editor')
       .preload('translator')
       .preload('tags')
+      .preload('country')
       .preload('first_chapter')
       .withCount('chapters', (query) => {
         query.where('publish_status', NovelPublishStatus.PUBLISHED)
