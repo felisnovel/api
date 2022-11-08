@@ -25,6 +25,7 @@ export default Factory.define(Novel, ({ faker }) => {
     is_mature: faker.datatype.boolean(),
     is_premium: faker.datatype.boolean(),
     is_promoted: faker.datatype.boolean(),
+    user: () => UserFactory.create(),
   }
 })
   .relation('editor', () => UserFactory)

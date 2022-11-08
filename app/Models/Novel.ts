@@ -82,6 +82,14 @@ export default class Novel extends BaseModel {
   @column()
   public translation_status: NovelTranslationStatus
 
+  @column()
+  public user_id: number
+
+  @belongsTo(() => User, {
+    foreignKey: 'user_id',
+  })
+  public user: BelongsTo<typeof User>
+
   @belongsTo(() => User, {
     foreignKey: 'editor_id',
   })

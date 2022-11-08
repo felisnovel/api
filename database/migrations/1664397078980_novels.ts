@@ -36,6 +36,9 @@ export default class extends BaseSchema {
       table.integer('translator_id').nullable().unsigned()
       table.foreign('translator_id').references('users.id').onDelete('SET NULL')
 
+      table.integer('user_id').nullable().unsigned()
+      table.foreign('user_id').references('users.id').onDelete('SET NULL')
+
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

@@ -117,8 +117,8 @@ export default class NovelController {
     const user = await auth.authenticate()
 
     const novel = await Novel.create({
-      user_id: user.id,
       ...data,
+      user_id: user.id,
     })
 
     if (data?.tags) {
