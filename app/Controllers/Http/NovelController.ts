@@ -50,6 +50,7 @@ export default class NovelController {
       .preload('latest_chapter', (query) => {
         query.preload('volume')
       })
+      .orderBy('id', 'desc')
       .paginate(request.input('page', 1))
 
     return response.send(novels)
