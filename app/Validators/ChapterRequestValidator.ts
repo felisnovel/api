@@ -13,8 +13,8 @@ export default class ChapterRequestValidator {
     is_mature: schema.boolean(),
     is_premium: schema.boolean(),
     publish_status: schema.enum(Object.values(ChapterPublishStatus)),
-    editor_id: schema.number.nullableAndOptional(),
-    translator_id: schema.number.nullableAndOptional(),
+    editor: schema.string.optional(),
+    translator: schema.string.optional(),
     novel_id: schema.number.optional([rules.exists({ table: 'novels', column: 'id' })]),
     volume_id: schema.number.optional([rules.exists({ table: 'volumes', column: 'id' })]),
   })

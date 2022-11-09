@@ -79,8 +79,6 @@ export default class ChapterController {
       })
       .preload('volume')
       .preload('novel')
-      .preload('translator')
-      .preload('editor')
 
     const user = await auth.authenticate()
 

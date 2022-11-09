@@ -15,12 +15,12 @@ export default Factory.define(Chapter, ({ faker }) => {
     is_mature: faker.datatype.boolean(),
     is_premium: faker.datatype.boolean(),
     publish_status: faker.helpers.arrayElement(Object.values(ChapterPublishStatus)),
+    editor: faker.name.findName(),
+    translator: faker.name.findName(),
   }
 })
   .relation('novel', () => NovelFactory)
   .relation('volume', () => VolumeFactory)
-  .relation('translator', () => UserFactory)
-  .relation('editor', () => UserFactory)
   .relation('readUsers', () => UserFactory)
   .relation('comments', () => CommentFactory)
   .state('published', async (item) => {

@@ -15,6 +15,8 @@ const CHAPTER_EXAMPLE_DATA = {
   is_mature: false,
   is_premium: false,
   publish_status: ChapterPublishStatus.DRAFT,
+  editor: 'Yüce İblis Hükümdarı',
+  translator: 'Yüce İblis Hükümdarı',
 }
 
 test.group('Chapters', (group) => {

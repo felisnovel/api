@@ -49,20 +49,10 @@ export default class Chapter extends BaseModel {
   public volume_id: number
 
   @column()
-  public editor_id: number | null
+  public editor: string
 
   @column()
-  public translator_id: number | null
-
-  @belongsTo(() => User, {
-    foreignKey: 'editor_id',
-  })
-  public editor: BelongsTo<typeof User>
-
-  @belongsTo(() => User, {
-    foreignKey: 'translator_id',
-  })
-  public translator: BelongsTo<typeof User>
+  public translator: string
 
   @belongsTo(() => Novel, {
     foreignKey: 'novel_id',

@@ -25,11 +25,8 @@ export default class extends BaseSchema {
 
       table.enu('publish_status', Object.values(ChapterPublishStatus))
 
-      table.integer('editor_id').nullable().unsigned()
-      table.foreign('editor_id').references('users.id').onDelete('SET NULL')
-
-      table.integer('translator_id').nullable().unsigned()
-      table.foreign('translator_id').references('users.id').onDelete('SET NULL')
+      table.string('editor').nullable()
+      table.string('translator').nullable()
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
