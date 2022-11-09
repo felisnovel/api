@@ -8,9 +8,10 @@ import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 export default class ChapterController {
   async index({ auth, request, response }: HttpContextContract) {
     const chaptersQuery = Chapter.query()
-      .leftJoin('volumes', 'chapters.volume_id', 'volumes.id')
+      .join('volumes', 'chapters.volume_id', 'volumes.id')
       .orderBy('volumes.volume_number', 'asc')
       .orderBy('chapters.number', 'asc')
+      .select('chapters.*')
 
     const user = await auth.authenticate()
 
