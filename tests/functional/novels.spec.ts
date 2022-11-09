@@ -25,6 +25,8 @@ const NOVEL_EXAMPLE_DATA = {
   is_mature: false,
   is_premium: false,
   is_promoted: false,
+  editor: 'İlker Yücel',
+  translator: 'İlker Yücel',
 }
 
 test.group('Novels', (group) => {
@@ -208,44 +210,6 @@ test.group('Novels', (group) => {
     const newData = {
       ...NOVEL_EXAMPLE_DATA,
       country_id: newCountry.id,
-    }
-
-    const response = await client
-      .patch(`/novels/` + novel.id)
-      .loginAs(admin)
-      .form(newData)
-
-    response.assertStatus(200)
-    response.assertBodyContains(newData)
-  })
-
-  test('update novel`s editor', async ({ client }) => {
-    const admin = await UserFactory.apply('admin').create()
-    const novel = await NovelFactory.create()
-    const newEditor = await UserFactory.apply('editor').create()
-
-    const newData = {
-      ...NOVEL_EXAMPLE_DATA,
-      editor_id: newEditor.id,
-    }
-
-    const response = await client
-      .patch(`/novels/` + novel.id)
-      .loginAs(admin)
-      .form(newData)
-
-    response.assertStatus(200)
-    response.assertBodyContains(newData)
-  })
-
-  test('update novel`s translator', async ({ client }) => {
-    const admin = await UserFactory.apply('admin').create()
-    const novel = await NovelFactory.create()
-    const newEditor = await UserFactory.apply('translator').create()
-
-    const newData = {
-      ...NOVEL_EXAMPLE_DATA,
-      translator_id: newEditor.id,
     }
 
     const response = await client

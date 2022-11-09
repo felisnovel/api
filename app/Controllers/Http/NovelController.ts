@@ -80,8 +80,6 @@ export default class NovelController {
           query.where('publish_status', NovelPublishStatus.PUBLISHED)
         }
       })
-      .preload('editor')
-      .preload('translator')
       .preload('tags')
       .preload('country')
       .preload('first_chapter')

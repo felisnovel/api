@@ -29,11 +29,11 @@ export default Factory.define(Novel, async ({ faker }) => {
     is_premium: faker.datatype.boolean(),
     is_promoted: faker.datatype.boolean(),
     user_id: user.id,
+    editor: faker.name.findName(),
+    translator: faker.name.findName(),
   }
 })
   .relation('country', () => CountryFactory)
-  .relation('editor', () => UserFactory)
-  .relation('translator', () => UserFactory)
   .relation('volumes', () => VolumeFactory)
   .relation('latest_volume', () => VolumeFactory)
   .relation('chapters', () => ChapterFactory)

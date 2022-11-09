@@ -69,10 +69,10 @@ export default class Novel extends BaseModel {
   public is_promoted: boolean
 
   @column()
-  public editor_id: number | null
+  public editor: string
 
   @column()
-  public translator_id: number | null
+  public translator: string
 
   @column()
   public status: NovelStatus
@@ -98,16 +98,6 @@ export default class Novel extends BaseModel {
     foreignKey: 'user_id',
   })
   public user: BelongsTo<typeof User>
-
-  @belongsTo(() => User, {
-    foreignKey: 'editor_id',
-  })
-  public editor: BelongsTo<typeof User>
-
-  @belongsTo(() => User, {
-    foreignKey: 'translator_id',
-  })
-  public translator: BelongsTo<typeof User>
 
   @manyToMany(() => Tag, {
     pivotTable: 'novel_tag',

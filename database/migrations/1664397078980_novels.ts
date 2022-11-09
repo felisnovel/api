@@ -30,11 +30,8 @@ export default class extends BaseSchema {
       table.boolean('is_premium').defaultTo(false)
       table.boolean('is_promoted').defaultTo(false)
 
-      table.integer('editor_id').nullable().unsigned()
-      table.foreign('editor_id').references('users.id').onDelete('SET NULL')
-
-      table.integer('translator_id').nullable().unsigned()
-      table.foreign('translator_id').references('users.id').onDelete('SET NULL')
+      table.string('editor').nullable()
+      table.string('translator').nullable()
 
       table.integer('country_id').nullable().unsigned()
       table.foreign('country_id').references('countries.id').onDelete('SET NULL')
