@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
+import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import UserRole from 'App/Enums/UserRole'
 import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Chapter from 'App/Models/Chapter'
@@ -7,15 +8,28 @@ import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 
 export default class ChapterController {
   async index({ auth, request, response }: HttpContextContract) {
+    const user = await auth.authenticate()
+    const isAdmin = user?.role === UserRole.ADMIN
+
     const chaptersQuery = Chapter.query()
+      .whereHas('volume', (query) => {
+        if (!isAdmin) {
+          query.where('publish_status', VolumePublishStatus.PUBLISHED)
+        }
+      })
+      .whereHas('novel', (query) => {
+        if (!isAdmin) {
+          query.where('publish_status', NovelPublishStatus.PUBLISHED)
+        }
+      })
       .join('volumes', 'chapters.volume_id', 'volumes.id')
       .orderBy('volumes.volume_number', 'asc')
       .orderBy('chapters.number', 'asc')
       .select('chapters.*')
+      .preload('novel')
+      .preload('volume')
 
-    const user = await auth.authenticate()
-
-    if (user?.role !== UserRole.ADMIN) {
+    if (!isAdmin) {
       chaptersQuery.where('chapters.publish_status', ChapterPublishStatus.PUBLISHED)
     } else {
       if (request.input('publish_status')) {
