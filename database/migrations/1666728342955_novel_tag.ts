@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.foreign('novel_id').references('novels.id').onDelete('CASCADE')
 
       table.integer('tag_id').unsigned().notNullable()
-      table.foreign('tag_id').references('tags.id')
+      table.foreign('tag_id').references('tags.id').onDelete('CASCADE')
     })
   }
 
