@@ -29,6 +29,25 @@ const NOVEL_EXAMPLE_DATA = {
   translator: 'İlker Yücel',
 }
 
+const NEW_NOVEL_EXAMPLE_DATA = {
+  name: 'yeniYüce İblis Hükümdarı',
+  shorthand: 'YIM',
+  other_names: 'yeniYüce İblis Hükümdarı, The Great Demon Lord',
+  image: 'https://i.imgur.com/1ZQZ1Z3.jpg',
+  cover_image: 'https://i.imgur.com/1ZQZ1Z3.jpg',
+  description: 'yeniYüce İblis Hükümdarı',
+  author: 'yeniİlker Yücel',
+  license_holder: 'yeniİlker Yücel',
+  status: NovelStatus.HIATUS,
+  publish_status: NovelPublishStatus.PUBLISHED,
+  translation_status: NovelTranslationStatus.DROPPED,
+  is_mature: true,
+  is_premium: true,
+  is_promoted: true,
+  editor: 'yeni İlker Yücel',
+  translator: 'yeni İlker Yücel',
+}
+
 test.group('Novels', (group) => {
   group.each.setup(cleanAll)
 
@@ -188,7 +207,7 @@ test.group('Novels', (group) => {
     const admin = await UserFactory.apply('admin').create()
 
     const newData = {
-      ...NOVEL_EXAMPLE_DATA,
+      ...NEW_NOVEL_EXAMPLE_DATA,
       tags: tags.map((tag) => tag.id),
     }
 
