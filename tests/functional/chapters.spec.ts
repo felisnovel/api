@@ -19,6 +19,18 @@ const CHAPTER_EXAMPLE_DATA = {
   translator: 'Yüce İblis Hükümdarı',
 }
 
+const NEW_CHAPTER_EXAMPLE_DATA = {
+  title: 'yeniCehennem Melekleri',
+  number: 2,
+  context: 'https://i.imgur.com/1ZQZ1Zm.jpg',
+  translation_note: 'yeniYüce İblis Hükümdarı',
+  is_mature: true,
+  is_premium: true,
+  publish_status: ChapterPublishStatus.PUBLISHED,
+  editor: 'yeni Yüce İblis Hükümdarı',
+  translator: 'yeni Yüce İblis Hükümdarı',
+}
+
 test.group('Chapters', (group) => {
   group.each.setup(cleanAll)
 
@@ -86,7 +98,7 @@ test.group('Chapters', (group) => {
 
     const admin = await UserFactory.apply('admin').create()
 
-    const newData = CHAPTER_EXAMPLE_DATA
+    const newData = NEW_CHAPTER_EXAMPLE_DATA
 
     const response = await client
       .patch(`/chapters/` + chapter.id)
