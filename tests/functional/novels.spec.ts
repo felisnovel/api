@@ -74,13 +74,17 @@ test.group('Novels', (group) => {
   })
 
   test('get a paginated list of novels for filter', async ({ assert, client }) => {
-    const novel1 = await NovelFactory.merge({
-      publish_status: NovelPublishStatus.PUBLISHED,
-      name: 'Yüce İblis Hükümdarı',
-    }).create()
-    await NovelFactory.merge({
-      publish_status: NovelPublishStatus.PUBLISHED,
-    }).createMany(5)
+    const novel1 = await NovelFactory.with('user', 1)
+      .merge({
+        publish_status: NovelPublishStatus.PUBLISHED,
+        name: 'Yüce İblis Hükümdarı',
+      })
+      .create()
+    await NovelFactory.with('user', 1)
+      .merge({
+        publish_status: NovelPublishStatus.PUBLISHED,
+      })
+      .createMany(5)
 
     const response = await client.get('/novels?filter=Yüce')
 
@@ -123,7 +127,7 @@ test.group('Novels', (group) => {
   })
 
   test('show a novel with id', async ({ client }) => {
-    const novel = await NovelFactory.apply('published').create()
+    const novel = await NovelFactory.with('user', 1).apply('published').create()
 
     const response = await client.get(`/novels/${novel.id}`)
 
@@ -131,7 +135,7 @@ test.group('Novels', (group) => {
   })
 
   test('show a novel with slug', async ({ client }) => {
-    const novel = await NovelFactory.apply('published').create()
+    const novel = await NovelFactory.with('user', 1).apply('published').create()
 
     const response = await client.get(`/novels/${novel.slug}`)
 
@@ -139,7 +143,7 @@ test.group('Novels', (group) => {
   })
 
   test('show a unpublished novel for admin', async ({ client }) => {
-    const novel = await NovelFactory.apply('unpublished').create()
+    const novel = await NovelFactory.with('user', 1).apply('unpublished').create()
     const admin = await UserFactory.apply('admin').create()
 
     const response = await client.get(`/novels/${novel.id}`).loginAs(admin)
@@ -148,7 +152,7 @@ test.group('Novels', (group) => {
   })
 
   test('show a unpublished novel for user', async ({ client }) => {
-    const novel = await NovelFactory.apply('unpublished').create()
+    const novel = await NovelFactory.with('user', 1).apply('unpublished').create()
     const user = await UserFactory.apply('user').create()
 
     const response = await client.get(`/novels/${novel.id}`).loginAs(user)
@@ -157,7 +161,7 @@ test.group('Novels', (group) => {
   })
 
   test('show a novel for user with followed, liked', async ({ client }) => {
-    const novel = await NovelFactory.apply('published').create()
+    const novel = await NovelFactory.with('user', 1).apply('published').create()
     const user = await UserFactory.create()
 
     const firstResponse = await client.get(`/novels/${novel.id}`).loginAs(user)
@@ -180,7 +184,7 @@ test.group('Novels', (group) => {
 
   test('update a novel', async ({ client }) => {
     const tags = await TagFactory.createMany(3)
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
     const admin = await UserFactory.apply('admin').create()
 
     const newData = {
@@ -204,7 +208,7 @@ test.group('Novels', (group) => {
 
   test('update novel`s country', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
     const newCountry = await CountryFactory.create()
 
     const newData = {
@@ -222,7 +226,7 @@ test.group('Novels', (group) => {
   })
 
   test('user cannot update a novel', async ({ client }) => {
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
     const user = await UserFactory.apply('user').create()
 
     const newData = NOVEL_EXAMPLE_DATA
@@ -237,7 +241,7 @@ test.group('Novels', (group) => {
 
   test('delete a novel', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     const response = await client.delete(`/novels/` + novel.id).loginAs(admin)
 
@@ -246,7 +250,7 @@ test.group('Novels', (group) => {
 
   test('user cannot delete a novel', async ({ client }) => {
     const user = await UserFactory.apply('user').create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     const response = await client.delete(`/novels/` + novel.id).loginAs(user)
 
@@ -266,7 +270,7 @@ test.group('Novel Reviews', (group) => {
   group.each.setup(cleanAll)
 
   test('get a list of novel reviews for user', async ({ client }) => {
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
     const user = await UserFactory.create()
 
     const response = await client.get('/reviews?novel_id=' + novel.id).loginAs(user)
@@ -275,7 +279,7 @@ test.group('Novel Reviews', (group) => {
   })
 
   test('create a novel review for user', async ({ client }) => {
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
     const user = await UserFactory.create()
 
     const data = {
@@ -339,7 +343,7 @@ test.group('Novel Read Chapters', (group) => {
   group.each.setup(cleanAll)
 
   test('check latest read chapter', async ({ client }) => {
-    const novel = await NovelFactory.apply('published').with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).apply('published').with('volumes', 1).create()
 
     const chapter = await ChapterFactory.with('readUsers', 1)
       .merge({

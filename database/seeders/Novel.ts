@@ -5,7 +5,8 @@ import NovelFactory from 'Database/factories/NovelFactory'
 
 export default class extends BaseSeeder {
   public async run() {
-    await NovelFactory.with('tags', 2)
+    await NovelFactory.with('user', 1)
+      .with('tags', 2)
       .merge({
         is_promoted: true,
       })

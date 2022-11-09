@@ -11,8 +11,6 @@ import UserFactory from 'Database/factories/UserFactory'
 import VolumeFactory from 'Database/factories/VolumeFactory'
 
 export default Factory.define(Novel, async ({ faker }) => {
-  const user = await UserFactory.create()
-
   return {
     shorthand: faker.lorem.word(3),
     name: faker.lorem.words(3),
@@ -28,7 +26,6 @@ export default Factory.define(Novel, async ({ faker }) => {
     is_mature: faker.datatype.boolean(),
     is_premium: faker.datatype.boolean(),
     is_promoted: faker.datatype.boolean(),
-    user_id: user.id,
     editor: faker.name.findName(),
     translator: faker.name.findName(),
   }
@@ -39,6 +36,7 @@ export default Factory.define(Novel, async ({ faker }) => {
   .relation('chapters', () => ChapterFactory)
   .relation('reviews', () => ReviewFactory)
   .relation('tags', () => TagFactory)
+  .relation('user', () => UserFactory)
   .state('published', async (item) => {
     item.publish_status = NovelPublishStatus.PUBLISHED
   })

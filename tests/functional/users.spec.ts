@@ -108,7 +108,7 @@ test.group('User Novel Follows', (group) => {
 
   test('follow a novel', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     await user.load('followNovels')
 
@@ -127,7 +127,7 @@ test.group('User Novel Follows', (group) => {
 
   test('unfollow a novel', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     user.related('followNovels').attach([novel.id])
 
@@ -155,7 +155,7 @@ test.group('User Like Follows', (group) => {
 
   test('like a novel', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     await user.load('likeNovels')
 
@@ -174,7 +174,7 @@ test.group('User Like Follows', (group) => {
 
   test('unlike a novel', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     user.related('likeNovels').attach([novel.id])
 
@@ -200,7 +200,7 @@ test.group('User Favorites', (group) => {
 
   test('favorite a novel', async ({ client }) => {
     const user = await UserFactory.create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     const data = {
       novel_id: novel.id,
@@ -213,7 +213,7 @@ test.group('User Favorites', (group) => {
 
   test('unfavorite a novel', async ({ client }) => {
     const user = await UserFactory.with('favorites', 1, (favorite) => {
-      favorite.pivotAttributes({ order: 1 })
+      favorite.with('user', 1).pivotAttributes({ order: 1 })
     }).create()
 
     const favorite = user.favorites[0]
@@ -238,7 +238,7 @@ test.group('User Novel Follows', (group) => {
 
   test('follow a novel', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     await user.load('followNovels')
 
@@ -257,7 +257,7 @@ test.group('User Novel Follows', (group) => {
 
   test('unfollow a novel', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     user.related('followNovels').attach([novel.id])
 
@@ -285,7 +285,7 @@ test.group('User Like Follows', (group) => {
 
   test('like a novel', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     await user.load('likeNovels')
 
@@ -304,7 +304,7 @@ test.group('User Like Follows', (group) => {
 
   test('unlike a novel', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     user.related('likeNovels').attach([novel.id])
 

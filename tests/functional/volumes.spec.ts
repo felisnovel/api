@@ -25,7 +25,7 @@ test.group('Volumes', (group) => {
 
   test('create a volume', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     const data = {
       volume_novel_id: novel.id,
@@ -40,7 +40,7 @@ test.group('Volumes', (group) => {
 
   test('create a volume without name', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     const data = {
       volume_novel_id: novel.id,
@@ -55,7 +55,7 @@ test.group('Volumes', (group) => {
 
   test('user cannot create a volume', async ({ client }) => {
     const user = await UserFactory.apply('user').create()
-    const novel = await NovelFactory.create()
+    const novel = await NovelFactory.with('user', 1).create()
 
     const data = {
       volume_novel_id: novel.id,
@@ -68,7 +68,9 @@ test.group('Volumes', (group) => {
   })
 
   test('update a volume', async ({ client }) => {
-    const volume = await VolumeFactory.with('novel', 1).create()
+    const volume = await VolumeFactory.with('novel', 1, function (novelFactory) {
+      novelFactory.with('user', 1)
+    }).create()
     const admin = await UserFactory.apply('admin').create()
 
     const newData = VOLUME_EXAMPLE_DATA
@@ -83,7 +85,9 @@ test.group('Volumes', (group) => {
   })
 
   test('update a volume without name', async ({ client }) => {
-    const volume = await VolumeFactory.with('novel', 1).create()
+    const volume = await VolumeFactory.with('novel', 1, function (novelFactory) {
+      novelFactory.with('user', 1)
+    }).create()
     const admin = await UserFactory.apply('admin').create()
 
     const newData = VOLUME_NOT_NAME_EXAMPLE_DATA
@@ -99,8 +103,10 @@ test.group('Volumes', (group) => {
 
   test('update volume`s novel', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const volume = await VolumeFactory.with('novel', 1).create()
-    const newNovel = await NovelFactory.create()
+    const volume = await VolumeFactory.with('novel', 1, function (novelFactory) {
+      novelFactory.with('user', 1)
+    }).create()
+    const newNovel = await NovelFactory.with('user', 1).create()
 
     const newData = {
       ...VOLUME_EXAMPLE_DATA,
@@ -117,7 +123,9 @@ test.group('Volumes', (group) => {
   })
 
   test('user cannot update a volume', async ({ client }) => {
-    const volume = await VolumeFactory.with('novel', 1).create()
+    const volume = await VolumeFactory.with('novel', 1, function (novelFactory) {
+      novelFactory.with('user', 1)
+    }).create()
     const user = await UserFactory.apply('user').create()
 
     const newData = VOLUME_EXAMPLE_DATA
@@ -132,7 +140,9 @@ test.group('Volumes', (group) => {
 
   test('delete a volume', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const volume = await VolumeFactory.with('novel', 1).create()
+    const volume = await VolumeFactory.with('novel', 1, function (novelFactory) {
+      novelFactory.with('user', 1)
+    }).create()
 
     const response = await client.delete(`/volumes/` + volume.id).loginAs(admin)
 
@@ -141,7 +151,9 @@ test.group('Volumes', (group) => {
 
   test('user cannot delete a volume', async ({ client }) => {
     const user = await UserFactory.apply('user').create()
-    const volume = await VolumeFactory.with('novel', 1).create()
+    const volume = await VolumeFactory.with('novel', 1, function (novelFactory) {
+      novelFactory.with('user', 1)
+    }).create()
 
     const response = await client.delete(`/volumes/${volume.id}`).loginAs(user)
 
@@ -153,7 +165,7 @@ test.group('Volume Chapters', (group) => {
   group.each.setup(cleanAll)
 
   test('get a paginated list of chapters', async ({ client }) => {
-    const novel = await NovelFactory.apply('published').create()
+    const novel = await NovelFactory.with('user', 1).apply('published').create()
     const volumes = await VolumeFactory.apply('published')
       .merge({
         volume_novel_id: novel.id,

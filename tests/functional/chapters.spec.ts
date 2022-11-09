@@ -30,7 +30,7 @@ test.group('Chapters', (group) => {
 
   test('create a chapter', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const data = {
       ...CHAPTER_EXAMPLE_DATA,
@@ -55,7 +55,8 @@ test.group('Chapters', (group) => {
   })
 
   test('show a chapter', async ({ client }) => {
-    const novel = await NovelFactory.apply('published')
+    const novel = await NovelFactory.with('user', 1)
+      .apply('published')
       .with('volumes', 1, (volumeFactory) => {
         volumeFactory.apply('published')
       })
@@ -76,7 +77,7 @@ test.group('Chapters', (group) => {
   })
 
   test('update a chapter', async ({ client }) => {
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
@@ -99,14 +100,14 @@ test.group('Chapters', (group) => {
   test('update chapter`s novel', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
 
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
       volume_id: novel.volumes[0].id,
     }).create()
 
-    const newNovel = await NovelFactory.create()
+    const newNovel = await NovelFactory.with('user', 1).create()
 
     const newData = {
       ...CHAPTER_EXAMPLE_DATA,
@@ -125,7 +126,7 @@ test.group('Chapters', (group) => {
   test('update chapter`s volume', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
 
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
@@ -151,7 +152,7 @@ test.group('Chapters', (group) => {
   })
 
   test('user cannot update a chapter', async ({ client }) => {
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
@@ -173,7 +174,7 @@ test.group('Chapters', (group) => {
   test('delete a chapter', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
 
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
@@ -188,7 +189,7 @@ test.group('Chapters', (group) => {
   test('user cannot delete a chapter', async ({ client }) => {
     const user = await UserFactory.apply('user').create()
 
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
@@ -213,7 +214,7 @@ test.group('Novel Comments', (group) => {
   group.each.setup(cleanAll)
 
   test('get a list of chapter comments for user', async ({ client }) => {
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
@@ -228,7 +229,7 @@ test.group('Novel Comments', (group) => {
   })
 
   test('create a chapter comment for user', async ({ client }) => {
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
@@ -303,7 +304,7 @@ test.group('Chapter Reads', (group) => {
 
     const prevReadChaptersCount = Number(user.$extras.readChapters_count)
 
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
@@ -321,7 +322,7 @@ test.group('Chapter Reads', (group) => {
   })
 
   test('unread a chapter', async ({ assert, client }) => {
-    const novel = await NovelFactory.with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
 
     const chapter = await ChapterFactory.with('readUsers', 1)
       .merge({
