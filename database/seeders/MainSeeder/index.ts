@@ -11,5 +11,6 @@ export default class MainSeeder extends BaseSeeder {
     await this.runSeeder(await import('../Announcement'))
     await this.runSeeder(await import('../Review'))
     await this.runSeeder(await import('../Comment'))
+    await this.runSeeder(await import('../Country'))
   }
 }
