@@ -11,6 +11,7 @@ import ReactionTypeEnum from 'App/Enums/ReactionTypeEnum'
 import { DateTime } from 'luxon'
 import Novel from './Novel'
 import ReviewReaction from './ReviewReaction'
+import ReviewReport from './ReviewReport'
 import User from './User'
 
 export default class Review extends BaseModel {
@@ -87,6 +88,11 @@ export default class Review extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @hasMany(() => ReviewReport, {
+    foreignKey: 'comment_id',
+  })
+  public reports: HasMany<typeof ReviewReport>
 
   public async isLiked(user: User): Promise<boolean> {
     const liked = await user.related('reviewLikes').query().where('review_id', this.id).first()
