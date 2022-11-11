@@ -3,6 +3,7 @@ import ReactionTypeEnum from 'App/Enums/ReactionTypeEnum'
 import { DateTime } from 'luxon'
 import Chapter from './Chapter'
 import CommentReaction from './CommentReaction'
+import CommentReport from './CommentReport'
 import User from './User'
 
 export default class Comment extends BaseModel {
@@ -44,6 +45,11 @@ export default class Comment extends BaseModel {
     onQuery: (query) => query.where('type', ReactionTypeEnum.DISLIKE),
   })
   public dislikes: HasMany<typeof CommentReaction>
+
+  @hasMany(() => CommentReport, {
+    foreignKey: 'comment_id',
+  })
+  public reports: HasMany<typeof CommentReport>
 
   @column()
   public chapter_id: number
