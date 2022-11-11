@@ -10,12 +10,11 @@ export default class ReportReview {
 
     const data = await request.validate(ReportValidator)
 
-    await review.merge({
-      ...data,
+    const reviewReport = await review.related('reports').create({
       user_id: user.id,
+      ...data,
     })
-    await review.save()
 
-    return response.status(200).send(review)
+    return response.status(200).send(reviewReport)
   }
 }
