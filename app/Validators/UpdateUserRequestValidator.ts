@@ -14,5 +14,9 @@ export default class UpdateUserRequestValidator {
       rules.maxLength(64),
       rules.confirmed('password_confirmation'),
     ]),
+    facebook_handle: schema.string.optional({ trim: true }),
+    twitter_handle: schema.string.optional({ trim: true }),
+    instagram_handle: schema.string.optional({ trim: true }),
+    youtube_handle: schema.string.optional({ trim: true }),
   })
 }
