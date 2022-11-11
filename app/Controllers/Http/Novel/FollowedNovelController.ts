@@ -11,7 +11,7 @@ export default class FollowedNovelController {
       .preload('latest_chapter', (query) => {
         query.preload('volume')
       })
-      .limit(request.input('limit', 10))
+      .paginate(request.input('page', 1), request.input('take', 10))
 
     return response.send(followedNovels)
   }
