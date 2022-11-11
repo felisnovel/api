@@ -23,7 +23,7 @@ export default class ReviewController {
       .withCount('dislikes')
       .orderBy('is_pinned', 'desc')
       .orderBy('created_at', 'desc')
-      .paginate(request.input('page', 1))
+      .paginate(request.input('page', 1), request.input('take', 10))
 
     const reviewsJson = reviews.toJSON()
 

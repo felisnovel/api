@@ -51,7 +51,7 @@ export default class NovelController {
         query.preload('volume')
       })
       .orderBy('id', 'desc')
-      .paginate(request.input('page', 1))
+      .paginate(request.input('page', 1), request.input('take', 10))
 
     return response.send(novels)
   }

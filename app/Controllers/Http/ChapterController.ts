@@ -57,7 +57,10 @@ export default class ChapterController {
         }))
       )
     } else {
-      const chapters = await chaptersQuery.paginate(request.input('page', 1))
+      const chapters = await chaptersQuery.paginate(
+        request.input('page', 1),
+        request.input('take', 10)
+      )
 
       const chaptersJson = chapters.toJSON()
 
