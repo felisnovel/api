@@ -10,12 +10,11 @@ export default class ReportComment {
 
     const data = await request.validate(ReportValidator)
 
-    await comment.merge({
-      ...data,
+    const commentReport = await comment.related('reports').create({
       user_id: user.id,
+      ...data,
     })
-    await comment.save()
 
-    return response.status(200).send(comment)
+    return response.status(200).send(commentReport)
   }
 }
