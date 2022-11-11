@@ -4,7 +4,7 @@ import TagRequestValidator from 'App/Validators/TagRequestValidator'
 
 export default class TagController {
   async index({ response }: HttpContextContract) {
-    const tags = await Tag.query()
+    const tags = await Tag.query().orderBy('id', 'desc')
 
     return response.send(tags)
   }
