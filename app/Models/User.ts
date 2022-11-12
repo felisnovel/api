@@ -1,4 +1,5 @@
 import Hash from '@ioc:Adonis/Core/Hash'
+import Database from '@ioc:Adonis/Lucid/Database'
 import {
   BaseModel,
   beforeSave,
@@ -9,15 +10,18 @@ import {
   manyToMany,
   ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
+import OrderBuyType from 'App/Enums/OrderBuyType'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
 import gravatar from 'gravatar'
 import { DateTime } from 'luxon'
+import OrderType from '../Enums/OrderType'
 import ReactionTypeEnum from '../Enums/ReactionTypeEnum'
 import Chapter from './Chapter'
 import Comment from './Comment'
 import CommentReaction from './CommentReaction'
 import Novel from './Novel'
+import Order from './Order'
 import Review from './Review'
 import ReviewReaction from './ReviewReaction'
 
@@ -63,6 +67,12 @@ export default class User extends BaseModel {
 
   @column()
   public youtube_handle?: string
+
+  @column()
+  public free_balance: number
+
+  @column()
+  public coin_balance: number
 
   @computed()
   public get socials() {
@@ -135,6 +145,11 @@ export default class User extends BaseModel {
   })
   public reviewLikes: HasMany<typeof ReviewReaction>
 
+  @hasMany(() => Order, {
+    foreignKey: 'user_id',
+  })
+  public orders: HasMany<typeof Order>
+
   @hasMany(() => ReviewReaction, {
     foreignKey: 'user_id',
     onQuery: (query) => {
@@ -179,6 +194,90 @@ export default class User extends BaseModel {
   @computed()
   public get avatar() {
     return gravatar.url(this.email)
+  }
+
+  public async syncBalance(order: Order | null = null) {
+    let freeBalance = 0
+    let coinBalance = 0
+
+    if (order) {
+      if (order.is_paid !== false) {
+        if (order.type === OrderType.FREE) {
+          freeBalance += order.amount ?? 0
+        } else if (order.type === OrderType.COIN) {
+          coinBalance += order.amount ?? 0
+        } else if (order.type === OrderType.PLAN) {
+          coinBalance -= order.amount ?? 0
+        } else if (order.buy_type === OrderBuyType.COIN) {
+          coinBalance -= order.amount ?? 0
+        } else if (order.buy_type === OrderBuyType.FREE) {
+          freeBalance -= order.amount ?? 0
+        }
+      }
+    }
+
+    const freeBalanceQuery = Database.query().from('orders')
+    if (order?.id) {
+      freeBalanceQuery.whereNot('id', order.id)
+    }
+    const freeBalanceOrders = await freeBalanceQuery
+      .where('user_id', this.id)
+      .where('type', OrderType.FREE)
+      .sum('amount')
+
+    const coinBalanceQuery = Database.query().from('orders')
+    if (order?.id) {
+      coinBalanceQuery.whereNot('id', order.id)
+    }
+    const coinBalanceOrders = await coinBalanceQuery
+      .where('user_id', this.id)
+      .where('type', OrderType.COIN)
+      .sum('amount')
+
+    const freeChapterQuery = Database.query().from('orders')
+    if (order?.id) {
+      freeChapterQuery.whereNot('id', order.id)
+    }
+    const freeChapterOrders = await freeChapterQuery
+      .where('buy_type', OrderBuyType.FREE)
+      .where('user_id', this.id)
+      .where('type', OrderType.CHAPTER)
+      .sum('amount')
+
+    const coinChapterQuery = Database.query().from('orders')
+    if (order?.id) {
+      coinChapterQuery.whereNot('id', order.id)
+    }
+    const coinChapterOrders = await coinChapterQuery
+      .where('buy_type', OrderBuyType.COIN)
+      .where('user_id', this.id)
+      .where('type', OrderType.CHAPTER)
+      .sum('amount')
+
+    const planQuery = Database.query().from('orders')
+    if (order?.id) {
+      planQuery.whereNot('id', order.id)
+    }
+    const planOrders = await planQuery
+      .where('user_id', this.id)
+      .where('type', OrderType.PLAN)
+      .sum('amount')
+
+    freeBalance += freeBalanceOrders[0].sum - freeChapterOrders[0].sum
+    coinBalance += coinBalanceOrders[0].sum - coinChapterOrders[0].sum - planOrders[0].sum
+
+    if (order) {
+      console.log('order', order.toJSON())
+    } else {
+      console.log('order null')
+    }
+    console.log('freeBalance', freeBalance)
+    console.log('coinBalance', coinBalance)
+
+    await Database.query().from('users').where('id', this.id).update({
+      free_balance: freeBalance,
+      coin_balance: coinBalance,
+    })
   }
 
   @beforeSave()

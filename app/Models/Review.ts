@@ -90,7 +90,7 @@ export default class Review extends BaseModel {
   public updatedAt: DateTime
 
   @hasMany(() => ReviewReport, {
-    foreignKey: 'comment_id',
+    foreignKey: 'review_id',
   })
   public reports: HasMany<typeof ReviewReport>
 

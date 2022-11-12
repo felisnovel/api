@@ -14,6 +14,9 @@ export default class UsersSchema extends BaseSchema {
       table.string('username', 255).unique().notNullable()
       table.string('password', 180).notNullable()
 
+      table.decimal('free_balance').defaultTo(0)
+      table.decimal('coin_balance').defaultTo(0)
+
       table.string('facebook_handle').nullable()
       table.string('twitter_handle').nullable()
       table.string('instagram_handle').nullable()

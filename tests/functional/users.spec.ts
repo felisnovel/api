@@ -3,6 +3,7 @@ import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
 import NovelFactory from 'Database/factories/NovelFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
 
 const USER_EXAMPLE_DATA = {
@@ -342,5 +343,50 @@ test.group('User Actions', (group) => {
 
     response.assertBodyContains(NEW_USER_DATA)
     response.assertStatus(200)
+  })
+})
+
+const ADD_COIN_DATA = {
+  amount: 100,
+  name: 'Hediye Coin',
+}
+
+test.group('User Coins', (group) => {
+  group.each.setup(cleanAll)
+
+  test('add coin to user', async ({ assert, client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const user = await UserFactory.create()
+
+    const data = {
+      type: OrderType.COIN,
+      ...ADD_COIN_DATA,
+    }
+
+    const response = await client.put(`/users/${user.id}/add-coin`).loginAs(admin).form(data)
+
+    response.assertStatus(200)
+    response.assertBodyContains(data)
+
+    await user.refresh()
+    assert.equal(user.coin_balance, ADD_COIN_DATA.amount)
+  })
+
+  test('add free coin to user', async ({ assert, client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const user = await UserFactory.create()
+
+    const data = {
+      type: OrderType.FREE,
+      ...ADD_COIN_DATA,
+    }
+
+    const response = await client.put(`/users/${user.id}/add-coin`).loginAs(admin).form(data)
+
+    response.assertStatus(200)
+    response.assertBodyContains(data)
+
+    await user.refresh()
+    assert.equal(user.free_balance, ADD_COIN_DATA.amount)
   })
 })

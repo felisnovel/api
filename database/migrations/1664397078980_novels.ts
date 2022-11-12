@@ -30,6 +30,9 @@ export default class extends BaseSchema {
       table.boolean('is_premium').defaultTo(false)
       table.boolean('is_promoted').defaultTo(false)
 
+      table.decimal('free_price').nullable()
+      table.decimal('coin_price').nullable()
+
       table.string('editor').nullable()
       table.string('translator').nullable()
 

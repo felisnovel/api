@@ -12,5 +12,8 @@ export default class MainSeeder extends BaseSeeder {
     await this.runSeeder(await import('../Review'))
     await this.runSeeder(await import('../Comment'))
     await this.runSeeder(await import('../Country'))
+    await this.runSeeder(await import('../Packet'))
+    await this.runSeeder(await import('../Plan'))
+    await this.runSeeder(await import('../Order'))
   }
 }

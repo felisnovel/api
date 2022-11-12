@@ -33,6 +33,14 @@ Route.group(() => {
   .prefix('/user')
   .middleware('auth')
 
+Route.group(() => {
+  Route.resource('/comments/reports', 'CommentReportController').only(['index', 'destroy'])
+  Route.resource('/reviews/reports', 'ReviewReportController').only(['index', 'destroy'])
+  Route.group(() => {
+    Route.put('/add-coin', 'UserController.addCoin')
+  }).prefix('/users/:id')
+}).middleware('isAdmin')
+
 Route.resource('/users', 'UserController').except(['store', 'destroy'])
 
 Route.get('/popular-novels', 'NovelController.popular')
@@ -41,10 +49,9 @@ Route.get('/promoted-novels', 'NovelController.promoted')
 Route.get('/last-updated-novels', 'NovelController.lastUpdated')
 Route.get('/last-novels', 'NovelController.lastNovels')
 
-Route.group(() => {
-  Route.resource('/comments/reports', 'CommentReportController').only(['index', 'destroy'])
-  Route.resource('/reviews/reports', 'ReviewReportController').only(['index', 'destroy'])
-}).middleware('isAdmin')
+Route.resource('/plans', 'PlanController').except(['show'])
+Route.resource('/packets', 'PacketController').except(['show'])
+Route.resource('/orders', 'OrderController').only(['index', 'destroy'])
 
 Route.resource('/novels', 'NovelController')
 Route.resource('/reviews', 'ReviewController').except(['show'])

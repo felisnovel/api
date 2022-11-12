@@ -2,14 +2,22 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import UserRequestValidator from 'App/Validators/UserRequestValidator'
 import { isNumeric } from '../../../utils/index'
+import Order from '../../Models/Order'
+import AddCoinUserRequestValidator from '../../Validators/AddCoinUserRequestValidator'
 
 export default class UserController {
-  async index({ bouncer, response }: HttpContextContract) {
+  async index({ request, bouncer, response }: HttpContextContract) {
     await bouncer.authorize('isAdmin')
 
-    const users = await User.query()
+    const usersQuery = User.query()
 
-    return response.send(users)
+    if (request.input('all')) {
+      const users = await usersQuery
+      return response.json(users)
+    } else {
+      const users = await usersQuery.paginate(request.input('page', 1), request.input('take', 10))
+      return response.json(users)
+    }
   }
 
   async show({ params, response }: HttpContextContract) {
@@ -62,5 +70,20 @@ export default class UserController {
     await user.save()
 
     return response.json(user)
+  }
+
+  async addCoin({ params, request, response }: HttpContextContract) {
+    const data = await request.validate(AddCoinUserRequestValidator)
+
+    const user = await User.findOrFail(params.id)
+
+    const order = await Order.create({
+      type: data.type,
+      name: data.name,
+      user_id: user.id,
+      amount: data.amount,
+    })
+
+    return response.json(order)
   }
 }
