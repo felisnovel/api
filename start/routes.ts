@@ -69,6 +69,7 @@ Route.group(() => {
 Route.group(() => {
   Route.put('/read', 'Chapter/ReadChapter.invoke')
   Route.put('/unread', 'Chapter/UnreadChapter.invoke')
+  Route.put('/purchase', 'Chapter/PurchaseChapter.invoke')
 })
   .prefix('chapters/:chapter')
   .middleware('auth')

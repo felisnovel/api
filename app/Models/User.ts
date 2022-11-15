@@ -150,6 +150,16 @@ export default class User extends BaseModel {
   })
   public orders: HasMany<typeof Order>
 
+  @manyToMany(() => Chapter, {
+    pivotTimestamps: true,
+    localKey: 'id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'chapter_id',
+    pivotForeignKey: 'user_id',
+    pivotTable: 'orders',
+  })
+  public purchasedChapters: ManyToMany<typeof Chapter>
+
   @hasMany(() => ReviewReaction, {
     foreignKey: 'user_id',
     onQuery: (query) => {

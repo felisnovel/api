@@ -79,6 +79,15 @@ export default class Chapter extends BaseModel {
     return read ? true : false
   }
 
+  public async isPurchased(user: User): Promise<boolean> {
+    const purchased = await user
+      .related('purchasedChapters')
+      .query()
+      .where('chapter_id', this.id)
+      .first()
+    return purchased ? true : false
+  }
+
   @hasMany(() => Comment, {
     foreignKey: 'chapter_id',
   })

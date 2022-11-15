@@ -359,3 +359,78 @@ test.group('Chapter Reads', (group) => {
     assert.equal(newReadChaptersCount, prevReadChaptersCount - 1)
   })
 })
+
+test.group('Chapter Premium', (group) => {
+  group.each.setup(cleanAll)
+
+  test('purchase a chapter', async ({ assert, client }) => {
+    const user = await UserFactory.create()
+    await user.loadCount('purchasedChapters')
+
+    const prevPurchasedChaptersCount = Number(user.$extras.purchasedChapters_count)
+
+    const novel = await NovelFactory.with('user', 1)
+      .with('volumes', 1)
+      .merge({
+        is_premium: true,
+        free_amount: 10,
+        coin_amount: 5,
+      })
+      .create()
+
+    const chapter = await ChapterFactory.merge({
+      novel_id: novel.id,
+      volume_id: novel.volumes[0].id,
+      is_premium: true,
+    }).create()
+
+    const response = await client.put(`/chapters/${chapter.id}/purchase`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.loadCount('purchasedChapters')
+
+    const newPurchasedChaptersCount = Number(user.$extras.purchasedChapters_count)
+
+    assert.equal(newPurchasedChaptersCount, prevPurchasedChaptersCount + 1)
+  })
+
+  test('show a purchased chapter for user', async ({ assert, client }) => {
+    const user = await UserFactory.create()
+    await user.loadCount('purchasedChapters')
+
+    const novel = await NovelFactory.with('user', 1)
+      .with('volumes', 1, function (volumeFactory) {
+        volumeFactory.apply('published')
+      })
+      .merge({
+        is_premium: true,
+      })
+      .apply('published')
+      .create()
+
+    const chapter = await ChapterFactory.merge({
+      novel_id: novel.id,
+      volume_id: novel.volumes[0].id,
+      is_premium: true,
+    })
+      .apply('published')
+      .create()
+
+    const responseIsNotPurchased = await client
+      .get(`/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}`)
+      .loginAs(user)
+
+    responseIsNotPurchased.assertBodyContains({
+      message: 'The chapter is not purchased',
+    })
+    responseIsNotPurchased.assertStatus(400)
+
+    await client.put(`/chapters/${chapter.id}/purchase`).loginAs(user)
+
+    const responseIsPurchased = await client
+      .get(`/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}`)
+      .loginAs(user)
+
+    responseIsPurchased.assertStatus(200)
+  })
+})
