@@ -60,9 +60,13 @@ export default class AuthController {
   async register({ request, response, auth }: HttpContextContract) {
     const data = await request.validate(RegisterRequestValidator)
 
-    const { rules, ...newData } = data
+    // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-unused-vars
+    const { rules, _password, _password_confirmation, ...newData } = data
 
-    const user = await User.create(newData)
+    const user = await User.create({
+      password: _password,
+      ...newData,
+    })
     await user.serialize()
 
     await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')

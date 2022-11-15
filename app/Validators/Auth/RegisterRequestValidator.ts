@@ -18,14 +18,15 @@ export default class RegisterRequestValidator {
         caseInsensitive: true,
       }),
     ]),
-    password: schema.string({}, [
+    _password: schema.string({}, [
       rules.minLength(8),
       rules.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
+      rules.confirmed(),
     ]),
     rules: schema.string({}, [rules.equalTo('true')]),
   })
 
   public messages = {
-    regex: 'Parola en az 1 büyük, 1 küçük, 1 rakam, 1 özel karakter içermelidir',
+    '_password.regex': 'Parola en az 1 büyük, 1 küçük, 1 rakam, 1 özel karakter içermelidir',
   }
 }

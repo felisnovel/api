@@ -20,8 +20,8 @@ const NEW_USER_EXAMPLE_DATA = {
 }
 
 const PASSWORD_EXAMPLE_DATA = {
-  password: '1Password!',
-  password_confirmation: '1Password!',
+  _password: '0154Qwe0154*',
+  _password_confirmation: '0154Qwe0154*',
 }
 
 test.group('Auth', (group) => {
@@ -43,8 +43,8 @@ test.group('Auth', (group) => {
 
     const response = await client.post(`/auth/register`).form({
       ...data,
-      password: 'password',
-      password_confirmation: 'password',
+      _password: 'password',
+      _password_confirmation: 'password',
       rules: 'true',
     })
 
