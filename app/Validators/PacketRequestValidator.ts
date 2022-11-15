@@ -7,5 +7,6 @@ export default class PacketRequestValidator {
   public schema = schema.create({
     name: schema.string({ trim: true }),
     price: schema.number(),
+    amount: schema.number(),
   })
 }

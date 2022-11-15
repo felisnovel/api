@@ -6,6 +6,7 @@ import { cleanAll } from '../utils'
 const PACKET_EXAMPLE_DATA = {
   name: '10 Coin',
   price: 10,
+  amount: 10,
 }
 
 test.group('Packets', (group) => {
