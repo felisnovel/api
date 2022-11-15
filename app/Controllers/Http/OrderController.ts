@@ -6,6 +6,11 @@ import User from '../../Models/User'
 export default class OrderController {
   async index({ request, response }: HttpContextContract) {
     const ordersQuery = Order.query()
+
+    if (request.input('type')) {
+      ordersQuery.where('type', request.input('type'))
+    }
+
     if (request.input('filter')) {
       ordersQuery
         .where('name', 'ilike', `%${request.input('filter')}%`)
