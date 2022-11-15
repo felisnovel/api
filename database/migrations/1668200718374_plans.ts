@@ -13,6 +13,7 @@ export default class extends BaseSchema {
       table.boolean('no_ads').defaultTo(false)
       table.boolean('download').defaultTo(false)
       table.boolean('discord_features').defaultTo(false)
+      table.boolean('premium_eps').defaultTo(false)
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

@@ -6,6 +6,7 @@ import { cleanAll } from '../utils'
 const PLAN_EXAMPLE_DATA = {
   name: 'Basic',
   amount: 19.99,
+  premium_eps: true,
 }
 
 test.group('Plans', (group) => {

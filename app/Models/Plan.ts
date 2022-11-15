@@ -20,6 +20,9 @@ export default class Plan extends BaseModel {
   @column()
   public discord_features: boolean
 
+  @column()
+  public premium_eps: boolean
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

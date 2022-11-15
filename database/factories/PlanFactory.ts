@@ -10,5 +10,6 @@ export default Factory.define(Plan, ({ faker }) => {
     no_ads: false,
     discord_features: false,
     download: false,
+    premium_eps: false,
   }
 }).build()

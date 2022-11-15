@@ -7,5 +7,6 @@ export default class PlanRequestValidator {
   public schema = schema.create({
     name: schema.string({ trim: true }),
     amount: schema.number(),
+    premium_eps: schema.boolean(),
   })
 }
