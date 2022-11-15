@@ -250,10 +250,12 @@ export default class NovelController {
       .orderBy('chapters.created_at', 'desc')
 
     const user = await auth.authenticate()
+
     const isAdmin = user?.role === UserRole.ADMIN
     if (!isAdmin) {
-      lastUpdatedNovelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
+      lastUpdatedNovelsQuery.where('novels.publish_status', NovelPublishStatus.PUBLISHED)
     }
+
     if (request.input('followed')) {
       if (!user) {
         return response.unauthorized()

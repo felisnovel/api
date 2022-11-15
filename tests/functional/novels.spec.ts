@@ -64,6 +64,13 @@ test.group('Novels', (group) => {
     response.assertStatus(200)
   })
 
+  test('get a last updated novels for user', async ({ client }) => {
+    const user = await UserFactory.create()
+    const response = await client.get('/last-updated-novels').loginAs(user)
+
+    response.assertStatus(200)
+  })
+
   test('get a last updated novels for admin', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
     const response = await client.get('/last-updated-novels').loginAs(admin)
