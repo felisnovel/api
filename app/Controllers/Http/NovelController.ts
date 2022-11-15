@@ -26,9 +26,9 @@ export default class NovelController {
 
     if (request.input('filter')) {
       novelsQuery
-        .where('name', 'like', `%${request.input('filter')}%`)
-        .orWhere('other_names', 'like', `%${request.input('filter')}%`)
-        .orWhere('shorthand', 'like', `%${request.input('filter')}%`)
+        .where('name', 'ilike', `%${request.input('filter')}%`)
+        .orWhere('other_names', 'ilike', `%${request.input('filter')}%`)
+        .orWhere('shorthand', 'ilike', `%${request.input('filter')}%`)
     }
 
     if (request.input('tags')) {
