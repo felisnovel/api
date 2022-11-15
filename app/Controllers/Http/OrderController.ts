@@ -2,8 +2,19 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Order from 'App/Models/Order'
 
 export default class OrderController {
-  async index({ response }: HttpContextContract) {
-    const orders = await Order.query()
+  async index({ request, response }: HttpContextContract) {
+    const ordersQuery = Order.query()
+    if (request.input('filter')) {
+      ordersQuery
+        .where('name', 'ilike', `%${request.input('filter')}%`)
+        .orWhereHas('user', (query) => {
+          query
+            .where('username', 'ilike', `%${request.input('filter')}%`)
+            .orWhere('email', 'ilike', `%${request.input('filter')}%`)
+        })
+    }
+
+    const orders = await ordersQuery.preload('user')
 
     return response.send(orders)
   }
