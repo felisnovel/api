@@ -19,6 +19,11 @@ const NEW_USER_EXAMPLE_DATA = {
   gender: UserGender.FEMALE,
 }
 
+const PASSWORD_EXAMPLE_DATA = {
+  password: '1Password!',
+  password_confirmation: '1Password!',
+}
+
 test.group('Auth', (group) => {
   group.each.setup(cleanAll)
 
@@ -33,13 +38,33 @@ test.group('Auth', (group) => {
     response.assertStatus(200)
   })
 
-  test('register', async ({ client }) => {
+  test('register regex validate', async ({ client }) => {
     const data = USER_EXAMPLE_DATA
 
     const response = await client.post(`/auth/register`).form({
       ...data,
       password: 'password',
       password_confirmation: 'password',
+      rules: 'true',
+    })
+
+    response.assertBodyContains({
+      errors: [
+        {
+          message: 'Parola en az 1 büyük, 1 küçük, 1 rakam, 1 özel karakter içermelidir',
+        },
+      ],
+    })
+
+    response.assertStatus(422)
+  })
+
+  test('register', async ({ client }) => {
+    const data = USER_EXAMPLE_DATA
+
+    const response = await client.post(`/auth/register`).form({
+      ...data,
+      ...PASSWORD_EXAMPLE_DATA,
       rules: 'true',
     })
 
@@ -58,8 +83,7 @@ test.group('Auth', (group) => {
 
     const response = await client.post(`/auth/register`).form({
       ...data,
-      password: 'password',
-      password_confirmation: 'password',
+      ...PASSWORD_EXAMPLE_DATA,
       rules: 'true',
     })
 
