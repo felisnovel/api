@@ -15,7 +15,7 @@ export default class UserRequestValidator {
         table: 'users',
         column: 'email',
         caseInsensitive: true,
-        whereNot: { id: this.ctx.auth?.user?.id },
+        whereNot: { id: this.ctx.params.id },
       }),
       rules.email(),
     ]),
