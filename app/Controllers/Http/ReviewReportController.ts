@@ -4,9 +4,8 @@ import ReviewReport from 'App/Models/ReviewReport'
 export default class ReviewReportController {
   async index({ response }: HttpContextContract) {
     const reviewReports = await ReviewReport.query()
-      .preload('review')
       .preload('review', (query) => {
-        query.preload('user')
+        query.preload('user').preload('novel')
       })
       .preload('user')
 
