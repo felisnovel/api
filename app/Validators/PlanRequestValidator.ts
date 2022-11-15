@@ -8,5 +8,8 @@ export default class PlanRequestValidator {
     name: schema.string({ trim: true }),
     amount: schema.number(),
     premium_eps: schema.boolean(),
+    download: schema.boolean(),
+    no_ads: schema.boolean(),
+    discord_features: schema.boolean(),
   })
 }

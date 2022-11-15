@@ -6,7 +6,10 @@ import { cleanAll } from '../utils'
 const PLAN_EXAMPLE_DATA = {
   name: 'Basic',
   amount: 19.99,
+  no_ads: true,
   premium_eps: true,
+  download: true,
+  discord_features: true,
 }
 
 test.group('Plans', (group) => {
