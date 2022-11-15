@@ -4,7 +4,7 @@ import PlanRequestValidator from 'App/Validators/PlanRequestValidator'
 
 export default class PlanController {
   async index({ response }: HttpContextContract) {
-    const plans = await Plan.query()
+    const plans = await Plan.query().orderBy('id', 'desc')
 
     return response.send(plans)
   }

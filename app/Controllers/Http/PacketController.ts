@@ -4,7 +4,7 @@ import PacketRequestValidator from 'App/Validators/PacketRequestValidator'
 
 export default class PacketController {
   async index({ response }: HttpContextContract) {
-    const packets = await Packet.query()
+    const packets = await Packet.query().orderBy('id', 'desc')
 
     return response.send(packets)
   }
