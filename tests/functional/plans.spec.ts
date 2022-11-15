@@ -5,7 +5,7 @@ import { cleanAll } from '../utils'
 
 const PLAN_EXAMPLE_DATA = {
   name: 'Basic',
-  price: 19.99,
+  amount: 19.99,
 }
 
 test.group('Plans', (group) => {

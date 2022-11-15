@@ -8,7 +8,6 @@ export default class extends BaseSchema {
       table.increments('id')
 
       table.string('name')
-      table.decimal('price')
       table.decimal('amount')
 
       table.boolean('no_ads').defaultTo(false)

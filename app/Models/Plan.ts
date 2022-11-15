@@ -12,9 +12,6 @@ export default class Plan extends BaseModel {
   public amount: number
 
   @column()
-  public price: number
-
-  @column()
   public no_ads: boolean
 
   @column()
