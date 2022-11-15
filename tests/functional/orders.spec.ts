@@ -23,6 +23,8 @@ test.group('Orders', (group) => {
       })
       .create()
 
+    await order.user.refresh()
+
     assert.equal(order.amount, order.user.free_balance)
 
     const response = await client.delete(`/orders/` + order.id).loginAs(admin)
