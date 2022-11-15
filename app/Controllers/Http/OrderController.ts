@@ -1,5 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Database from '@ioc:Adonis/Lucid/Database'
 import Order from 'App/Models/Order'
+import User from '../../Models/User'
 
 export default class OrderController {
   async index({ request, response }: HttpContextContract) {
@@ -22,14 +24,21 @@ export default class OrderController {
   public async destroy({ response, params, bouncer }: HttpContextContract) {
     await bouncer.authorize('isAdmin')
 
-    try {
-      const deleted = await Order.query().where('id', params.id).delete()
+    const order = await Order.findOrFail(params.id)
 
-      if (deleted.includes(1)) {
-        return response.ok(true)
-      } else {
-        return response.notFound()
-      }
+    try {
+      await Database.transaction(async () => {
+        const deleted = await Order.query().where('id', params.id).delete()
+
+        const user = await User.query().where('id', order.user_id).firstOrFail()
+        await user.syncBalance()
+
+        if (deleted.includes(1)) {
+          return response.ok(true)
+        } else {
+          return response.notFound()
+        }
+      })
     } catch {
       return response.badRequest()
     }

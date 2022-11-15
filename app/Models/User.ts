@@ -201,17 +201,21 @@ export default class User extends BaseModel {
     let coinBalance = 0
 
     if (order) {
-      if (order.is_paid !== false) {
-        if (order.type === OrderType.FREE) {
-          freeBalance += order.amount ?? 0
-        } else if (order.type === OrderType.COIN) {
-          coinBalance += order.amount ?? 0
-        } else if (order.type === OrderType.PLAN) {
-          coinBalance -= order.amount ?? 0
-        } else if (order.buy_type === OrderBuyType.COIN) {
-          coinBalance -= order.amount ?? 0
-        } else if (order.buy_type === OrderBuyType.FREE) {
-          freeBalance -= order.amount ?? 0
+      const amount = order.amount
+
+      if (amount) {
+        if (order.is_paid !== false) {
+          if (order.type === OrderType.FREE) {
+            freeBalance += amount
+          } else if (order.type === OrderType.COIN) {
+            coinBalance += amount
+          } else if (order.type === OrderType.PLAN) {
+            coinBalance -= amount
+          } else if (order.buy_type === OrderBuyType.COIN) {
+            coinBalance -= amount
+          } else if (order.buy_type === OrderBuyType.FREE) {
+            freeBalance -= amount
+          }
         }
       }
     }
@@ -263,16 +267,9 @@ export default class User extends BaseModel {
       .where('type', OrderType.PLAN)
       .sum('amount')
 
-    freeBalance += freeBalanceOrders[0].sum - freeChapterOrders[0].sum
-    coinBalance += coinBalanceOrders[0].sum - coinChapterOrders[0].sum - planOrders[0].sum
-
-    if (order) {
-      console.log('order', order.toJSON())
-    } else {
-      console.log('order null')
-    }
-    console.log('freeBalance', freeBalance)
-    console.log('coinBalance', coinBalance)
+    freeBalance += (freeBalanceOrders[0].sum ?? 0) - (freeChapterOrders[0].sum ?? 0)
+    coinBalance +=
+      (coinBalanceOrders[0].sum ?? 0) - (coinChapterOrders[0].sum ?? 0) - (planOrders[0].sum ?? 0)
 
     await Database.query().from('users').where('id', this.id).update({
       free_balance: freeBalance,

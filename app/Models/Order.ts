@@ -1,11 +1,4 @@
-import {
-  BaseModel,
-  beforeDelete,
-  beforeSave,
-  BelongsTo,
-  belongsTo,
-  column,
-} from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeSave, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
 import OrderBuyType from '../Enums/OrderBuyType'
 import OrderType from '../Enums/OrderType'
@@ -87,11 +80,5 @@ export default class Order extends BaseModel {
   public static async syncBeforeSave(order: Order) {
     const user = await User.query().where('id', order.user_id).firstOrFail()
     await user.syncBalance(order)
-  }
-
-  @beforeDelete()
-  public static async syncBeforeDelete(order: Order) {
-    const user = await User.query().where('id', order.user_id).firstOrFail()
-    await user.syncBalance()
   }
 }
