@@ -72,9 +72,9 @@ export default class Novel extends BaseModel {
   public editor: string
 
   @column()
-  public coin_price: number | null
+  public coin_amount: number | null
   @column()
-  public free_price: number | null
+  public free_amount: number | null
 
   @column()
   public translator: string

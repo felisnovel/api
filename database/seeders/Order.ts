@@ -45,7 +45,7 @@ export default class extends BaseSeeder {
     await admin.related('orders').create({
       type: OrderType.CHAPTER,
       name: premiumChapter1.title,
-      amount: premiumChapter1.novel.coin_price,
+      amount: premiumChapter1.novel.coin_amount,
       buy_type: OrderBuyType.COIN,
       chapter_id: premiumChapter1.id,
       is_paid: true,
@@ -59,7 +59,7 @@ export default class extends BaseSeeder {
     const order = await admin.related('orders').create({
       type: OrderType.CHAPTER,
       name: premiumChapter2.title,
-      amount: premiumChapter2.novel.free_price,
+      amount: premiumChapter2.novel.free_amount,
       buy_type: OrderBuyType.FREE,
       chapter_id: premiumChapter2.id,
       is_paid: true,
