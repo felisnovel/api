@@ -20,7 +20,7 @@ export default class RegisterRequestValidator {
     ]),
     password: schema.string({}, [
       rules.minLength(8),
-      rules.regex(/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/),
+      rules.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
     ]),
     rules: schema.string({}, [rules.equalTo('true')]),
   })
