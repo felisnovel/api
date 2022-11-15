@@ -9,7 +9,13 @@ export default class UserController {
   async index({ request, bouncer, response }: HttpContextContract) {
     await bouncer.authorize('isAdmin')
 
-    const usersQuery = User.query()
+    const usersQuery = User.query().orderBy('id', 'desc')
+
+    if (request.input('filter')) {
+      usersQuery
+        .where('username', 'ilike', `%${request.input('filter')}%`)
+        .where('email', 'ilike', `%${request.input('filter')}%`)
+    }
 
     if (request.input('all')) {
       const users = await usersQuery
