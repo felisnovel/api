@@ -14,7 +14,7 @@ export default class UserController {
     if (request.input('filter')) {
       usersQuery
         .where('username', 'ilike', `%${request.input('filter')}%`)
-        .where('email', 'ilike', `%${request.input('filter')}%`)
+        .orWhere('email', 'ilike', `%${request.input('filter')}%`)
     }
 
     if (request.input('all')) {
