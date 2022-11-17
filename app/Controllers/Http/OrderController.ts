@@ -1,11 +1,21 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
+import UserRole from 'App/Enums/UserRole'
 import Order from 'App/Models/Order'
 import User from '../../Models/User'
 
 export default class OrderController {
-  async index({ request, response }: HttpContextContract) {
+  async index({ auth, request, response }: HttpContextContract) {
     const ordersQuery = Order.query()
+
+    const user = await auth.authenticate()
+    const isAdmin = user?.role === UserRole.ADMIN
+
+    if (!isAdmin) {
+      if (user) {
+        ordersQuery.where('user_id', user.id)
+      }
+    }
 
     if (request.input('type')) {
       ordersQuery.where('type', request.input('type'))
