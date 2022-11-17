@@ -49,6 +49,12 @@ Route.get('/promoted-novels', 'NovelController.promoted')
 Route.get('/last-updated-novels', 'NovelController.lastUpdated')
 Route.get('/last-novels', 'NovelController.lastNovels')
 
+Route.group(() => {
+  Route.group(() => {
+    Route.put('/subscribe', 'Plan/SubscribePlan.invoke')
+  }).prefix('plans/:plan')
+}).middleware('auth')
+
 Route.resource('/plans', 'PlanController').except(['show'])
 Route.resource('/packets', 'PacketController').except(['show'])
 Route.resource('/orders', 'OrderController').only(['index', 'destroy'])

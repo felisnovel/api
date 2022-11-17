@@ -1,6 +1,7 @@
 import { test } from '@japa/runner'
 import PlanFactory from 'Database/factories/PlanFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
 
 const PLAN_EXAMPLE_DATA = {
@@ -87,5 +88,33 @@ test.group('Plans', (group) => {
     const response = await client.delete(`/plans/` + plan.id).loginAs(user)
 
     response.assertStatus(403)
+  })
+})
+
+test.group('Plan Subscriptions', (group) => {
+  group.each.setup(cleanAll)
+
+  test('subscribe a plan', async ({ assert, client }) => {
+    const user = await UserFactory.with('orders', 1, function (orderFactory) {
+      return orderFactory.merge({
+        type: OrderType.COIN,
+        amount: 100,
+        is_paid: true,
+      })
+    }).create()
+    await user.loadCount('subscribedPlans')
+
+    const prevSubscribedPlansCount = Number(user.$extras.subscribedPlans_count)
+
+    const plan = await PlanFactory.create()
+
+    const response = await client.put(`/plans/${plan.id}/subscribe`).loginAs(user)
+    response.assertStatus(200)
+
+    await user.loadCount('subscribedPlans')
+
+    const newSubscribedPlansCount = Number(user.$extras.subscribedPlans_count)
+
+    assert.equal(newSubscribedPlansCount, prevSubscribedPlansCount + 1)
   })
 })

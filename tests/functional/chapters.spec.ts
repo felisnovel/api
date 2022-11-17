@@ -433,4 +433,53 @@ test.group('Chapter Premium', (group) => {
 
     responseIsPurchased.assertStatus(200)
   })
+
+  test('show a chapter plan for user', async ({ client }) => {
+    const user = await UserFactory.with('orders', 1, function (orderFactory) {
+      return orderFactory.merge({
+        type: OrderType.COIN,
+        amount: 100,
+        is_paid: true,
+      })
+    }).create()
+
+    await user.loadCount('subscribedPlans')
+
+    const novel = await NovelFactory.with('user', 1)
+      .with('volumes', 1, function (volumeFactory) {
+        volumeFactory.apply('published')
+      })
+      .merge({
+        is_premium: true,
+      })
+      .apply('published')
+      .create()
+
+    const chapter = await ChapterFactory.merge({
+      novel_id: novel.id,
+      volume_id: novel.volumes[0].id,
+      is_premium: true,
+    })
+      .apply('published')
+      .create()
+
+    const responseIsNotPurchased = await client
+      .get(`/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}`)
+      .loginAs(user)
+
+    responseIsNotPurchased.assertBodyContains({
+      message: 'The chapter is not purchased',
+    })
+    responseIsNotPurchased.assertStatus(400)
+
+    const plan = await PlanFactory.create()
+
+    await client.put(`/plans/${plan.id}/subscribe`).loginAs(user)
+
+    const responseIsSubscribed = await client
+      .get(`/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}`)
+      .loginAs(user)
+
+    responseIsSubscribed.assertStatus(200)
+  })
 })

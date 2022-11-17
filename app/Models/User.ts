@@ -22,6 +22,7 @@ import Comment from './Comment'
 import CommentReaction from './CommentReaction'
 import Novel from './Novel'
 import Order from './Order'
+import Plan from './Plan'
 import Review from './Review'
 import ReviewReaction from './ReviewReaction'
 
@@ -159,6 +160,52 @@ export default class User extends BaseModel {
     pivotTable: 'orders',
   })
   public purchasedChapters: ManyToMany<typeof Chapter>
+
+  @manyToMany(() => Plan, {
+    pivotTimestamps: true,
+    localKey: 'id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'plan_id',
+    pivotForeignKey: 'user_id',
+    pivotTable: 'orders',
+    onQuery: (query) => {
+      query
+        .where('type', OrderType.PLAN)
+        .where('ends_at', '>=', DateTime.now().toSQL())
+        .where('starts_at', '<=', DateTime.now().toSQL())
+    },
+  })
+  public subscribedPlans: ManyToMany<typeof Plan>
+
+  public async isSubscribed(plan: Plan | null = null) {
+    const subscribedQuery = Database.query()
+
+    if (plan) {
+      subscribedQuery.where('plan_id', plan.id)
+    }
+
+    const subscribed = await subscribedQuery
+      .from('orders')
+      .where('user_id', this.id)
+      .where('type', OrderType.PLAN)
+      .where('ends_at', '>=', DateTime.now().toSQL())
+      .where('starts_at', '<=', DateTime.now().toSQL())
+      .first()
+
+    return !!subscribed
+  }
+
+  public buyableOf(amount = 0, type = OrderBuyType.COIN) {
+    if (type === OrderBuyType.COIN && Number(amount) > this.coin_balance) {
+      return false
+    }
+
+    if (type === OrderBuyType.FREE && Number(amount) > this.free_balance) {
+      return false
+    }
+
+    return true
+  }
 
   @hasMany(() => ReviewReaction, {
     foreignKey: 'user_id',

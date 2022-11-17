@@ -65,6 +65,8 @@ export default class ChapterController {
       const chaptersJson = chapters.toJSON()
 
       if (user) {
+        const isSubscribed = await user.isSubscribed()
+
         chaptersJson.data = await Promise.all(
           chaptersJson.data.map(async (item) => {
             const isRead = await item.isRead(user)
@@ -74,6 +76,7 @@ export default class ChapterController {
               ...item.toJSON(),
               is_read: isRead,
               is_purchased: isPurchased,
+              is_opened: isPurchased || isSubscribed,
             }
           })
         )
@@ -112,8 +115,10 @@ export default class ChapterController {
 
     if (!isAdmin) {
       if (user && chapter.is_premium) {
+        const isSubscribed = await user.isSubscribed()
+
         const isPurchased = await chapter.isPurchased(user)
-        if (!isPurchased) {
+        if (!isSubscribed && !isPurchased) {
           return response.badRequest({
             message: 'The chapter is not purchased',
           })
