@@ -3,8 +3,10 @@ import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
 import ChapterFactory from 'Database/factories/ChapterFactory'
 import CommentFactory from 'Database/factories/CommentFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
+import PlanFactory from 'Database/factories/PlanFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import VolumeFactory from 'Database/factories/VolumeFactory'
+import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
 
 const CHAPTER_EXAMPLE_DATA = {
@@ -364,7 +366,14 @@ test.group('Chapter Premium', (group) => {
   group.each.setup(cleanAll)
 
   test('purchase a chapter', async ({ assert, client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.with('orders', 1, function (orderFactory) {
+      return orderFactory.merge({
+        type: OrderType.COIN,
+        amount: 100,
+        is_paid: true,
+      })
+    }).create()
+
     await user.loadCount('purchasedChapters')
 
     const prevPurchasedChaptersCount = Number(user.$extras.purchasedChapters_count)
@@ -395,7 +404,14 @@ test.group('Chapter Premium', (group) => {
   })
 
   test('show a purchased chapter for user', async ({ assert, client }) => {
-    const user = await UserFactory.create()
+    const user = await UserFactory.with('orders', 1, function (orderFactory) {
+      return orderFactory.merge({
+        type: OrderType.COIN,
+        amount: 100,
+        is_paid: true,
+      })
+    }).create()
+
     await user.loadCount('purchasedChapters')
 
     const novel = await NovelFactory.with('user', 1)

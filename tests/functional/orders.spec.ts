@@ -20,6 +20,7 @@ test.group('Orders', (group) => {
         type: OrderType.FREE,
         buy_type: null,
         is_paid: true,
+        amount: 10,
       })
       .create()
 

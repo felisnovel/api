@@ -5,6 +5,7 @@ import User from 'App/Models/User'
 import ChapterFactory from 'Database/factories/ChapterFactory'
 import CommentFactory from 'Database/factories/CommentFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
+import OrderFactory from 'Database/factories/OrderFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
 import CommentReactionFactory from './CommentReactionFactory'
 
@@ -30,6 +31,7 @@ export default Factory.define(User, ({ faker }) => {
   .relation('reviews', () => ReviewFactory)
   .relation('comments', () => CommentFactory)
   .relation('commentReactions', () => CommentReactionFactory)
+  .relation('orders', () => OrderFactory)
   .state('admin', async (item) => {
     item.role = UserRole.ADMIN
   })
