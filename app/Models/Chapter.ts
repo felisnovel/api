@@ -3,6 +3,7 @@ import {
   belongsTo,
   BelongsTo,
   column,
+  computed,
   hasMany,
   HasMany,
   manyToMany,
@@ -77,6 +78,11 @@ export default class Chapter extends BaseModel {
   public async isRead(user: User): Promise<boolean> {
     const read = await user.related('readChapters').query().where('id', this.id).first()
     return read ? true : false
+  }
+
+  @computed()
+  public get fullName(): string {
+    return `${this?.novel?.name} - ${this?.volume?.volume_number}. Cilt - Bölüm ${this.number}: ${this.title}`
   }
 
   public async isPurchased(user: User): Promise<boolean> {

@@ -40,11 +40,14 @@ export default class extends BaseSeeder {
     const premiumChapter1 = await Chapter.query()
       .where('is_premium', true)
       .preload('novel')
+      .preload('volume')
       .firstOrFail()
+
+    const premiumChapter1JSON = premiumChapter1.serialize()
 
     await admin.related('orders').create({
       type: OrderType.CHAPTER,
-      name: premiumChapter1.title,
+      name: premiumChapter1JSON.fullName,
       amount: premiumChapter1.novel.coin_amount,
       buy_type: OrderBuyType.COIN,
       chapter_id: premiumChapter1.id,
@@ -54,11 +57,14 @@ export default class extends BaseSeeder {
     const premiumChapter2 = await Chapter.query()
       .where('is_premium', true)
       .preload('novel')
+      .preload('volume')
       .firstOrFail()
+
+    const premiumChapter2JSON = premiumChapter2.serialize()
 
     const order = await admin.related('orders').create({
       type: OrderType.CHAPTER,
-      name: premiumChapter2.title,
+      name: premiumChapter2JSON.fullName,
       amount: premiumChapter2.novel.free_amount,
       buy_type: OrderBuyType.FREE,
       chapter_id: premiumChapter2.id,
