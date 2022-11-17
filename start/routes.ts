@@ -51,6 +51,10 @@ Route.get('/last-novels', 'NovelController.lastNovels')
 
 Route.group(() => {
   Route.group(() => {
+    Route.put('/purchase', 'Packet/PurchasePacket.invoke')
+  }).prefix('packets/:packet')
+
+  Route.group(() => {
     Route.put('/subscribe', 'Plan/SubscribePlan.invoke')
   }).prefix('plans/:plan')
 }).middleware('auth')
