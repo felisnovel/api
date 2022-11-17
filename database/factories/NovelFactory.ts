@@ -20,8 +20,8 @@ export default Factory.define(Novel, async ({ faker }) => {
     image: faker.image.imageUrl(300, 500),
     cover_image: faker.image.imageUrl(),
     description: faker.lorem.paragraphs(3),
-    author: faker.name.findName(),
-    license_holder: faker.name.findName(),
+    author: faker.name.fullName(),
+    license_holder: faker.name.fullName(),
     status: faker.helpers.arrayElement(Object.values(NovelStatus)),
     publish_status: faker.helpers.arrayElement(Object.values(NovelPublishStatus)),
     translation_status: faker.helpers.arrayElement(Object.values(NovelTranslationStatus)),
@@ -30,8 +30,8 @@ export default Factory.define(Novel, async ({ faker }) => {
     coin_amount: faker.datatype.number(10),
     free_amount: faker.datatype.number(5),
     is_promoted: faker.datatype.boolean(),
-    editor: faker.name.findName(),
-    translator: faker.name.findName(),
+    editor: faker.name.fullName(),
+    translator: faker.name.fullName(),
   }
 })
   .relation('country', () => CountryFactory)

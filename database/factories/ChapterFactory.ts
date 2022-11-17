@@ -15,8 +15,8 @@ export default Factory.define(Chapter, ({ faker }) => {
     is_mature: faker.datatype.boolean(),
     is_premium: faker.datatype.boolean(),
     publish_status: faker.helpers.arrayElement(Object.values(ChapterPublishStatus)),
-    editor: faker.name.findName(),
-    translator: faker.name.findName(),
+    editor: faker.name.fullName(),
+    translator: faker.name.fullName(),
   }
 })
   .relation('novel', () => NovelFactory)
