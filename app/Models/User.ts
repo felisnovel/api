@@ -258,7 +258,7 @@ export default class User extends BaseModel {
     let coinBalance = 0
 
     if (order) {
-      const amount = order.amount
+      const amount = Number(order.amount)
 
       if (amount) {
         if (order.is_paid !== false) {
