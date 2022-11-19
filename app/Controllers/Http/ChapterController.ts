@@ -6,7 +6,7 @@ import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 
-async function checkChapter(item, user, isSubscribed) {
+async function checkChapter(item, user, subscribed) {
   let isRead = false
   let isPurchased = false
   let isOpened = false
@@ -14,7 +14,7 @@ async function checkChapter(item, user, isSubscribed) {
   if (user) {
     isRead = await item.isRead(user)
     isPurchased = await item.isPurchased(user)
-    isOpened = !item.is_premium || isPurchased || isSubscribed
+    isOpened = !item.is_premium || isPurchased || subscribed?.premium_eps
   }
 
   return {
@@ -83,14 +83,14 @@ export default class ChapterController {
 
       const chaptersJson = chapters.toJSON()
 
-      let isSubscribed = false
+      let subscribed = false
       if (user) {
-        isSubscribed = await user.isSubscribed()
+        subscribed = await user.subscribed()
       }
 
       chaptersJson.data = await Promise.all(
         chaptersJson.data.map(async (item) => {
-          const params = await checkChapter(item, user, isSubscribed)
+          const params = await checkChapter(item, user, subscribed)
 
           return {
             ...item.toJSON(),
@@ -132,10 +132,11 @@ export default class ChapterController {
 
     if (!isAdmin) {
       if (user && chapter.is_premium) {
-        const isSubscribed = await user.isSubscribed()
+        const subscribed = await user.subscribed()
 
-        const isPurchased = await chapter.isPurchased(user)
-        if (!isSubscribed && !isPurchased) {
+        const { isOpened } = await checkChapter(chapter, user, subscribed)
+
+        if (!isOpened) {
           return response.badRequest({
             message: 'The chapter is not purchased',
           })

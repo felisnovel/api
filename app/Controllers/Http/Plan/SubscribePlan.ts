@@ -8,9 +8,9 @@ export default class SubscribePlan {
     const user = await auth.authenticate()
     const plan = await Plan.query().where('id', params.plan).firstOrFail()
 
-    const isSubscribed = await user.isSubscribed()
+    const subscribed = await user.subscribed()
 
-    if (isSubscribed) {
+    if (subscribed) {
       return response.badRequest({
         message: 'This plan is subscribed',
       })

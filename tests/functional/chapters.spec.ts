@@ -488,7 +488,9 @@ test.group('Chapter Premium', (group) => {
     })
     responseIsNotPurchased.assertStatus(400)
 
-    const plan = await PlanFactory.create()
+    const plan = await PlanFactory.merge({
+      premium_eps: true,
+    }).create()
 
     await client.put(`/plans/${plan.id}/subscribe`).loginAs(user)
 

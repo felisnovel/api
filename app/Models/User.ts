@@ -177,7 +177,7 @@ export default class User extends BaseModel {
   })
   public subscribedPlans: ManyToMany<typeof Plan>
 
-  public async isSubscribed(plan: Plan | null = null) {
+  public async subscribed(plan: Plan | null = null) {
     const subscribedQuery = Database.query()
 
     if (plan) {
@@ -190,9 +190,10 @@ export default class User extends BaseModel {
       .where('type', OrderType.PLAN)
       .where('ends_at', '>=', DateTime.now().toSQL())
       .where('starts_at', '<=', DateTime.now().toSQL())
+      .leftJoin('plans', 'orders.plan_id', 'plans.id')
       .first()
 
-    return !!subscribed
+    return subscribed
   }
 
   public buyableOf(amount = 0, type = OrderBuyType.COIN) {
