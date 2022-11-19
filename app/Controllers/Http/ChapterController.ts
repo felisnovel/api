@@ -6,6 +6,25 @@ import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 
+async function checkChapter(item, user, isSubscribed) {
+  let isRead = false
+  let isPurchased = false
+  let isOpened = false
+
+  if (user) {
+    isRead = await item.isRead(user)
+    isPurchased = await item.isPurchased(user)
+    isOpened = !item.is_premium || isPurchased || isSubscribed
+  }
+
+  return {
+    isRead,
+    isPurchased,
+    isOpened,
+    context: isOpened ? item.context : item.context.slice(0, 100),
+  }
+}
+
 export default class ChapterController {
   async index({ auth, request, response }: HttpContextContract) {
     const user = await auth.authenticate()
@@ -64,23 +83,21 @@ export default class ChapterController {
 
       const chaptersJson = chapters.toJSON()
 
+      let isSubscribed = false
       if (user) {
-        const isSubscribed = await user.isSubscribed()
-
-        chaptersJson.data = await Promise.all(
-          chaptersJson.data.map(async (item) => {
-            const isRead = await item.isRead(user)
-            const isPurchased = await item.isPurchased(user)
-
-            return {
-              ...item.toJSON(),
-              is_read: isRead,
-              is_purchased: isPurchased,
-              is_opened: isPurchased || isSubscribed,
-            }
-          })
-        )
+        isSubscribed = await user.isSubscribed()
       }
+
+      chaptersJson.data = await Promise.all(
+        chaptersJson.data.map(async (item) => {
+          const params = await checkChapter(item, user, isSubscribed)
+
+          return {
+            ...item.toJSON(),
+            ...params,
+          }
+        })
+      )
 
       return response.send(chaptersJson)
     }
