@@ -90,11 +90,18 @@ export default class ChapterController {
 
       chaptersJson.data = await Promise.all(
         chaptersJson.data.map(async (item) => {
-          const params = await checkChapter(item, user, subscribed)
+          const { isRead, isOpened, isPurchased, ...props } = await checkChapter(
+            item,
+            user,
+            subscribed
+          )
 
           return {
             ...item.toJSON(),
-            ...params,
+            ...props,
+            is_read: isRead,
+            is_opened: isOpened,
+            is_purchased: isPurchased,
           }
         })
       )
@@ -194,7 +201,7 @@ export default class ChapterController {
 
     return response.json({
       ...chapter.toJSON(),
-      isRead,
+      is_read: isRead,
       prev_chapter: prevChapter,
       next_chapter: nextChapter,
     })
