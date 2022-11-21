@@ -23,6 +23,9 @@ export default class Plan extends BaseModel {
   @column()
   public premium_eps: boolean
 
+  @column()
+  public is_promoted: boolean
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

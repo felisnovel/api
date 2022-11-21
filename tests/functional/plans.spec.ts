@@ -11,6 +11,7 @@ const PLAN_EXAMPLE_DATA = {
   premium_eps: true,
   download: true,
   discord_features: true,
+  is_promoted: false,
 }
 
 test.group('Plans', (group) => {

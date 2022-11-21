@@ -11,5 +11,6 @@ export default class PlanRequestValidator {
     download: schema.boolean(),
     no_ads: schema.boolean(),
     discord_features: schema.boolean(),
+    is_promoted: schema.boolean(),
   })
 }

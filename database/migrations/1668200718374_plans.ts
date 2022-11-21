@@ -15,6 +15,8 @@ export default class extends BaseSchema {
       table.boolean('discord_features').defaultTo(false)
       table.boolean('premium_eps').defaultTo(false)
 
+      table.boolean('is_promoted').defaultTo(false)
+
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
