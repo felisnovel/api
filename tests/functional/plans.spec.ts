@@ -14,6 +14,16 @@ const PLAN_EXAMPLE_DATA = {
   is_promoted: false,
 }
 
+const NEW_PLAN_EXAMPLE_DATA = {
+  name: 'Pro',
+  amount: 29.99,
+  no_ads: false,
+  premium_eps: false,
+  download: false,
+  discord_features: false,
+  is_promoted: true,
+}
+
 test.group('Plans', (group) => {
   group.each.setup(cleanAll)
 
@@ -48,7 +58,7 @@ test.group('Plans', (group) => {
     const plan = await PlanFactory.create()
     const admin = await UserFactory.apply('admin').create()
 
-    const newData = PLAN_EXAMPLE_DATA
+    const newData = NEW_PLAN_EXAMPLE_DATA
 
     const response = await client
       .patch(`/plans/` + plan.id)
