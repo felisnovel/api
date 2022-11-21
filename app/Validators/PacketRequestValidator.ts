@@ -8,5 +8,6 @@ export default class PacketRequestValidator {
     name: schema.string({ trim: true }),
     price: schema.number(),
     amount: schema.number(),
+    is_promoted: schema.boolean(),
   })
 }

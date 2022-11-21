@@ -7,6 +7,7 @@ const PACKET_EXAMPLE_DATA = {
   name: '10 Coin',
   price: 10,
   amount: 10,
+  is_promoted: false,
 }
 
 test.group('Packets', (group) => {

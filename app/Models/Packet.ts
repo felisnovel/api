@@ -14,6 +14,9 @@ export default class Packet extends BaseModel {
   @column()
   public price: number
 
+  @column()
+  public is_promoted: boolean
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
