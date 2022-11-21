@@ -14,7 +14,7 @@ async function checkChapter(item, user, subscribed) {
   if (user) {
     isRead = await item.isRead(user)
     isPurchased = await item.isPurchased(user)
-    isOpened = !item.is_premium || isPurchased || subscribed?.premium_eps
+    isOpened = !item.is_premium || isPurchased || subscribed?.premium_eps ? true : false
   }
 
   return {
@@ -137,20 +137,6 @@ export default class ChapterController {
 
     const chapter = await chapterQuery.firstOrFail()
 
-    if (!isAdmin) {
-      if (user && chapter.is_premium) {
-        const subscribed = await user.subscribed()
-
-        const { isOpened } = await checkChapter(chapter, user, subscribed)
-
-        if (!isOpened) {
-          return response.badRequest({
-            message: 'The chapter is not purchased',
-          })
-        }
-      }
-    }
-
     const prevChapterQuery = chapter.novel.related('chapters').query()
 
     prevChapterQuery
@@ -193,15 +179,19 @@ export default class ChapterController {
 
     const nextChapter = await nextChapterQuery.first()
 
-    let isRead = false
+    let subscribed
 
     if (user) {
-      isRead = await chapter.isRead(user)
+      subscribed = await user.subscribed()
     }
+
+    const { isOpened, isRead, context } = await checkChapter(chapter, user, subscribed)
 
     return response.json({
       ...chapter.toJSON(),
+      context,
       is_read: isRead,
+      is_opened: isOpened,
       prev_chapter: prevChapter,
       next_chapter: nextChapter,
     })

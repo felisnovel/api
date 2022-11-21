@@ -436,10 +436,10 @@ test.group('Chapter Premium', (group) => {
       .get(`/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}`)
       .loginAs(user)
 
+    responseIsNotPurchased.assertStatus(200)
     responseIsNotPurchased.assertBodyContains({
-      message: 'The chapter is not purchased',
+      is_opened: false,
     })
-    responseIsNotPurchased.assertStatus(400)
 
     await client.put(`/chapters/${chapter.id}/purchase`).loginAs(user)
 
@@ -448,6 +448,9 @@ test.group('Chapter Premium', (group) => {
       .loginAs(user)
 
     responseIsPurchased.assertStatus(200)
+    responseIsPurchased.assertBodyContains({
+      is_opened: true,
+    })
   })
 
   test('show a chapter plan for user', async ({ client }) => {
@@ -483,10 +486,10 @@ test.group('Chapter Premium', (group) => {
       .get(`/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}`)
       .loginAs(user)
 
+    responseIsNotPurchased.assertStatus(200)
     responseIsNotPurchased.assertBodyContains({
-      message: 'The chapter is not purchased',
+      is_opened: false,
     })
-    responseIsNotPurchased.assertStatus(400)
 
     const plan = await PlanFactory.merge({
       premium_eps: true,
@@ -499,5 +502,8 @@ test.group('Chapter Premium', (group) => {
       .loginAs(user)
 
     responseIsSubscribed.assertStatus(200)
+    responseIsSubscribed.assertBodyContains({
+      is_opened: true,
+    })
   })
 })
