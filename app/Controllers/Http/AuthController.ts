@@ -33,7 +33,7 @@ export default class AuthController {
     await user.serialize()
 
     return response.json({
-      user,
+      user: await getUserWithActivePlan(user),
       token,
     })
   }
@@ -43,7 +43,7 @@ export default class AuthController {
     await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')
     await user.serialize()
 
-    return response.json(user)
+    return response.json(await getUserWithActivePlan(user))
   }
 
   async updateProfile({ request, response, auth }: HttpContextContract) {
@@ -74,7 +74,7 @@ export default class AuthController {
     const token = await auth.use('api').generate(user, { expiresIn: '7days' })
 
     return response.json({
-      user,
+      user: await getUserWithActivePlan(user),
       token,
     })
   }
@@ -124,8 +124,17 @@ export default class AuthController {
     const token = await auth.use('api').generate(user, { expiresIn: '7days' })
 
     return response.json({
-      user,
+      user: await getUserWithActivePlan(user),
       token,
     })
+  }
+}
+
+async function getUserWithActivePlan(user) {
+  const activePlan = await user.related('subscribedPlans').query().first()
+
+  return {
+    ...user.toJSON(),
+    activePlan,
   }
 }
