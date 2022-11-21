@@ -10,6 +10,13 @@ const PACKET_EXAMPLE_DATA = {
   is_promoted: false,
 }
 
+const NEW_PACKET_EXAMPLE_DATA = {
+  name: '20 Coin',
+  price: 20,
+  amount: 20,
+  is_promoted: true,
+}
+
 test.group('Packets', (group) => {
   group.each.setup(cleanAll)
 
@@ -44,7 +51,7 @@ test.group('Packets', (group) => {
     const packet = await PacketFactory.create()
     const admin = await UserFactory.apply('admin').create()
 
-    const newData = PACKET_EXAMPLE_DATA
+    const newData = NEW_PACKET_EXAMPLE_DATA
 
     const response = await client
       .patch(`/packets/` + packet.id)
