@@ -1,5 +1,6 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import OrderBuyType from 'App/Enums/OrderBuyType'
+import { DateTime } from 'luxon'
 import OrderType from '../../app/Enums/OrderType'
 import Chapter from '../../app/Models/Chapter'
 import User from '../../app/Models/User'
@@ -35,6 +36,8 @@ export default class extends BaseSeeder {
       name: 'Pro Plan',
       amount: 250,
       plan_id: 2,
+      starts_at: DateTime.local(),
+      ends_at: DateTime.local().plus({ days: 30 }),
     })
 
     const premiumChapter1 = await Chapter.query()
