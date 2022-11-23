@@ -20,7 +20,8 @@
       "@adonisjs/auth",
       "@adonisjs/ally",
       "@adonisjs/lucid-slugify",
-      "@adonisjs/bouncer"
+      "@adonisjs/bouncer",
+      "@adonisjs/drive-s3"
     ]
   }
 }
