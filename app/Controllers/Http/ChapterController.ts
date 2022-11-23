@@ -100,6 +100,7 @@ export default class ChapterController {
           return {
             ...item.toJSON(),
             ...props,
+            context: null,
             is_read: isRead,
             is_opened: isOpened,
             is_purchased: isPurchased,
