@@ -22,7 +22,7 @@ async function checkChapter(item, user, subscribed) {
     isRead,
     isPurchased,
     isOpened,
-    context: isOpened ? item.context : item.context.slice(0, 100),
+    context: isOpened ? item.context : item.context.slice(0, 200),
   }
 }
 
