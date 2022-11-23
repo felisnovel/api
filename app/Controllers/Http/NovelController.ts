@@ -4,6 +4,7 @@ import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import UserRole from 'App/Enums/UserRole'
 import Novel from 'App/Models/Novel'
 import NovelRequestValidator from 'App/Validators/NovelRequestValidator'
+import showdown from 'showdown'
 import { isNumeric } from '../../../utils'
 
 export default class NovelController {
@@ -56,7 +57,7 @@ export default class NovelController {
     return response.send(novels)
   }
 
-  async show({ params, auth, response }: HttpContextContract) {
+  async show({ request, params, auth, response }: HttpContextContract) {
     const { id } = params
 
     const novelQuery = Novel.query()
@@ -100,6 +101,11 @@ export default class NovelController {
 
       isLiked = await novel.isLiked(user)
       isFollowed = await novel.isFollowed(user)
+    }
+
+    if (request.input('html') || !isAdmin) {
+      const converter = new showdown.Converter()
+      novel.description = converter.makeHtml(novel.description)
     }
 
     return response.json({

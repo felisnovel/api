@@ -5,6 +5,7 @@ import UserRole from 'App/Enums/UserRole'
 import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
+import showdown from 'showdown'
 
 async function checkChapter(item, user, subscribed) {
   let isRead = false
@@ -187,9 +188,18 @@ export default class ChapterController {
 
     const { isOpened, isRead, context } = await checkChapter(chapter, user, subscribed)
 
+    const chapterProps = {
+      context,
+    }
+
+    if (request.input('html') || !isAdmin) {
+      const converter = new showdown.Converter()
+      chapterProps.context = converter.makeHtml(chapterProps.context)
+    }
+
     return response.json({
       ...chapter.toJSON(),
-      context,
+      ...chapterProps,
       is_read: isRead,
       is_opened: isOpened,
       prev_chapter: prevChapter,

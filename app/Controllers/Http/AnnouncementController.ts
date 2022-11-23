@@ -3,6 +3,7 @@ import AnnouncementPublishStatus from 'App/Enums/AnnouncementPublishStatus'
 import UserRole from 'App/Enums/UserRole'
 import Announcement from 'App/Models/Announcement'
 import AnnouncementRequestValidator from 'App/Validators/AnnouncementRequestValidator'
+import showdown from 'showdown'
 import { isNumeric } from '../../../utils'
 
 export default class AnnouncementController {
@@ -32,7 +33,7 @@ export default class AnnouncementController {
     return response.send(announcements)
   }
 
-  async show({ params, response }: HttpContextContract) {
+  async show({ auth, request, params, response }: HttpContextContract) {
     const { id } = params
 
     const announcementQuery = Announcement.query()
@@ -42,6 +43,14 @@ export default class AnnouncementController {
       announcementQuery.where('slug', params.id)
     }
     const announcement = await announcementQuery.firstOrFail()
+
+    const user = await auth.authenticate()
+    const isAdmin = user?.role === UserRole.ADMIN
+
+    if (request.input('html') || !isAdmin) {
+      const converter = new showdown.Converter()
+      announcement.content = converter.makeHtml(announcement.content)
+    }
 
     return response.json(announcement)
   }
