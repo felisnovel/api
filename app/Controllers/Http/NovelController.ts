@@ -103,7 +103,7 @@ export default class NovelController {
       isFollowed = await novel.isFollowed(user)
     }
 
-    if (request.input('html') || !isAdmin) {
+    if (!(isAdmin && request.input('md'))) {
       const converter = new showdown.Converter()
       novel.description = converter.makeHtml(novel.description)
     }

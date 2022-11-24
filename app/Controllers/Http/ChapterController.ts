@@ -193,7 +193,7 @@ export default class ChapterController {
       context,
     }
 
-    if (request.input('html') || !isAdmin) {
+    if (!(isAdmin && request.input('md'))) {
       const converter = new showdown.Converter()
       chapterProps.context = converter.makeHtml(chapterProps.context)
     }

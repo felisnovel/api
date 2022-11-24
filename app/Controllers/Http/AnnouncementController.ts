@@ -47,7 +47,7 @@ export default class AnnouncementController {
     const user = await auth.authenticate()
     const isAdmin = user?.role === UserRole.ADMIN
 
-    if (request.input('html') || !isAdmin) {
+    if (!(isAdmin && request.input('md'))) {
       const converter = new showdown.Converter()
       announcement.content = converter.makeHtml(announcement.content)
     }
