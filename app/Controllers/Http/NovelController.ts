@@ -4,6 +4,7 @@ import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import UserRole from 'App/Enums/UserRole'
 import Novel from 'App/Models/Novel'
 import NovelRequestValidator from 'App/Validators/NovelRequestValidator'
+import showdown from 'showdown'
 import { isNumeric } from '../../../utils'
 
 export default class NovelController {
@@ -298,10 +299,15 @@ export default class NovelController {
 
     const lastUpdatedNovels = await lastUpdatedNovelsQuery
 
+    const showdownService = new showdown.Converter()
+
     return response.send(
       lastUpdatedNovels.map((novel) => {
+        const body = showdownService.makeHtml(novel.context)
         return {
           ...novel,
+          body,
+          context: null,
           latest_chapter: {
             created_at: novel.latest_chapter_created_at,
             number: novel.latest_chapter_number,
