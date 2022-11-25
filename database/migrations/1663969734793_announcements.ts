@@ -11,7 +11,7 @@ export default class extends BaseSchema {
 
       table.string('slug').unique()
       table.string('title')
-      table.text('content')
+      table.text('context')
       table.enu('category', Object.values(AnnouncementCategory)).notNullable()
 
       table.enu('publish_status', Object.values(AnnouncementPublishStatus))

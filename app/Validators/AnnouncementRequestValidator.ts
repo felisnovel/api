@@ -8,7 +8,7 @@ export default class AnnouncementRequestValidator {
 
   public schema = schema.create({
     title: schema.string({ trim: true }),
-    content: schema.string({ trim: true }),
+    context: schema.string({ trim: true }),
     category: schema.enum(Object.values(AnnouncementCategory)),
     publish_status: schema.enum(Object.values(AnnouncementPublishStatus)),
   })

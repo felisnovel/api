@@ -22,7 +22,7 @@ export default class Announcement extends BaseModel {
   public publish_status: AnnouncementPublishStatus
 
   @column()
-  public content: string
+  public context: string
 
   @column()
   public category: AnnouncementCategory
