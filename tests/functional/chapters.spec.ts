@@ -54,8 +54,10 @@ test.group('Chapters', (group) => {
 
     const response = await client.post('/chapters').loginAs(admin).form(data)
 
+    const { context, ...otherData } = data
+
     response.assertStatus(200)
-    response.assertBodyContains(data)
+    response.assertBodyContains(otherData)
   })
 
   test('user cannot create a chapter', async ({ client }) => {
@@ -107,8 +109,10 @@ test.group('Chapters', (group) => {
       .loginAs(admin)
       .form(newData)
 
+    const { context, ...otherNewData } = newData
+
     response.assertStatus(200)
-    response.assertBodyContains(newData)
+    response.assertBodyContains(otherNewData)
   })
 
   test('update chapter`s novel', async ({ client }) => {
@@ -133,8 +137,10 @@ test.group('Chapters', (group) => {
       .loginAs(admin)
       .form(newData)
 
+    const { context, ...otherNewData } = newData
+
     response.assertStatus(200)
-    response.assertBodyContains(newData)
+    response.assertBodyContains(otherNewData)
   })
 
   test('update chapter`s volume', async ({ client }) => {
@@ -161,8 +167,10 @@ test.group('Chapters', (group) => {
       .loginAs(admin)
       .form(newData)
 
+    const { context, ...otherNewData } = newData
+
     response.assertStatus(200)
-    response.assertBodyContains(newData)
+    response.assertBodyContains(otherNewData)
   })
 
   test('user cannot update a chapter', async ({ client }) => {
@@ -403,7 +411,7 @@ test.group('Chapter Premium', (group) => {
     assert.equal(newPurchasedChaptersCount, prevPurchasedChaptersCount + 1)
   })
 
-  test('show a purchased chapter for user', async ({ assert, client }) => {
+  test('show a purchased chapter for user', async ({ client }) => {
     const user = await UserFactory.with('orders', 1, function (orderFactory) {
       return orderFactory.merge({
         type: OrderType.COIN,

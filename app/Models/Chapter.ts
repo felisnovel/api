@@ -25,8 +25,13 @@ export default class Chapter extends BaseModel {
   @column()
   public number: number
 
-  @column()
+  @column({ serializeAs: null })
   public context: string
+
+  @computed()
+  public get description() {
+    return this.context.replace(/<[^>]*>?/gm, '').substring(0, 200)
+  }
 
   @column()
   public translation_note: string

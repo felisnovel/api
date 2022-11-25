@@ -11,6 +11,7 @@ async function checkChapter(item, user, subscribed) {
   let isRead = false
   let isPurchased = false
   let isOpened = item.is_premium ? false : true
+  let body = null
 
   if (user) {
     isRead = await item.isRead(user)
@@ -18,11 +19,15 @@ async function checkChapter(item, user, subscribed) {
     isOpened = isOpened || isPurchased || subscribed?.premium_eps ? true : false
   }
 
+  if (isOpened) {
+    body = new showdown.Converter().makeHtml(item.body)
+  }
+
   return {
     isRead,
     isPurchased,
     isOpened,
-    context: isOpened ? item.context : item.context.slice(0, 200),
+    body,
   }
 }
 
@@ -91,16 +96,10 @@ export default class ChapterController {
 
       chaptersJson.data = await Promise.all(
         chaptersJson.data.map(async (item) => {
-          const { isRead, isOpened, isPurchased, ...props } = await checkChapter(
-            item,
-            user,
-            subscribed
-          )
+          const { isRead, isOpened, isPurchased } = await checkChapter(item, user, subscribed)
 
           return {
             ...item.toJSON(),
-            ...props,
-            context: null,
             is_read: isRead,
             is_opened: isOpened,
             is_purchased: isPurchased,
@@ -187,15 +186,14 @@ export default class ChapterController {
       subscribed = await user.subscribed()
     }
 
-    const { isOpened, isRead, context } = await checkChapter(chapter, user, subscribed)
+    const { isOpened, isRead, body } = await checkChapter(chapter, user, subscribed)
 
-    const chapterProps = {
-      context,
+    const chapterProps: any = {
+      body,
     }
 
-    if (!(isAdmin && request.input('md'))) {
-      const converter = new showdown.Converter()
-      chapterProps.context = converter.makeHtml(chapterProps.context)
+    if (isAdmin && request.input('md')) {
+      chapterProps.context = chapter.context
     }
 
     return response.json({
