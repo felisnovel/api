@@ -48,11 +48,14 @@ export default class AnnouncementController {
 
     const announcementProps: any = {}
 
-    if (!(isAdmin && request.input('md'))) {
-      announcementProps.content = announcement.content
+    if (isAdmin && request.input('md')) {
+      announcementProps.context = announcement.context
     }
 
-    return response.json(announcement)
+    return response.json({
+      ...announcement.toJSON(),
+      ...announcementProps,
+    })
   }
 
   async store({ request, response, bouncer }: HttpContextContract) {
