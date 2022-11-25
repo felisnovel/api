@@ -4,7 +4,6 @@ import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import UserRole from 'App/Enums/UserRole'
 import Novel from 'App/Models/Novel'
 import NovelRequestValidator from 'App/Validators/NovelRequestValidator'
-import showdown from 'showdown'
 import { isNumeric } from '../../../utils'
 
 export default class NovelController {
@@ -120,13 +119,15 @@ export default class NovelController {
       isFollowed = await novel.isFollowed(user)
     }
 
-    if (!(isAdmin && request.input('md'))) {
-      const converter = new showdown.Converter()
-      novel.description = converter.makeHtml(novel.description)
+    const novelProps: any = {}
+
+    if (isAdmin && request.input('md')) {
+      novelProps.context = novel.context
     }
 
     return response.json({
       ...novel.toJSON(),
+      ...novelProps,
       is_liked: isLiked,
       is_followed: isFollowed,
       latest_read_chapter: latestReadChapter,

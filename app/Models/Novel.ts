@@ -4,6 +4,7 @@ import {
   BelongsTo,
   belongsTo,
   column,
+  computed,
   hasMany,
   HasMany,
   HasOne,
@@ -16,6 +17,7 @@ import NovelStatus from 'App/Enums/NovelStatus'
 import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
+import showdown from 'showdown'
 import Chapter from './Chapter'
 import Country from './Country'
 import Review from './Review'
@@ -50,8 +52,14 @@ export default class Novel extends BaseModel {
   @column()
   public cover_image: string
 
-  @column()
+  @column({ serializeAs: null })
   public context: string
+
+  @computed()
+  public get body() {
+    const showdownService = new showdown.Converter()
+    return showdownService.makeHtml(this.context)
+  }
 
   @column()
   public author: string

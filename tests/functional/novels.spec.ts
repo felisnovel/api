@@ -16,7 +16,7 @@ const NOVEL_EXAMPLE_DATA = {
   other_names: 'Yüce İblis Hükümdarı, The Great Demon Lord',
   image: 'https://i.imgur.com/1ZQZ1Zm.jpg',
   cover_image: 'https://i.imgur.com/1ZQZ1Zm.jpg',
-  description: 'Yüce İblis Hükümdarı',
+  context: 'Yüce İblis Hükümdarı',
   author: 'İlker Yücel',
   license_holder: 'İlker Yücel',
   status: NovelStatus.COMPLETED,
@@ -35,7 +35,7 @@ const NEW_NOVEL_EXAMPLE_DATA = {
   other_names: 'yeniYüce İblis Hükümdarı, The Great Demon Lord',
   image: 'https://i.imgur.com/1ZQZ1Z3.jpg',
   cover_image: 'https://i.imgur.com/1ZQZ1Z3.jpg',
-  description: 'yeniYüce İblis Hükümdarı',
+  context: 'yeniYüce İblis Hükümdarı',
   author: 'yeniİlker Yücel',
   license_holder: 'yeniİlker Yücel',
   status: NovelStatus.HIATUS,
@@ -133,9 +133,11 @@ test.group('Novels', (group) => {
 
     const response = await client.post('/novels').loginAs(admin).form(data)
 
+    const { context, ...otherData } = data
+
     response.assertStatus(200)
     response.assertBodyContains({
-      ...data,
+      ...otherData,
       tags: tags.map((tag) => ({
         id: tag.id,
       })),
@@ -223,9 +225,11 @@ test.group('Novels', (group) => {
       .loginAs(admin)
       .form(newData)
 
+    const { context, ...otherNewData } = newData
+
     response.assertStatus(200)
     response.assertBodyContains({
-      ...newData,
+      ...otherNewData,
       tags: tags.map((tag) => ({
         id: tag.id,
       })),
@@ -247,8 +251,10 @@ test.group('Novels', (group) => {
       .loginAs(admin)
       .form(newData)
 
+    const { context, ...otherNewData } = newData
+
     response.assertStatus(200)
-    response.assertBodyContains(newData)
+    response.assertBodyContains(otherNewData)
   })
 
   test('user cannot update a novel', async ({ client }) => {
