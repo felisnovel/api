@@ -54,6 +54,23 @@ export default class NovelController {
       .orderBy('id', 'desc')
       .paginate(request.input('page', 1), request.input('take', 10))
 
+    if (request.input('fields')) {
+      const fields = request.input('fields').split(',')
+
+      const novelsJSON = novels.toJSON()
+
+      return response.send({
+        ...novelsJSON,
+        data: novelsJSON.data.map((novel) => {
+          const result = {}
+          for (const field of fields) {
+            result[field] = novel[field]
+          }
+          return result
+        }),
+      })
+    }
+
     return response.send(novels)
   }
 
