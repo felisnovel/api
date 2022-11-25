@@ -3,6 +3,6 @@ import AnnouncementFactory from 'Database/factories/AnnouncementFactory'
 
 export default class extends BaseSeeder {
   public async run() {
-    await AnnouncementFactory.createMany(8)
+    await AnnouncementFactory.createMany(1)
   }
 }
