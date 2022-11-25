@@ -29,10 +29,18 @@ export default class AnnouncementController {
       .orderBy('created_at', 'desc')
       .paginate(request.input('page', 1), request.input('take', 8))
 
-    return response.send(announcements)
+    const announcementsJSON = announcements.toJSON()
+
+    return response.send({
+      ...announcementsJSON,
+      data: announcementsJSON.data.map((announcement) => ({
+        ...announcement.toJSON(),
+        context: isAdmin && request.input('md') ? announcement.context : undefined,
+      })),
+    })
   }
 
-  async show({ auth, request, params, response }: HttpContextContract) {
+  async show({ params, response }: HttpContextContract) {
     const { id } = params
 
     const announcementQuery = Announcement.query()
@@ -43,19 +51,7 @@ export default class AnnouncementController {
     }
     const announcement = await announcementQuery.firstOrFail()
 
-    const user = await auth.authenticate()
-    const isAdmin = user?.role === UserRole.ADMIN
-
-    const announcementProps: any = {}
-
-    if (isAdmin && request.input('md')) {
-      announcementProps.context = announcement.context
-    }
-
-    return response.json({
-      ...announcement.toJSON(),
-      ...announcementProps,
-    })
+    return response.json(announcement)
   }
 
   async store({ request, response, bouncer }: HttpContextContract) {
