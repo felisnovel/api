@@ -19,7 +19,7 @@ export default Factory.define(Novel, async ({ faker }) => {
     other_names: faker.lorem.words(3),
     image: faker.image.imageUrl(300, 500),
     cover_image: faker.image.imageUrl(),
-    description: faker.lorem.paragraphs(3),
+    context: faker.lorem.paragraphs(3),
     author: faker.name.fullName(),
     license_holder: faker.name.fullName(),
     status: faker.helpers.arrayElement(Object.values(NovelStatus)),

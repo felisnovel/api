@@ -13,7 +13,7 @@ export default class NovelRequestValidator {
     shorthand: schema.string(),
     image: schema.string.optional(),
     cover_image: schema.string.optional(),
-    description: schema.string(),
+    context: schema.string(),
     author: schema.string(),
     license_holder: schema.string(),
     status: schema.enum(Object.values(NovelStatus)),

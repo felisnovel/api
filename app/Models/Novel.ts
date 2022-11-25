@@ -51,7 +51,7 @@ export default class Novel extends BaseModel {
   public cover_image: string
 
   @column()
-  public description: string
+  public context: string
 
   @column()
   public author: string

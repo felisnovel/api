@@ -16,7 +16,7 @@ export default class extends BaseSchema {
       table.string('shorthand')
       table.string('image').nullable()
       table.string('cover_image').nullable()
-      table.text('description')
+      table.text('context')
       table.string('author')
       table.string('license_holder').nullable()
 
