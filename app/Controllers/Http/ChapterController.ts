@@ -10,12 +10,12 @@ import showdown from 'showdown'
 async function checkChapter(item, user, subscribed) {
   let isRead = false
   let isPurchased = false
-  let isOpened = false
+  let isOpened = item.is_premium ? false : true
 
   if (user) {
     isRead = await item.isRead(user)
     isPurchased = await item.isPurchased(user)
-    isOpened = !item.is_premium || isPurchased || subscribed?.premium_eps ? true : false
+    isOpened = isOpened || isPurchased || subscribed?.premium_eps ? true : false
   }
 
   return {
