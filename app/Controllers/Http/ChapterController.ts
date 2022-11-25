@@ -11,7 +11,7 @@ async function checkChapter(item, user, subscribed) {
   let isRead = false
   let isPurchased = false
   let isOpened = item.is_premium ? false : true
-  let body = null
+  let body = item.description
 
   if (user) {
     isRead = await item.isRead(user)
