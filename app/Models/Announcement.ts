@@ -1,7 +1,8 @@
 import { slugify } from '@ioc:Adonis/Addons/LucidSlugify'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm'
 import AnnouncementCategory from 'App/Enums/AnnouncementCategory'
 import { DateTime } from 'luxon'
+import showdown from 'showdown'
 import AnnouncementPublishStatus from '../Enums/AnnouncementPublishStatus'
 
 export default class Announcement extends BaseModel {
@@ -21,8 +22,14 @@ export default class Announcement extends BaseModel {
   @column()
   public publish_status: AnnouncementPublishStatus
 
-  @column()
+  @column({ serializeAs: null })
   public context: string
+
+  @computed()
+  public get body() {
+    const showdownService = new showdown.Converter()
+    return showdownService.makeHtml(this.context)
+  }
 
   @column()
   public category: AnnouncementCategory

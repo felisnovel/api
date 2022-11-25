@@ -3,7 +3,6 @@ import AnnouncementPublishStatus from 'App/Enums/AnnouncementPublishStatus'
 import UserRole from 'App/Enums/UserRole'
 import Announcement from 'App/Models/Announcement'
 import AnnouncementRequestValidator from 'App/Validators/AnnouncementRequestValidator'
-import showdown from 'showdown'
 import { isNumeric } from '../../../utils'
 
 export default class AnnouncementController {
@@ -47,9 +46,10 @@ export default class AnnouncementController {
     const user = await auth.authenticate()
     const isAdmin = user?.role === UserRole.ADMIN
 
+    const announcementProps: any = {}
+
     if (!(isAdmin && request.input('md'))) {
-      const converter = new showdown.Converter()
-      announcement.content = converter.makeHtml(announcement.content)
+      announcementProps.content = announcement.content
     }
 
     return response.json(announcement)

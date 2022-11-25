@@ -7,7 +7,7 @@ import { cleanAll } from '../utils'
 
 const ANNOUNCEMENT_EXAMPLE_DATA = {
   title: 'Felisnovel arkadaşları arıyor!',
-  content: 'Felisnovel arkadaşları arıyor!',
+  context: 'Felisnovel arkadaşları arıyor!',
   category: AnnouncementCategory.GENERAL,
   publish_status: AnnouncementPublishStatus.PUBLISHED,
 }
@@ -28,8 +28,10 @@ test.group('Announcements', (group) => {
 
     const response = await client.post('/announcements').loginAs(admin).form(data)
 
+    const { context, ...otherData } = data
+
     response.assertStatus(200)
-    response.assertBodyContains(data)
+    response.assertBodyContains(otherData)
   })
 
   test('user cannot create a announcement', async ({ client }) => {
@@ -69,8 +71,10 @@ test.group('Announcements', (group) => {
       .loginAs(admin)
       .form(newData)
 
+    const { context, ...otherNewData } = newData
+
     response.assertStatus(200)
-    response.assertBodyContains(newData)
+    response.assertBodyContains(otherNewData)
   })
 
   test('user cannot update a announcement', async ({ client }) => {
