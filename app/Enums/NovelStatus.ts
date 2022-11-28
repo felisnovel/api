@@ -1,7 +1,7 @@
 enum NovelStatus {
   ONGOING = 'ongoing',
   COMPLETED = 'completed',
-  HIATUS = 'HIATUS',
+  HIATUS = 'hiatus',
 }
 
 export default NovelStatus
