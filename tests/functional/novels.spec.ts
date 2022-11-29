@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import NovelStatus from 'App/Enums/NovelStatus'
 import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
+import { expect } from 'chai'
 import ChapterFactory from 'Database/factories/ChapterFactory'
 import CountryFactory from 'Database/factories/CountryFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
@@ -242,17 +243,16 @@ test.group('Novels', (group) => {
 
     const response = await client.get(`/novels/${novel.id}`)
 
+    const volumes = (await response.body()).volumes
+
     response.assertStatus(200)
-    response.assertBodyContains({
-      volumes: [
-        { name: 'Yardımcı Cilt 1' },
-        { name: 'Yardımcı Cilt 2' },
-        { volume_number: 1 },
-        { volume_number: 2 },
-        { volume_number: 3 },
-        { volume_number: 4 },
-      ],
-    })
+
+    expect(volumes[0].name).to.equal('Yardımcı Cilt 1')
+    expect(volumes[1].name).to.equal('Yardımcı Cilt 2')
+    expect(volumes[2].volume_number).to.equal(4)
+    expect(volumes[3].volume_number).to.equal(3)
+    expect(volumes[4].volume_number).to.equal(2)
+    expect(volumes[5].volume_number).to.equal(1)
   })
 
   test('update a novel', async ({ client }) => {
