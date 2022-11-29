@@ -29,7 +29,7 @@ export default class Chapter extends BaseModel {
   public context: string
 
   @computed()
-  public get description() {
+  public get body() {
     return this.context.replace(/<[^>]*>?/gm, '').substring(0, 200)
   }
 

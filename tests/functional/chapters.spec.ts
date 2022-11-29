@@ -54,7 +54,7 @@ test.group('Chapters', (group) => {
 
     const response = await client.post('/chapters').loginAs(admin).form(data)
 
-    const { context, ...otherData } = data
+    const { context, translation_note, ...otherData } = data
 
     response.assertStatus(200)
     response.assertBodyContains(otherData)
@@ -81,6 +81,7 @@ test.group('Chapters', (group) => {
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
       volume_id: novel.volumes[0].id,
+      context: 'test',
     })
       .apply('published')
       .create()
@@ -90,6 +91,36 @@ test.group('Chapters', (group) => {
     )
 
     response.assertStatus(200)
+    response.assertBodyContains({
+      body: '<p>test</p>',
+    })
+  })
+
+  test('show a chapter for md', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const novel = await NovelFactory.with('user', 1)
+      .apply('published')
+      .with('volumes', 1, (volumeFactory) => {
+        volumeFactory.apply('published')
+      })
+      .create()
+
+    const chapter = await ChapterFactory.merge({
+      novel_id: novel.id,
+      volume_id: novel.volumes[0].id,
+      context: 'test',
+    })
+      .apply('published')
+      .create()
+
+    const response = await client
+      .get(`/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}&md=true`)
+      .loginAs(admin)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      context: 'test',
+    })
   })
 
   test('update a chapter', async ({ client }) => {

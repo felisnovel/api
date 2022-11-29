@@ -11,7 +11,7 @@ async function checkChapter(item, user, subscribed) {
   let isRead = false
   let isPurchased = false
   let isOpened = item.is_premium ? false : true
-  let body = item.description
+  let body = item.body
 
   if (user) {
     isRead = await item.isRead(user)
@@ -20,7 +20,7 @@ async function checkChapter(item, user, subscribed) {
   }
 
   if (isOpened) {
-    body = new showdown.Converter().makeHtml(item.context)
+    body = new showdown.Converter().makeHtml(item.body)
   }
 
   return {
