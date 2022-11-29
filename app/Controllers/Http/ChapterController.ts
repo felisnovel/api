@@ -194,6 +194,11 @@ export default class ChapterController {
 
     if (isAdmin && request.input('md')) {
       chapterProps.context = chapter.context
+      chapterProps.translation_note = chapter.translation_note
+    } else {
+      chapterProps.translation_note = await new showdown.Converter().makeHtml(
+        chapter.translation_note
+      )
     }
 
     return response.json({

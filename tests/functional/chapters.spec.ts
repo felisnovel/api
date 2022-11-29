@@ -81,6 +81,7 @@ test.group('Chapters', (group) => {
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
       volume_id: novel.volumes[0].id,
+      translation_note: 'test',
       context: 'test',
     })
       .apply('published')
@@ -92,6 +93,7 @@ test.group('Chapters', (group) => {
 
     response.assertStatus(200)
     response.assertBodyContains({
+      translation_note: '<p>test</p>',
       body: '<p>test</p>',
     })
   })
@@ -108,6 +110,7 @@ test.group('Chapters', (group) => {
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
       volume_id: novel.volumes[0].id,
+      translation_note: 'test',
       context: 'test',
     })
       .apply('published')
@@ -119,6 +122,7 @@ test.group('Chapters', (group) => {
 
     response.assertStatus(200)
     response.assertBodyContains({
+      translation_note: 'test',
       context: 'test',
     })
   })
@@ -140,7 +144,7 @@ test.group('Chapters', (group) => {
       .loginAs(admin)
       .form(newData)
 
-    const { context, ...otherNewData } = newData
+    const { context, translation_note, ...otherNewData } = newData
 
     response.assertStatus(200)
     response.assertBodyContains(otherNewData)
@@ -168,7 +172,7 @@ test.group('Chapters', (group) => {
       .loginAs(admin)
       .form(newData)
 
-    const { context, ...otherNewData } = newData
+    const { context, translation_note, ...otherNewData } = newData
 
     response.assertStatus(200)
     response.assertBodyContains(otherNewData)
@@ -198,7 +202,7 @@ test.group('Chapters', (group) => {
       .loginAs(admin)
       .form(newData)
 
-    const { context, ...otherNewData } = newData
+    const { context, translation_note, ...otherNewData } = newData
 
     response.assertStatus(200)
     response.assertBodyContains(otherNewData)

@@ -33,7 +33,7 @@ export default class Chapter extends BaseModel {
     return this.context.replace(/<[^>]*>?/gm, '').substring(0, 200)
   }
 
-  @column()
+  @column({ serializeAs: null })
   public translation_note: string
 
   @column()
