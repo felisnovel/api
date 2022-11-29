@@ -147,6 +147,7 @@ export default class Novel extends BaseModel {
 
   @hasMany(() => Volume, {
     foreignKey: 'volume_novel_id',
+    onQuery: (query) => query.orderBy('volumes.volume_number', 'desc'),
   })
   public volumes: HasMany<typeof Volume>
 

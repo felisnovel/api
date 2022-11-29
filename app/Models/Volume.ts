@@ -11,7 +11,7 @@ export default class Volume extends BaseModel {
   public name: string | null | undefined
 
   @column()
-  public volume_number: number
+  public volume_number: number | null
 
   @column()
   public volume_novel_id: number

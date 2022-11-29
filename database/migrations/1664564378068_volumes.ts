@@ -12,7 +12,7 @@ export default class extends BaseSchema {
       table.foreign('volume_novel_id').references('novels.id').onDelete('CASCADE')
 
       table.string('name').nullable()
-      table.integer('volume_number')
+      table.integer('volume_number').nullable()
 
       table.enu('publish_status', Object.values(VolumePublishStatus))
 

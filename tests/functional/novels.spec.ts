@@ -8,6 +8,7 @@ import NovelFactory from 'Database/factories/NovelFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
 import TagFactory from 'Database/factories/TagFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import VolumeFactory from 'Database/factories/VolumeFactory'
 import { cleanAll } from '../utils'
 
 const NOVEL_EXAMPLE_DATA = {
@@ -208,6 +209,50 @@ test.group('Novels', (group) => {
       is_followed: true,
     })
     secondResponse.assertStatus(200)
+  })
+
+  test('show a novel with volumes', async ({ client }) => {
+    const novel = await NovelFactory.with('user', 1).apply('published').create()
+    await VolumeFactory.merge({ volume_novel_id: novel.id, volume_number: 1 })
+      .apply('published')
+      .create()
+    await VolumeFactory.merge({ volume_novel_id: novel.id, volume_number: 2 })
+      .apply('published')
+      .create()
+    await VolumeFactory.merge({
+      volume_novel_id: novel.id,
+      volume_number: null,
+      name: 'Yardımcı Cilt 1',
+    })
+      .apply('published')
+      .create()
+    await VolumeFactory.merge({
+      volume_novel_id: novel.id,
+      volume_number: null,
+      name: 'Yardımcı Cilt 2',
+    })
+      .apply('published')
+      .create()
+    await VolumeFactory.merge({ volume_novel_id: novel.id, volume_number: 3 })
+      .apply('published')
+      .create()
+    await VolumeFactory.merge({ volume_novel_id: novel.id, volume_number: 4 })
+      .apply('published')
+      .create()
+
+    const response = await client.get(`/novels/${novel.id}`)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      volumes: [
+        { name: 'Yardımcı Cilt 1' },
+        { name: 'Yardımcı Cilt 2' },
+        { volume_number: 1 },
+        { volume_number: 2 },
+        { volume_number: 3 },
+        { volume_number: 4 },
+      ],
+    })
   })
 
   test('update a novel', async ({ client }) => {

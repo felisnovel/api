@@ -97,7 +97,6 @@ export default class NovelController {
 
     const novel: Novel = await novelQuery
       .preload('volumes', (query) => {
-        query.orderBy('volume_number', 'desc')
         if (!isAdmin) {
           query.where('publish_status', NovelPublishStatus.PUBLISHED)
         }
