@@ -18,6 +18,7 @@
       }
     ],
     "@typescript-eslint/explicit-member-accessibility": "off",
-    "@typescript-eslint/no-empty-interface": "off"
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/naming-convention": "off"
   }
 }
