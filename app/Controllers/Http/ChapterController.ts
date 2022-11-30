@@ -147,7 +147,11 @@ export default class ChapterController {
         })
       })
       .leftJoin('volumes', 'volumes.id', 'chapters.volume_id')
-      .where('volumes.volume_number', '<=', chapter.volume.volume_number ?? 0)
+      .where(function (q) {
+        q.where('volumes.volume_number', '<=', chapter.volume.volume_number ?? 0).orWhereNull(
+          'volumes.volume_number'
+        )
+      })
       .orderBy('volumes.volume_number', 'desc')
       .orderBy('number', 'desc')
 
