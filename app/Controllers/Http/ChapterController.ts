@@ -168,7 +168,7 @@ export default class ChapterController {
         })
       })
       .leftJoin('volumes', 'volumes.id', 'chapters.volume_id')
-      .where('volumes.volume_number', '>=', chapter.volume.volume_number)
+      .where('volumes.volume_number', '>=', chapter.volume.volume_number ?? 0)
       .orderBy('volumes.volume_number', 'asc')
       .orderBy('number', 'asc')
 
