@@ -21,7 +21,8 @@
       "@adonisjs/ally",
       "@adonisjs/lucid-slugify",
       "@adonisjs/bouncer",
-      "@adonisjs/drive-s3"
+      "@adonisjs/drive-s3",
+      "adonis5-sentry"
     ]
   }
 }
