@@ -532,6 +532,7 @@ test.group('Chapter Premium', (group) => {
     responseIsNotPurchased.assertStatus(200)
     responseIsNotPurchased.assertBodyContains({
       is_opened: false,
+      body: chapter.context.slice(0, 200),
     })
 
     const plan = await PlanFactory.merge({
@@ -547,6 +548,7 @@ test.group('Chapter Premium', (group) => {
     responseIsSubscribed.assertStatus(200)
     responseIsSubscribed.assertBodyContains({
       is_opened: true,
+      body: '<p>' + chapter.context + '</p>',
     })
   })
 })

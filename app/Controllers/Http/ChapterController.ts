@@ -20,7 +20,7 @@ async function checkChapter(item, user, subscribed) {
   }
 
   if (isOpened) {
-    body = new showdown.Converter().makeHtml(item.body)
+    body = new showdown.Converter().makeHtml(item.context)
   }
 
   return {

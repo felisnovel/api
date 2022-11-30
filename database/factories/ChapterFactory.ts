@@ -10,7 +10,7 @@ export default Factory.define(Chapter, ({ faker }) => {
   return {
     title: faker.lorem.word(3),
     number: faker.datatype.number({ min: 1, max: 100 }),
-    context: faker.lorem.paragraphs(3),
+    context: faker.lorem.paragraphs(10),
     translation_note: faker.lorem.paragraphs(1),
     is_mature: faker.datatype.boolean(),
     is_premium: faker.datatype.boolean(),
