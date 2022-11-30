@@ -94,7 +94,7 @@ test.group('Chapters', (group) => {
     response.assertStatus(200)
     response.assertBodyContains({
       translation_note: '<p>test</p>',
-      body: '<p>test</p>',
+      body: 'test',
     })
   })
 
