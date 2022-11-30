@@ -48,7 +48,7 @@ export default class ChapterController {
         }
       })
       .join('volumes', 'chapters.volume_id', 'volumes.id')
-      .orderBy('volumes.volume_number', 'asc')
+      .orderByRaw('volumes.volume_number ASC NULLS FIRST')
       .orderBy('chapters.number', 'asc')
       .select('chapters.*')
       .preload('novel')
@@ -147,7 +147,7 @@ export default class ChapterController {
         })
       })
       .leftJoin('volumes', 'volumes.id', 'chapters.volume_id')
-      .where('volumes.volume_number', '<=', chapter.volume.volume_number)
+      .where('volumes.volume_number', '<=', chapter.volume.volume_number ?? 0)
       .orderBy('volumes.volume_number', 'desc')
       .orderBy('number', 'desc')
 
