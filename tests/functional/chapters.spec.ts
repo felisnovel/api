@@ -98,47 +98,6 @@ test.group('Chapters', (group) => {
     })
   })
 
-  test('show a chapter if null volume number for next chapter', async ({ client }) => {
-    const novel = await NovelFactory.with('user', 1)
-      .apply('published')
-      .with('volumes', 5, (volumeFactory) => {
-        volumeFactory.apply('published')
-      })
-      .create()
-
-    const volume = await VolumeFactory.merge({
-      volume_novel_id: novel.id,
-      volume_number: null,
-    })
-      .apply('published')
-      .create()
-
-    const nextChapter = await ChapterFactory.merge({
-      novel_id: novel.id,
-      volume_id: novel.volumes[0].id,
-    })
-      .apply('published')
-      .create()
-
-    const chapter = await ChapterFactory.merge({
-      novel_id: novel.id,
-      volume_id: volume.id,
-    })
-      .apply('published')
-      .create()
-
-    const response = await client.get(
-      `/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}`
-    )
-
-    response.assertStatus(200)
-    response.assertBodyContains({
-      next_chapter: {
-        id: nextChapter.id,
-      },
-    })
-  })
-
   test('show a chapter for md', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
     const novel = await NovelFactory.with('user', 1)
