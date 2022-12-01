@@ -30,7 +30,7 @@ export default class Chapter extends BaseModel {
 
   @computed()
   public get body() {
-    return this.context.replace(/<[^>]*>?/gm, '').substring(0, 200)
+    return this.context?.replace(/<[^>]*>?/gm, '').substring(0, 200)
   }
 
   @column({ serializeAs: null })
