@@ -6,10 +6,12 @@ import NovelFactory from 'Database/factories/NovelFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import VolumeFactory from 'Database/factories/VolumeFactory'
 
+let number = 0
+const novelChapters = {}
+
 export default Factory.define(Chapter, ({ faker }) => {
   return {
     title: faker.lorem.word(3),
-    number: faker.datatype.number({ min: 1, max: 100 }),
     context: faker.lorem.paragraphs(10),
     translation_note: faker.lorem.paragraphs(1),
     is_mature: faker.datatype.boolean(),
@@ -25,5 +27,12 @@ export default Factory.define(Chapter, ({ faker }) => {
   .relation('comments', () => CommentFactory)
   .state('published', async (item) => {
     item.publish_status = ChapterPublishStatus.PUBLISHED
+  })
+  .before('create', (factory, model, ctx) => {
+    if (!novelChapters[model?.novel_id]) {
+      novelChapters[model?.novel_id] = true
+      number = 0
+    }
+    model.number = ++number
   })
   .build()
