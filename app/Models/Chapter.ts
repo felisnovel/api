@@ -87,7 +87,9 @@ export default class Chapter extends BaseModel {
 
   @computed()
   public get fullName(): string {
-    return `${this?.novel?.name} - ${this?.volume?.volume_number}. Cilt - Bölüm ${this.number}: ${this.title}`
+    return `${this?.novel?.name} - ${
+      this?.volume?.volume_number !== 0 ? this?.volume?.volume_number + '.' : 'Yardımcı'
+    } Cilt - Bölüm ${this.number}: ${this.title}`
   }
 
   public async isPurchased(user: User): Promise<boolean> {
