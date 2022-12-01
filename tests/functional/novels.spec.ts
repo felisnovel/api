@@ -222,14 +222,14 @@ test.group('Novels', (group) => {
       .create()
     await VolumeFactory.merge({
       volume_novel_id: novel.id,
-      volume_number: null,
+      volume_number: 0,
       name: 'Yardımcı Cilt 1',
     })
       .apply('published')
       .create()
     await VolumeFactory.merge({
       volume_novel_id: novel.id,
-      volume_number: null,
+      volume_number: 0,
       name: 'Yardımcı Cilt 2',
     })
       .apply('published')
