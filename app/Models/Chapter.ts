@@ -11,6 +11,7 @@ import {
 } from '@ioc:Adonis/Lucid/Orm'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
+import showdown from 'showdown'
 import Comment from './Comment'
 import Novel from './Novel'
 import Volume from './Volume'
@@ -30,7 +31,11 @@ export default class Chapter extends BaseModel {
 
   @computed()
   public get body() {
-    return this.context?.replace(/<[^>]*>?/gm, '').substring(0, 200)
+    const showdownService = new showdown.Converter()
+    return showdownService
+      .makeHtml(this?.context)
+      .replace(/<[^>]*>?/gm, '')
+      .substring(0, 200)
   }
 
   @column({ serializeAs: null })

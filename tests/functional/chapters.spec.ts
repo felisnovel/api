@@ -81,8 +81,8 @@ test.group('Chapters', (group) => {
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
       volume_id: novel.volumes[0].id,
-      translation_note: 'test',
-      context: 'test',
+      translation_note: '*test*',
+      context: '*test*',
     })
       .apply('published')
       .create()
@@ -93,8 +93,8 @@ test.group('Chapters', (group) => {
 
     response.assertStatus(200)
     response.assertBodyContains({
-      translation_note: '<p>test</p>',
-      body: 'test',
+      translation_note: '<p><em>test</em></p>',
+      body: '<p><em>test</em></p>',
     })
   })
 
@@ -110,8 +110,8 @@ test.group('Chapters', (group) => {
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
       volume_id: novel.volumes[0].id,
-      translation_note: 'test',
-      context: 'test',
+      translation_note: '*test*',
+      context: '*test*',
     })
       .apply('published')
       .create()
@@ -122,8 +122,8 @@ test.group('Chapters', (group) => {
 
     response.assertStatus(200)
     response.assertBodyContains({
-      translation_note: 'test',
-      context: 'test',
+      translation_note: '*test*',
+      context: '*test*',
     })
   })
 
@@ -532,7 +532,7 @@ test.group('Chapter Premium', (group) => {
     responseIsNotPurchased.assertStatus(200)
     responseIsNotPurchased.assertBodyContains({
       is_opened: false,
-      body: chapter.context.slice(0, 200),
+      body: `<p>${chapter.context.slice(0, 200)}</p>`,
     })
 
     const plan = await PlanFactory.merge({

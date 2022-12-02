@@ -20,8 +20,10 @@ async function checkChapter(item, user, subscribed) {
   }
 
   if (isOpened) {
-    body = new showdown.Converter().makeHtml(item.context)
+    body = item.context
   }
+
+  body = new showdown.Converter().makeHtml(body)
 
   return {
     isRead,
@@ -196,9 +198,7 @@ export default class ChapterController {
       chapterProps.context = chapter.context
       chapterProps.translation_note = chapter.translation_note
     } else {
-      chapterProps.translation_note = await new showdown.Converter().makeHtml(
-        chapter.translation_note
-      )
+      chapterProps.translation_note = new showdown.Converter().makeHtml(chapter.translation_note)
     }
 
     return response.json({
