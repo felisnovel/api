@@ -223,14 +223,7 @@ test.group('Novels', (group) => {
     await VolumeFactory.merge({
       volume_novel_id: novel.id,
       volume_number: 0,
-      name: 'Yardımcı Cilt 1',
-    })
-      .apply('published')
-      .create()
-    await VolumeFactory.merge({
-      volume_novel_id: novel.id,
-      volume_number: 0,
-      name: 'Yardımcı Cilt 2',
+      name: 'Yardımcı Cilt',
     })
       .apply('published')
       .create()
@@ -247,12 +240,11 @@ test.group('Novels', (group) => {
 
     response.assertStatus(200)
 
-    expect(volumes[0].name).to.equal('Yardımcı Cilt 1')
-    expect(volumes[1].name).to.equal('Yardımcı Cilt 2')
-    expect(volumes[2].volume_number).to.equal(4)
-    expect(volumes[3].volume_number).to.equal(3)
-    expect(volumes[4].volume_number).to.equal(2)
-    expect(volumes[5].volume_number).to.equal(1)
+    expect(volumes[0].name).to.equal('Yardımcı Cilt')
+    expect(volumes[1].volume_number).to.equal(4)
+    expect(volumes[2].volume_number).to.equal(3)
+    expect(volumes[3].volume_number).to.equal(2)
+    expect(volumes[4].volume_number).to.equal(1)
   })
 
   test('update a novel', async ({ client }) => {
