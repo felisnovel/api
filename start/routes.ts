@@ -26,8 +26,9 @@ Route.group(() => {
   .middleware('auth')
   .prefix('/novels')
 
+Route.resource('/user/favorites', 'User/FavoriteController').only(['index', 'store', 'destroy'])
+
 Route.group(() => {
-  Route.resource('/favorites', 'User/FavoriteController').only(['index', 'store', 'destroy'])
   Route.put('/update', 'User/UpdateUser.invoke')
 })
   .prefix('/user')

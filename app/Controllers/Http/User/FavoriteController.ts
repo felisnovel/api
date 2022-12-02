@@ -1,9 +1,10 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import User from 'App/Models/User'
 import UserFavoriteRequestValidator from 'App/Validators/UserFavoriteRequestValidator'
 
 export default class FavoriteController {
-  async index({ auth, response }: HttpContextContract) {
-    const user = await auth.authenticate()
+  async index({ request, response }: HttpContextContract) {
+    const user = await User.findByOrFail('username', request.input('username'))
     await user.load('favorites')
 
     const favorites = user.favorites
@@ -11,7 +12,9 @@ export default class FavoriteController {
     return response.send(favorites)
   }
 
-  async store({ auth, request, response }: HttpContextContract) {
+  async store({ bouncer, auth, request, response }: HttpContextContract) {
+    await bouncer.authorize('auth')
+
     const user = await auth.authenticate()
 
     const data = await request.validate(UserFavoriteRequestValidator)
@@ -30,7 +33,9 @@ export default class FavoriteController {
     })
   }
 
-  async destroy({ auth, params, response }: HttpContextContract) {
+  async destroy({ bouncer, auth, params, response }: HttpContextContract) {
+    await bouncer.authorize('auth')
+
     const user = await auth.authenticate()
 
     const favorite = await user

@@ -194,7 +194,7 @@ test.group('User Favorites', (group) => {
   test('get a paginated list of user favorites', async ({ client }) => {
     const user = await UserFactory.create()
 
-    const response = await client.get('/user/favorites').loginAs(user)
+    const response = await client.get(`/user/favorites?username=${user.username}`)
 
     response.assertStatus(200)
   })
