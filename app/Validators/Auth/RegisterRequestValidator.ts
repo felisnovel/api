@@ -11,7 +11,7 @@ export default class RegisterRequestValidator {
     bio: schema.string.nullableAndOptional({ trim: true }),
     username: schema.string({ trim: true }, [
       rules.minLength(5),
-      rules.regex(/^[a-zA-Z0-9_]*$/),
+      rules.regex(/^[a-zA-Z0-9]*$/),
       rules.unique({
         table: 'users',
         column: 'username',
@@ -36,6 +36,6 @@ export default class RegisterRequestValidator {
 
   public messages = {
     '_password.regex': 'Parola en az 1 büyük, 1 küçük, 1 rakam, 1 özel karakter içermelidir',
-    'username.regex': 'Kullanıcı adı sadece harf, rakam, tire ve alt çizgi içermelidir',
+    'username.regex': 'Kullanıcı adı sadece harf ve rakam içermelidir',
   }
 }
