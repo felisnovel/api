@@ -29,10 +29,12 @@ export default Factory.define(Chapter, ({ faker }) => {
     item.publish_status = ChapterPublishStatus.PUBLISHED
   })
   .before('create', (factory, model, ctx) => {
-    if (!novelChapters[model?.novel_id]) {
-      novelChapters[model?.novel_id] = true
-      number = 0
+    if (model.number === undefined) {
+      if (!novelChapters[model?.novel_id]) {
+        novelChapters[model?.novel_id] = true
+        number = 0
+      }
+      model.number = ++number
     }
-    model.number = ++number
   })
   .build()

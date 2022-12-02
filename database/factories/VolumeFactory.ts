@@ -4,8 +4,7 @@ import Volume from 'App/Models/Volume'
 import NovelFactory from 'Database/factories/NovelFactory'
 import ChapterFactory from './ChapterFactory'
 
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
-let volume_number: number = 0
+let volume_number = 0
 const novelVolumes = {}
 
 export default Factory.define(Volume, ({ faker }) => {
@@ -20,10 +19,12 @@ export default Factory.define(Volume, ({ faker }) => {
     item.publish_status = VolumePublishStatus.PUBLISHED
   })
   .before('create', (factory, model, ctx) => {
-    if (!novelVolumes[model?.volume_novel_id]) {
-      novelVolumes[model?.volume_novel_id] = true
-      volume_number = 0
+    if (model.volume_number === undefined) {
+      if (!novelVolumes[model?.volume_novel_id]) {
+        novelVolumes[model?.volume_novel_id] = true
+        volume_number = 0
+      }
+      model.volume_number = ++volume_number
     }
-    model.volume_number = ++volume_number
   })
   .build()
