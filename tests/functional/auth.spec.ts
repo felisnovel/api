@@ -94,6 +94,19 @@ test.group('Auth', (group) => {
     response.assertStatus(200)
   })
 
+  test('valid username special characters', async ({ client }) => {
+    const data = USER_EXAMPLE_DATA
+
+    const response = await client.post(`/auth/register`).form({
+      ...data,
+      ...PASSWORD_EXAMPLE_DATA,
+      username: 'username-',
+      rules: 'true',
+    })
+
+    response.assertStatus(422)
+  })
+
   test('me', async ({ client }) => {
     const user = await UserFactory.create()
     const response = await client.get('/auth/me').loginAs(user)

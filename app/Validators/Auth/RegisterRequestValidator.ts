@@ -11,7 +11,7 @@ export default class RegisterRequestValidator {
     bio: schema.string.nullableAndOptional({ trim: true }),
     username: schema.string({ trim: true }, [
       rules.minLength(5),
-      rules.regex(/^[a-zA-Z0-9_-]*$/),
+      rules.regex(/^[a-zA-Z0-9_]*$/),
       rules.unique({
         table: 'users',
         column: 'username',
