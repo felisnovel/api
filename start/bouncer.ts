@@ -33,11 +33,11 @@ import User from 'App/Models/User'
 */
 
 export const { actions } = Bouncer.define('isAdmin', (user: User) => {
-  if (user.role === UserRole.ADMIN) {
-    return true
-  } else {
-    return false
-  }
+  if (user.role === UserRole.ADMIN) return true
+  return false
+}).define('auth', (user: User) => {
+  if (!user) return false
+  return true
 })
 
 /*
