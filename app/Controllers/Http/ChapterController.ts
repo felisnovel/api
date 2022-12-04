@@ -7,32 +7,6 @@ import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 import showdown from 'showdown'
 
-async function checkChapter(item, user, subscribed) {
-  let isRead = false
-  let isPurchased = false
-  let isOpened = item.is_premium ? false : true
-  let body = item.body
-
-  if (user) {
-    isRead = await item.isRead(user)
-    isPurchased = await item.isPurchased(user)
-    isOpened = isOpened || isPurchased || subscribed?.premium_eps ? true : false
-  }
-
-  if (isOpened) {
-    body = item.context
-  }
-
-  body = new showdown.Converter().makeHtml(body)
-
-  return {
-    isRead,
-    isPurchased,
-    isOpened,
-    body,
-  }
-}
-
 export default class ChapterController {
   async index({ auth, request, response }: HttpContextContract) {
     const user = await auth.authenticate()
@@ -91,14 +65,10 @@ export default class ChapterController {
 
       const chaptersJson = chapters.toJSON()
 
-      let subscribed = false
-      if (user) {
-        subscribed = await user.subscribed()
-      }
-
       chaptersJson.data = await Promise.all(
         chaptersJson.data.map(async (item) => {
-          const { isRead, isOpened, isPurchased } = await checkChapter(item, user, subscribed)
+          const isRead = await item.isRead(user)
+          const { isOpened, isPurchased } = await item.checkUser(user)
 
           return {
             ...item.toJSON(),
@@ -182,13 +152,16 @@ export default class ChapterController {
 
     const nextChapter = await nextChapterQuery.first()
 
-    let subscribed
+    const { isOpened } = await chapter.checkUser(user)
+    const isRead = await chapter.isRead(user)
 
-    if (user) {
-      subscribed = await user.subscribed()
+    let body = chapter.body
+
+    if (isOpened) {
+      body = chapter.context
     }
 
-    const { isOpened, isRead, body } = await checkChapter(chapter, user, subscribed)
+    body = new showdown.Converter().makeHtml(body)
 
     const chapterProps: any = {
       body,

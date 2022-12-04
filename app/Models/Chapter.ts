@@ -1,3 +1,4 @@
+import Database from '@ioc:Adonis/Lucid/Database'
 import {
   BaseModel,
   belongsTo,
@@ -14,6 +15,7 @@ import { DateTime } from 'luxon'
 import showdown from 'showdown'
 import Comment from './Comment'
 import Novel from './Novel'
+import Order from './Order'
 import Volume from './Volume'
 
 export default class Chapter extends BaseModel {
@@ -81,7 +83,6 @@ export default class Chapter extends BaseModel {
     pivotRelatedForeignKey: 'user_id',
     pivotForeignKey: 'chapter_id',
     pivotTable: 'chapter_read',
-    pivotColumns: ['created_at', 'updated_at'],
     pivotColumns: ['created_at', 'updated_at', 'order_id'],
     onQuery: (query) => {
       query.whereNullPivot('order_id')
@@ -89,9 +90,42 @@ export default class Chapter extends BaseModel {
   })
   public readUsers: ManyToMany<typeof User>
 
-  public async isRead(user: User): Promise<boolean> {
-    const read = await user.related('readChapters').query().where('id', this.id).first()
-    return read ? true : false
+  public async isPremiumRead(user: User, orderId) {
+    const chapterRead = await Database.query()
+      .from('chapter_read')
+      .where('user_id', user.id)
+      .where('order_id', orderId)
+      .first()
+
+    if (chapterRead) return true
+
+    return false
+  }
+
+  public async isRead(user: null | User) {
+    if (!user) return false
+
+    const chapterRead = await Database.query()
+      .from('chapter_read')
+      .where('user_id', user.id)
+      .whereNull('order_id')
+      .first()
+
+    if (chapterRead) return true
+
+    return false
+  }
+
+  public async isPurchased(user: null | User) {
+    if (!user) return false
+
+    const purchased = await Database.query()
+      .from('orders')
+      .where('user_id', user.id)
+      .where('chapter_id', this.id)
+      .first()
+
+    return purchased
   }
 
   @computed()
@@ -101,13 +135,27 @@ export default class Chapter extends BaseModel {
     } Cilt - Bölüm ${this.number}: ${this.title}`
   }
 
-  public async isPurchased(user: User): Promise<boolean> {
-    const purchased = await user
-      .related('purchasedChapters')
-      .query()
-      .where('chapter_id', this.id)
-      .first()
-    return purchased ? true : false
+  public async checkUser(user: null | User) {
+    let isSubscribed = false
+    let isPurchased = false
+    let subscribed: any = null
+    let purchased: null | Order = null
+
+    if (user) {
+      subscribed = await user.subscribed()
+      isSubscribed = subscribed?.premium_eps ?? false
+
+      purchased = await this.isPurchased(user)
+      isPurchased = purchased ? true : false
+    }
+
+    return {
+      purchased,
+      subscribed,
+      isSubscribed,
+      isPurchased,
+      isOpened: isSubscribed || isPurchased || !this.is_premium,
+    }
   }
 
   @hasMany(() => Comment, {
