@@ -41,6 +41,10 @@ Route.group(() => {
     Route.put('/add-coin', 'UserController.addCoin')
   }).prefix('/users/:id')
   Route.put('/media/upload', 'MediaController.upload')
+
+  Route.group(() => {
+    Route.get('/coins', 'Report/CoinReport.invoke')
+  }).prefix('reports')
 }).middleware('isAdmin')
 
 Route.resource('/users', 'UserController').except(['store', 'destroy'])
