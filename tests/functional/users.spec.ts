@@ -410,4 +410,43 @@ test.group('User Promocode', (group) => {
     await user.refresh()
     assert.equal(user.coin_balance, promocode.amount)
   })
+
+  test('already use a promocode', async ({ assert, client }) => {
+    const user = await UserFactory.create()
+    const promocode = await PromocodeFactory.with('orders', 1, function (orderFactory) {
+      orderFactory.merge({
+        user_id: user.id,
+      })
+    }).create()
+
+    const data = {
+      code: promocode.code,
+    }
+
+    const response = await client.put(`/user/use-promocode`).loginAs(user).form(data)
+
+    response.assertStatus(400)
+    response.assertBodyContains({
+      message: 'Bu promosyon kodunu daha önce kullanmışsınız.',
+    })
+  })
+
+  test('use a promocode for limit ended', async ({ client }) => {
+    const user = await UserFactory.create()
+    const promocode = await PromocodeFactory.merge({
+      limit: 10,
+      used: 10,
+    }).create()
+
+    const data = {
+      code: promocode.code,
+    }
+
+    const response = await client.put(`/user/use-promocode`).loginAs(user).form(data)
+
+    response.assertStatus(400)
+    response.assertBodyContains({
+      message: 'Bu promomosyon kodunun kullanımı sona ermiştir',
+    })
+  })
 })

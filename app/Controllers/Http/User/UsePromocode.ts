@@ -14,7 +14,15 @@ export default class UsePromocode {
 
     if (promocode.limit <= promocode.used) {
       return response.status(400).send({
-        message: 'Promocode is not available',
+        message: 'Bu promomosyon kodunun kullanımı sona ermiştir',
+      })
+    }
+
+    const isOrder = await promocode.related('orders').query().where('user_id', user.id).first()
+
+    if (isOrder) {
+      return response.status(400).send({
+        message: 'Bu promosyon kodunu daha önce kullanmışsınız.',
       })
     }
 

@@ -1,5 +1,6 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
+import Order from './Order'
 
 export default class Promocode extends BaseModel {
   @column({ isPrimary: true })
@@ -22,6 +23,11 @@ export default class Promocode extends BaseModel {
 
   @column()
   public limit: number
+
+  @hasMany(() => Order, {
+    foreignKey: 'promocode_id',
+  })
+  public orders: HasMany<typeof Order>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
