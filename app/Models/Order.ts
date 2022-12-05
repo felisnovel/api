@@ -5,6 +5,7 @@ import OrderType from '../Enums/OrderType'
 import Chapter from './Chapter'
 import Packet from './Packet'
 import Plan from './Plan'
+import Promocode from './Promocode'
 import User from './User'
 
 export default class Order extends BaseModel {
@@ -53,6 +54,14 @@ export default class Order extends BaseModel {
     foreignKey: 'plan_id',
   })
   public plan: BelongsTo<typeof Plan>
+
+  @column()
+  public promocode_id: number
+
+  @belongsTo(() => Promocode, {
+    foreignKey: 'promocode_id',
+  })
+  public promocode: BelongsTo<typeof Promocode>
 
   @column()
   public packet_id: number

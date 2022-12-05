@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
 import NovelFactory from 'Database/factories/NovelFactory'
+import PromocodeFactory from 'Database/factories/PromocodeFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
@@ -388,5 +389,25 @@ test.group('User Coins', (group) => {
 
     await user.refresh()
     assert.equal(user.free_balance, ADD_COIN_DATA.amount)
+  })
+})
+
+test.group('User Promocode', (group) => {
+  group.each.setup(cleanAll)
+
+  test('use a promocode', async ({ assert, client }) => {
+    const user = await UserFactory.create()
+    const promocode = await PromocodeFactory.create()
+
+    const data = {
+      code: promocode.code,
+    }
+
+    const response = await client.put(`/user/use-promocode`).loginAs(user).form(data)
+
+    response.assertStatus(200)
+
+    await user.refresh()
+    assert.equal(user.coin_balance, promocode.amount)
   })
 })
