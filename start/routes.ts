@@ -46,6 +46,7 @@ Route.group(() => {
 
   Route.group(() => {
     Route.get('/coins', 'Report/CoinReport.invoke')
+    Route.get('/reads', 'Report/ReadReport.invoke')
   }).prefix('reports')
 }).middleware('isAdmin')
 
