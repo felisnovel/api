@@ -11,7 +11,7 @@ import UserFactory from 'Database/factories/UserFactory'
 import VolumeFactory from 'Database/factories/VolumeFactory'
 
 export default Factory.define(Novel, async ({ faker }) => {
-  const isPremium = faker.datatype.boolean()
+  const isPremium = Math.floor(Math.random() * 10) + 1 > 2 ? false : true
 
   return {
     shorthand: faker.lorem.word(3),

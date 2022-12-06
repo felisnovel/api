@@ -52,6 +52,7 @@ export default class extends BaseSeeder {
         const chapters = await ChapterFactory.merge({
           novel_id: novel.id,
           volume_id: volume.id,
+          is_premium: novel.is_premium ? true : false,
         })
           .apply('published')
           .createMany(Math.floor(Math.random() * 10) + 1)
@@ -62,15 +63,17 @@ export default class extends BaseSeeder {
         }).create()
 
         for (const chapter of chapters) {
-          const date = DateTime.local().plus({ days: Math.floor(Math.random() * 4) })
+          if (chapter.is_premium) {
+            const date = DateTime.local().plus({ days: Math.floor(Math.random() * 4) })
 
-          await chapter.related('readUsers').attach({
-            [admin.id]: {
-              order_id: order.id,
-              created_at: date,
-              updated_at: date,
-            },
-          })
+            await chapter.related('readUsers').attach({
+              [admin.id]: {
+                order_id: order.id,
+                created_at: date,
+                updated_at: date,
+              },
+            })
+          }
 
           const comments = await CommentFactory.merge({
             user_id: admin.id,
