@@ -83,7 +83,8 @@ export default class Chapter extends BaseModel {
     pivotRelatedForeignKey: 'user_id',
     pivotForeignKey: 'chapter_id',
     pivotTable: 'chapter_read',
-    pivotColumns: ['created_at', 'updated_at', 'order_id'],
+    pivotColumns: ['order_id'],
+    pivotTimestamps: true,
     onQuery: (query) => {
       query.whereNullPivot('order_id')
     },
