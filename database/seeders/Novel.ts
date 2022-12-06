@@ -2,8 +2,11 @@ import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import ChapterFactory from 'Database/factories/ChapterFactory'
 import CommentFactory from 'Database/factories/CommentFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
+import OrderFactory from 'Database/factories/OrderFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import { DateTime } from 'luxon'
+import OrderType from '../../app/Enums/OrderType'
 
 export default class extends BaseSeeder {
   public async run() {
@@ -22,6 +25,11 @@ export default class extends BaseSeeder {
     })
       .apply('admin')
       .create()
+
+    const order = await OrderFactory.merge({
+      user_id: admin.id,
+      type: OrderType.PLAN,
+    }).create()
 
     const novels = await NovelFactory.with('volumes', 4, (volumeFactory) => {
       volumeFactory.apply('published')
@@ -48,6 +56,16 @@ export default class extends BaseSeeder {
         }).create()
 
         for (const chapter of chapters) {
+          const date = DateTime.local().plus({ days: Math.floor(Math.random() * 4) })
+
+          await chapter.related('readUsers').attach({
+            [admin.id]: {
+              order_id: order.id,
+              created_at: date,
+              updated_at: date,
+            },
+          })
+
           const comments = await CommentFactory.merge({
             user_id: admin.id,
             chapter_id: chapter.id,
