@@ -26,6 +26,12 @@ export default class extends BaseSeeder {
       .apply('admin')
       .create()
 
+    await UserFactory.merge({
+      username: 'paymestest',
+      email: 'testpaymes@gmail.com',
+      password: '123Paymes123.',
+    }).create()
+
     const order = await OrderFactory.merge({
       user_id: admin.id,
       type: OrderType.PLAN,
