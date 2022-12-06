@@ -3,8 +3,10 @@ import Promocode from 'App/Models/Promocode'
 import PromocodeRequestValidator from 'App/Validators/PromocodeRequestValidator'
 
 export default class PromocodeController {
-  async index({ response }: HttpContextContract) {
-    const promocodes = await Promocode.query().orderBy('id', 'desc')
+  async index({ request, response }: HttpContextContract) {
+    const promocodes = await Promocode.query()
+      .orderBy('id', 'desc')
+      .paginate(request.input('page', 1), request.input('take', 10))
 
     return response.send(promocodes)
   }
