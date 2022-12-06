@@ -95,6 +95,7 @@ export default class Chapter extends BaseModel {
     const chapterRead = await Database.query()
       .from('chapter_read')
       .where('user_id', user.id)
+      .where('chapter_id', this.id)
       .where('order_id', orderId)
       .first()
 
@@ -109,6 +110,7 @@ export default class Chapter extends BaseModel {
     const chapterRead = await Database.query()
       .from('chapter_read')
       .where('user_id', user.id)
+      .where('chapter_id', this.id)
       .whereNull('order_id')
       .first()
 
