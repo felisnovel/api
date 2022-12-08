@@ -3,6 +3,7 @@ import User from 'App/Models/User'
 import UserRequestValidator from 'App/Validators/UserRequestValidator'
 import { isNumeric } from '../../../utils/index'
 import Order from '../../Models/Order'
+import NotificationService from '../../Services/NotificationService'
 import AddCoinUserRequestValidator from '../../Validators/AddCoinUserRequestValidator'
 
 export default class UserController {
@@ -89,6 +90,8 @@ export default class UserController {
       user_id: user.id,
       amount: data.amount,
     })
+
+    await NotificationService.onCoinAdded(user, order)
 
     return response.json(order)
   }
