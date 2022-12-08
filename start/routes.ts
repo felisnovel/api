@@ -30,17 +30,24 @@ Route.resource('/user/favorites', 'User/FavoriteController').only(['index', 'sto
 
 Route.group(() => {
   Route.put('/update', 'User/UpdateUser.invoke')
+  Route.put('/use-promocode', 'User/UsePromocode.invoke')
 })
   .prefix('/user')
   .middleware('auth')
 
 Route.group(() => {
+  Route.resource('/promocodes', 'PromocodeController')
   Route.resource('/comments/reports', 'CommentReportController').only(['index', 'destroy'])
   Route.resource('/reviews/reports', 'ReviewReportController').only(['index', 'destroy'])
   Route.group(() => {
     Route.put('/add-coin', 'UserController.addCoin')
   }).prefix('/users/:id')
   Route.put('/media/upload', 'MediaController.upload')
+
+  Route.group(() => {
+    Route.get('/coins', 'Report/CoinReport.invoke')
+    Route.get('/reads', 'Report/ReadReport.invoke')
+  }).prefix('reports')
 }).middleware('isAdmin')
 
 Route.resource('/users', 'UserController').except(['store', 'destroy'])
@@ -69,22 +76,20 @@ Route.resource('/novels', 'NovelController')
 Route.resource('/reviews', 'ReviewController').except(['show'])
 
 Route.group(() => {
-  Route.put('/like', 'Review/LikeReview.invoke')
-  Route.put('/dislike', 'Review/DislikeReview.invoke')
-  Route.put('/set-pinned', 'Review/SetPinnedReview.invoke')
+  Route.group(() => {
+    Route.put('/like', 'Review/LikeReview.invoke')
+    Route.put('/dislike', 'Review/DislikeReview.invoke')
+    Route.put('/set-pinned', 'Review/SetPinnedReview.invoke')
 
-  Route.put('/report', 'Review/ReportReview.invoke')
-})
-  .prefix('reviews/:review')
-  .middleware('auth')
+    Route.put('/report', 'Review/ReportReview.invoke')
+  }).prefix('reviews/:review')
 
-Route.group(() => {
-  Route.put('/read', 'Chapter/ReadChapter.invoke')
-  Route.put('/unread', 'Chapter/UnreadChapter.invoke')
-  Route.put('/purchase', 'Chapter/PurchaseChapter.invoke')
-})
-  .prefix('chapters/:chapter')
-  .middleware('auth')
+  Route.group(() => {
+    Route.put('/read', 'Chapter/ReadChapter.invoke')
+    Route.put('/unread', 'Chapter/UnreadChapter.invoke')
+    Route.put('/purchase', 'Chapter/PurchaseChapter.invoke')
+  }).prefix('chapters/:chapter')
+}).middleware('auth')
 
 Route.resource('/chapters', 'ChapterController')
 

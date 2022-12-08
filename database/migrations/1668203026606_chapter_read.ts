@@ -11,6 +11,9 @@ export default class extends BaseSchema {
       table.integer('chapter_id').unsigned()
       table.foreign('chapter_id').references('chapters.id').onDelete('CASCADE')
 
+      table.integer('order_id').unsigned().nullable()
+      table.foreign('order_id').references('orders.id').onDelete('CASCADE')
+
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

@@ -92,8 +92,24 @@ export default class User extends BaseModel {
     pivotRelatedForeignKey: 'chapter_id',
     pivotForeignKey: 'user_id',
     pivotTable: 'chapter_read',
+    onQuery: (query) => {
+      query.whereNullPivot('order_id')
+    },
   })
   public readChapters: ManyToMany<typeof Chapter>
+
+  @manyToMany(() => Chapter, {
+    pivotTimestamps: true,
+    localKey: 'id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'chapter_id',
+    pivotForeignKey: 'user_id',
+    pivotTable: 'chapter_read',
+    onQuery: (query) => {
+      query.whereNotNullPivot('order_id')
+    },
+  })
+  public premiumReadChapters: ManyToMany<typeof Chapter>
 
   @manyToMany(() => Novel, {
     localKey: 'id',
@@ -177,23 +193,20 @@ export default class User extends BaseModel {
   })
   public subscribedPlans: ManyToMany<typeof Plan>
 
-  public async subscribed(plan: Plan | null = null) {
-    const subscribedQuery = Database.query()
-
-    if (plan) {
-      subscribedQuery.where('plan_id', plan.id)
-    }
-
-    const subscribed = await subscribedQuery
+  public async subscribed() {
+    return await Database.query()
       .from('orders')
       .where('user_id', this.id)
       .where('type', OrderType.PLAN)
       .where('ends_at', '>=', DateTime.now().toSQL())
       .where('starts_at', '<=', DateTime.now().toSQL())
       .leftJoin('plans', 'orders.plan_id', 'plans.id')
+      .select('orders.id as order_id', 'plans.*')
       .first()
+  }
 
-    return subscribed
+  public isPremiumEpsSubscribedOf(subscribed) {
+    return subscribed?.premium_eps ?? false
   }
 
   public buyableOf(amount = 0, type = OrderBuyType.COIN) {
