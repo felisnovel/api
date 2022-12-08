@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Comment from 'App/Models/Comment'
 import UpdateCommentRequestValidator from 'App/Validators/UpdateCommentRequestValidator'
+import NotificationService from '../../Services/NotificationService'
 import CreateCommentRequestValidator from '../../Validators/CreateCommentRequestValidator'
 
 export default class CommentController {
@@ -83,6 +84,8 @@ export default class CommentController {
       user_id: user.id,
     })
 
+    await NotificationService.onComment(comment)
+
     return response.json(comment)
   }
 
@@ -99,6 +102,8 @@ export default class CommentController {
     await comment.merge(data)
     await comment.save()
 
+    await NotificationService.onUpdate('comments', comment.id, comment.body)
+
     return response.json(comment)
   }
 
@@ -112,6 +117,8 @@ export default class CommentController {
 
     try {
       const deleted = await Comment.query().where('id', params.id).delete()
+
+      await NotificationService.onDelete('comments', comment.id)
 
       if (deleted.includes(1)) {
         return response.ok(true)

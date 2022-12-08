@@ -1,6 +1,9 @@
 import { test } from '@japa/runner'
+import ChapterFactory from 'Database/factories/ChapterFactory'
 import CommentFactory from 'Database/factories/CommentFactory'
+import NovelFactory from 'Database/factories/NovelFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import NotificationType from '../../app/Enums/NotificationType'
 import { cleanAll } from '../utils'
 
 const NEW_COMMENT_EXAMPLE_DATA = {
@@ -151,5 +154,77 @@ test.group('Comment Report', (group) => {
     })
 
     response.assertStatus(200)
+  })
+})
+
+test.group('Comment Notification', (group) => {
+  group.each.setup(cleanAll)
+
+  test('like a comment', async ({ client }) => {
+    const user = await UserFactory.create()
+    const comment = await CommentFactory.with('user', 1).create()
+
+    await client.put(`/comments/${comment.id}/like`).loginAs(user)
+
+    const response = await client.get('/notifications').loginAs(comment.user)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.LIKE,
+          title: `${user.username} yorumunu beğendi.`,
+        },
+      ],
+    })
+  })
+
+  test('mention comment', async ({ client }) => {
+    const user = await UserFactory.create()
+    const mentionUser = await UserFactory.create()
+    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
+    const chapter = await ChapterFactory.merge({
+      novel_id: novel.id,
+      volume_id: novel.volumes[0].id,
+    }).create()
+
+    const comment = await CommentFactory.with('user', 1)
+      .merge({
+        chapter_id: chapter.id,
+      })
+      .create()
+
+    await client
+      .post(`/comments`)
+      .form({
+        body: `@${mentionUser.username} test`,
+        parent_id: comment.id,
+        chapter_id: comment.chapter_id,
+      })
+      .loginAs(user)
+
+    const response = await client.get('/notifications').loginAs(comment.user)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.REPLY,
+          title: `Yorumuna yanıt verildi.`,
+        },
+      ],
+    })
+
+    const responseMentionUser = await client.get('/notifications').loginAs(mentionUser)
+
+    responseMentionUser.assertStatus(200)
+    responseMentionUser.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.MENTION,
+          title: `${user.username} yorumunda senden bahsetti.`,
+        },
+      ],
+    })
   })
 })
