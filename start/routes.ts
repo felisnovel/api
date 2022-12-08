@@ -26,6 +26,10 @@ Route.group(() => {
   .middleware('auth')
   .prefix('/novels')
 
+Route.group(() => {
+  Route.get('/notifications', 'NotificationController.index')
+}).middleware('auth')
+
 Route.resource('/user/favorites', 'User/FavoriteController').only(['index', 'store', 'destroy'])
 
 Route.group(() => {
