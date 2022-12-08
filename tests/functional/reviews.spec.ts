@@ -20,7 +20,7 @@ test.group('Reviews', (group) => {
 
   test('get a paginated list of reviews for user and is liked', async ({ client }) => {
     const user = await UserFactory.apply('admin').create()
-    const review = await ReviewFactory.create()
+    const review = await ReviewFactory.with('user', 1).create()
 
     await client.put(`/reviews/${review.id}/like`).loginAs(user)
 
@@ -66,7 +66,7 @@ test.group('Review Reactions', (group) => {
 
   test('like a review', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const review = await ReviewFactory.create()
+    const review = await ReviewFactory.with('user', 1).create()
 
     await user.loadCount('reviewLikes')
 
@@ -104,7 +104,7 @@ test.group('Review Reactions', (group) => {
 
   test('like and dislike a review', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const review = await ReviewFactory.create()
+    const review = await ReviewFactory.with('user', 1).create()
 
     await client.put(`/reviews/${review.id}/like`).loginAs(user)
     const response = await client.put(`/reviews/${review.id}/dislike`).loginAs(user)

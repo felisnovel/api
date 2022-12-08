@@ -20,7 +20,7 @@ test.group('Comments', (group) => {
 
   test('get a paginated list of comments for user and is liked', async ({ client }) => {
     const user = await UserFactory.apply('admin').create()
-    const comment = await CommentFactory.create()
+    const comment = await CommentFactory.with('user', 1).create()
 
     await client.put(`/comments/${comment.id}/like`).loginAs(user)
 
@@ -66,7 +66,7 @@ test.group('Comment Reactions', (group) => {
 
   test('like a comment', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const comment = await CommentFactory.create()
+    const comment = await CommentFactory.with('user', 1).create()
 
     await user.loadCount('commentLikes')
 
