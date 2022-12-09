@@ -1,6 +1,8 @@
 import { test } from '@japa/runner'
+import NovelFactory from 'Database/factories/NovelFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import NotificationType from '../../app/Enums/NotificationType'
 import { cleanAll } from '../utils'
 
 const NEW_REVIEW_EXAMPLE_DATA = {
@@ -167,5 +169,61 @@ test.group('Review Report', (group) => {
     })
 
     response.assertStatus(200)
+  })
+})
+
+test.group('Review Notification', (group) => {
+  group.each.setup(cleanAll)
+
+  test('like a review', async ({ client }) => {
+    const user = await UserFactory.create()
+    const review = await ReviewFactory.with('user', 1).create()
+
+    await client.put(`/reviews/${review.id}/like`).loginAs(user)
+
+    const response = await client.get('/notifications').loginAs(review.user)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.LIKE,
+          body: `${user.username} incelemeni beğendi.`,
+        },
+      ],
+    })
+  })
+
+  test('mention review', async ({ client }) => {
+    const user = await UserFactory.create()
+    const mentionUser = await UserFactory.create()
+    const novel = await NovelFactory.with('user', 1).apply('published').create()
+
+    const review = await ReviewFactory.with('user', 1)
+      .merge({
+        novel_id: novel.id,
+      })
+      .create()
+
+    await client
+      .post(`/reviews`)
+      .form({
+        body: `@${mentionUser.username} test`,
+        parent_id: review.id,
+        novel_id: review.novel_id,
+      })
+      .loginAs(user)
+
+    const response = await client.get('/notifications').loginAs(mentionUser)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.MENTION,
+          body: `${user.username} incelemesinde senden bahsetti.`,
+        },
+      ],
+    })
   })
 })

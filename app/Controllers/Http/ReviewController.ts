@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Review from 'App/Models/Review'
 import UpdateReviewRequestValidator from 'App/Validators/UpdateReviewRequestValidator'
+import NotificationService from '../../Services/NotificationService'
 import CreateReviewRequestValidator from '../../Validators/CreateReviewRequestValidator'
 
 export default class ReviewController {
@@ -54,6 +55,8 @@ export default class ReviewController {
       ...data,
       user_id: user.id,
     })
+
+    await NotificationService.onReview(review)
 
     return response.json(review)
   }
