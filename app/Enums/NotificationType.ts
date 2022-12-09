@@ -6,6 +6,7 @@ enum NotificationType {
   FOLLOW = 'follow',
   COIN = 'coin',
   FREE = 'free',
+  ANNOUNCEMENT = 'announcement',
 }
 
 export default NotificationType
