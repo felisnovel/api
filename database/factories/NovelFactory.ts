@@ -41,6 +41,7 @@ export default Factory.define(Novel, async ({ faker }) => {
   .relation('reviews', () => ReviewFactory)
   .relation('tags', () => TagFactory)
   .relation('user', () => UserFactory)
+  .relation('followers', () => UserFactory)
   .state('published', async (item) => {
     item.publish_status = NovelPublishStatus.PUBLISHED
   })

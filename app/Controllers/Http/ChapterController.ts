@@ -6,6 +6,7 @@ import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 import showdown from 'showdown'
+import NotificationService from '../../Services/NotificationService'
 
 export default class ChapterController {
   async index({ auth, request, response }: HttpContextContract) {
@@ -190,6 +191,10 @@ export default class ChapterController {
     const data = await request.validate(ChapterRequestValidator)
 
     const chapter = await Chapter.create(data)
+    await chapter.load('novel')
+    await chapter.load('volume')
+
+    await NotificationService.onChapter(chapter)
 
     return response.json(chapter)
   }
@@ -203,6 +208,11 @@ export default class ChapterController {
 
     await chapter.merge(data)
     await chapter.save()
+
+    await chapter.load('novel')
+    await chapter.load('volume')
+
+    await NotificationService.onChapter(chapter)
 
     return response.json(chapter)
   }
