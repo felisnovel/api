@@ -13,7 +13,6 @@ export default class Notifications extends BaseSchema {
       table.enum('type', Object.values(NotificationType)).notNullable()
       table.string('notificationable_type').nullable()
       table.integer('notificationable_id').nullable()
-      table.string('title').notNullable()
       table.text('body').nullable()
       table.string('href').nullable()
       table.timestamp('read_at').nullable()

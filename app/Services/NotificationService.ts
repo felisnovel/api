@@ -1,8 +1,12 @@
+import AnnouncementPublishStatus from 'App/Enums/AnnouncementPublishStatus'
+import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
 import Comment from 'App/Models/Comment'
 import Notification from 'App/Models/Notification'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import NotificationType from '../Enums/NotificationType'
+import Announcement from '../Models/Announcement'
+import Chapter from '../Models/Chapter'
 import Order from '../Models/Order'
 import Review from '../Models/Review'
 
@@ -40,30 +44,27 @@ export default class NotificationService {
 
   public static async onNotification({
     userId,
-    initiatorUser,
+    initiatorUserId,
     type,
     notificationableType,
     notificationableId,
-    title,
     body,
     href,
   }: {
     userId: number
-    initiatorUser?: User
+    initiatorUserId?: number
     type: NotificationType
     notificationableType?: string
     notificationableId?: number
-    title?: string
     body?: string
     href?: string
   }) {
     await Notification.create({
       userId,
-      initiatorUserId: initiatorUser?.id,
+      initiatorUserId,
       type,
       notificationableType,
       notificationableId,
-      title,
       body,
       href,
     })
@@ -75,30 +76,32 @@ export default class NotificationService {
       type: NotificationType.COIN,
       notificationableType: 'orders',
       notificationableId: order.id,
-      title: `${order.amount} coin yüklendi.`,
+      body: `${order.amount} coin yüklendi.`,
     })
   }
 
   public static async onMentions({
-    initiatorUser,
+    initiatorUserId,
     notificationableType,
     notificationableId,
-    title,
+    content,
     body,
   }) {
-    const usernames = body.match(/@\w+/g).map((x) => x.substr(1))
+    const usernames = content.match(/@\w+/g)?.map((x) => x.substr(1))
 
     if (usernames) {
-      const users = await User.query().whereIn('username', usernames)
+      const users = await User.query()
+        .whereIn('username', usernames)
+        .whereNot('id', initiatorUserId)
 
       for (const user of users) {
         await this.onNotification({
           userId: user.id,
-          initiatorUser,
+          initiatorUserId,
           type: NotificationType.MENTION,
           notificationableType,
           notificationableId,
-          title,
+          body,
         })
       }
     }
@@ -106,58 +109,120 @@ export default class NotificationService {
 
   public static async onCommentMentions(comment) {
     await this.onMentions({
-      initiatorUser: comment.user,
+      initiatorUserId: comment.user_id,
       notificationableType: 'comments',
       notificationableId: comment.id,
-      title: `${comment.user.username} yorumunda senden bahsetti.`,
-      body: comment.body,
+      content: comment.body,
+      body: `${comment.user.username} yorumunda senden bahsetti.`,
     })
   }
 
   public static async onReviewMentions(review) {
     await this.onMentions({
-      initiatorUser: review.user,
+      initiatorUserId: review.user_id,
       notificationableType: 'reviews',
       notificationableId: review.id,
-      title: `${review.user.username} incelemesinde senden bahsetti.`,
-      body: review.body,
+      content: review.body,
+      body: `${review.user.username} incelemesinde senden bahsetti.`,
     })
   }
 
   public static async onCommentLike(comment: Comment, initiatorUser: User) {
     await this.onNotification({
       userId: comment.user_id,
-      initiatorUser: initiatorUser,
+      initiatorUserId: initiatorUser.id,
       type: NotificationType.LIKE,
       notificationableType: 'comments',
       notificationableId: comment.id,
-      title: `${initiatorUser.username} yorumunu beğendi.`,
+      body: `${initiatorUser.username} yorumunu beğendi.`,
     })
   }
 
   public static async onReviewLike(review: Review, initiatorUser: User) {
     await this.onNotification({
       userId: review.user_id,
-      initiatorUser: initiatorUser,
+      initiatorUserId: initiatorUser.id,
       type: NotificationType.LIKE,
       notificationableType: 'comments',
       notificationableId: review.id,
-      title: `${initiatorUser.username} incelemeni beğendi.`,
+      body: `${initiatorUser.username} incelemeni beğendi.`,
     })
   }
 
   public static async onCommentReply(comment: Comment) {
     const parentComment = await Comment.findOrFail(comment.parent_id)
+    await parentComment.load('user')
 
-    await this.onNotification({
-      userId: parentComment.user_id,
-      initiatorUser: comment.user,
-      type: NotificationType.REPLY,
-      notificationableType: 'comments',
-      notificationableId: comment.id,
-      title: 'Yorumuna yanıt verildi.',
-      body: this.truncate(comment.body),
+    if (comment.user_id !== parentComment.user_id) {
+      await this.onNotification({
+        userId: parentComment.user_id,
+        initiatorUserId: comment.user.id,
+        type: NotificationType.REPLY,
+        notificationableType: 'comments',
+        notificationableId: comment.id,
+        body: `${comment.user.username} yorumuna yanıt verdi`,
+      })
+    }
+  }
+
+  public static async onSync({ onCreate, ...dist }) {
+    const { notificationableType, body, notificationableId } = dist
+
+    const isNotification = await Notification.query()
+      .where({ notificationableType, notificationableId })
+      .first()
+
+    if (!isNotification) {
+      await onCreate(dist)
+    } else {
+      await this.onUpdate(notificationableType, notificationableId, body)
+    }
+  }
+
+  public static async onNotifications(props) {
+    await this.onSync({
+      onCreate: async ({ users, ...dist }) => {
+        for (const user of users) {
+          await this.onNotification({
+            userId: user.id,
+            ...dist,
+          })
+        }
+      },
+      ...props,
     })
+  }
+
+  public static async onAnnouncement(announcement: Announcement) {
+    if (announcement.publish_status === AnnouncementPublishStatus.PUBLISHED) {
+      const users = await User.query()
+
+      await this.onNotifications({
+        users,
+        type: NotificationType.ANNOUNCEMENT,
+        notificationableType: 'announcements',
+        notificationableId: announcement.id,
+        body: announcement.title,
+      })
+    }
+  }
+
+  public static async onChapter(chapter: Chapter) {
+    if (chapter.publish_status === ChapterPublishStatus.PUBLISHED) {
+      await chapter.load('novel')
+      await chapter.load('volume')
+      await chapter.novel.load('followers')
+
+      const users = chapter.novel.followers
+
+      await this.onNotifications({
+        users,
+        type: NotificationType.FOLLOW,
+        notificationableType: 'chapters',
+        notificationableId: chapter.id,
+        body: chapter.fullName,
+      })
+    }
   }
 
   public static async onComment(comment: Comment) {
@@ -181,11 +246,9 @@ export default class NotificationService {
     notificationableId: number,
     body: string
   ) {
-    await Notification.query()
-      .where({ notificationableType, notificationableId })
-      .update({
-        body: this.truncate(body),
-      })
+    await Notification.query().where({ notificationableType, notificationableId }).update({
+      body,
+    })
   }
 
   public static async onDelete(notificationableType: string, notificationableId: number) {

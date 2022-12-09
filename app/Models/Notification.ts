@@ -1,9 +1,11 @@
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column, computed } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
 import NotificationType from '../Enums/NotificationType'
 import User from './User'
 
 export default class Notification extends BaseModel {
+  public serializeExtras = true
+
   @column({ isPrimary: true })
   public id: number
 
@@ -26,9 +28,6 @@ export default class Notification extends BaseModel {
   public notificationableId?: number
 
   @column()
-  public title: string
-
-  @column()
   public body: string
 
   @column()
@@ -48,4 +47,26 @@ export default class Notification extends BaseModel {
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
+
+  @computed()
+  public get title() {
+    switch (this.type) {
+      case NotificationType.ANNOUNCEMENT:
+        return 'Duyuru'
+      case NotificationType.REPLY:
+        return 'Yanıt'
+      case NotificationType.MENTION:
+        return 'Bahsetme'
+      case NotificationType.LIKE:
+        return 'Beğeni'
+      case NotificationType.FOLLOW:
+        return 'Takip'
+      case NotificationType.COIN:
+        return 'Coin'
+      case NotificationType.FREE:
+        return 'Paticik'
+      default:
+        return 'Bildirim'
+    }
+  }
 }
