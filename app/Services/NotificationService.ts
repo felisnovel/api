@@ -107,11 +107,15 @@ export default class NotificationService {
           body,
         })
       }
+
+      return users.map((x) => x.id)
     }
+
+    return []
   }
 
   public static async onCommentMentions(comment) {
-    await this.onMentions({
+    return await this.onMentions({
       initiatorUserId: comment.user_id,
       notificationableType: 'comments',
       notificationableId: comment.id,
@@ -121,7 +125,7 @@ export default class NotificationService {
   }
 
   public static async onReviewMentions(review) {
-    await this.onMentions({
+    return await this.onMentions({
       initiatorUserId: review.user_id,
       notificationableType: 'reviews',
       notificationableId: review.id,
@@ -152,9 +156,13 @@ export default class NotificationService {
     })
   }
 
-  public static async onCommentReply(comment: Comment) {
+  public static async onCommentReply(comment: Comment, users) {
     const parentComment = await Comment.findOrFail(comment.parent_id)
     await parentComment.load('user')
+
+    if (users.includes(parentComment.user_id)) {
+      return
+    }
 
     if (comment.user_id !== parentComment.user_id) {
       await this.onNotification({
@@ -231,10 +239,10 @@ export default class NotificationService {
   public static async onComment(comment: Comment) {
     await comment.load('user')
 
-    await this.onCommentMentions(comment)
+    const users = await this.onCommentMentions(comment)
 
     if (comment.parent_id) {
-      await this.onCommentReply(comment)
+      await this.onCommentReply(comment, users)
     }
   }
 
