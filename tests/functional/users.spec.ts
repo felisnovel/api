@@ -411,7 +411,7 @@ test.group('User Promocode', (group) => {
     assert.equal(user.coin_balance, promocode.amount)
   })
 
-  test('already use a promocode', async ({ assert, client }) => {
+  test('already use a promocode', async ({ client }) => {
     const user = await UserFactory.create()
     const promocode = await PromocodeFactory.with('orders', 1, function (orderFactory) {
       orderFactory.merge({
@@ -446,7 +446,7 @@ test.group('User Promocode', (group) => {
 
     response.assertStatus(400)
     response.assertBodyContains({
-      message: 'Bu promomosyon kodunun kullanımı sona ermiştir',
+      message: 'Bu promosyon kodunun kullanımı sona ermiştir',
     })
   })
 })

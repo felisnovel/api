@@ -18,7 +18,7 @@ export default class UsePromocode {
 
     if (promocode.limit <= promocode.used) {
       return response.status(400).send({
-        message: 'Bu promomosyon kodunun kullanımı sona ermiştir',
+        message: 'Bu promosyon kodunun kullanımı sona ermiştir',
       })
     }
 
