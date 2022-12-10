@@ -29,6 +29,8 @@ const NOVEL_EXAMPLE_DATA = {
   is_promoted: false,
   editor: 'İlker Yücel',
   translator: 'İlker Yücel',
+  coin_amount: 10,
+  free_amount: 20,
 }
 
 const NEW_NOVEL_EXAMPLE_DATA = {
@@ -48,6 +50,8 @@ const NEW_NOVEL_EXAMPLE_DATA = {
   is_promoted: true,
   editor: 'yeni İlker Yücel',
   translator: 'yeni İlker Yücel',
+  coin_amount: 0,
+  free_amount: 0,
 }
 
 test.group('Novels', (group) => {
