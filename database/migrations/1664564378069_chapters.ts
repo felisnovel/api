@@ -15,7 +15,7 @@ export default class extends BaseSchema {
       table.foreign('novel_id').references('novels.id').onDelete('CASCADE')
 
       table.string('title')
-      table.integer('number')
+      table.decimal('number')
       table.text('context')
       table.text('translation_note').nullable()
       table.boolean('is_premium')
