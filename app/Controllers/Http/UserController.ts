@@ -91,7 +91,7 @@ export default class UserController {
       amount: data.amount,
     })
 
-    await NotificationService.onCoinAdded(user, order)
+    await NotificationService.onCoinAdded(order)
 
     return response.json(order)
   }

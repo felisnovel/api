@@ -4,6 +4,7 @@ import UserRole from 'App/Enums/UserRole'
 import NovelFactory from 'Database/factories/NovelFactory'
 import PromocodeFactory from 'Database/factories/PromocodeFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import NotificationType from '../../app/Enums/NotificationType'
 import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
 
@@ -371,6 +372,18 @@ test.group('User Coins', (group) => {
 
     await user.refresh()
     assert.equal(user.coin_balance, ADD_COIN_DATA.amount)
+
+    const responseNotificatons = await client.get('/notifications').loginAs(user)
+
+    responseNotificatons.assertStatus(200)
+    responseNotificatons.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.COIN,
+          body: `${ADD_COIN_DATA.amount} pati yüklendi.`,
+        },
+      ],
+    })
   })
 
   test('add free coin to user', async ({ assert, client }) => {
@@ -389,6 +402,18 @@ test.group('User Coins', (group) => {
 
     await user.refresh()
     assert.equal(user.free_balance, ADD_COIN_DATA.amount)
+
+    const responseNotificatons = await client.get('/notifications').loginAs(user)
+
+    responseNotificatons.assertStatus(200)
+    responseNotificatons.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.FREE,
+          body: `${ADD_COIN_DATA.amount} paticik yüklendi.`,
+        },
+      ],
+    })
   })
 })
 

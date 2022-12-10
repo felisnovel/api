@@ -5,6 +5,7 @@ import Notification from 'App/Models/Notification'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import NotificationType from '../Enums/NotificationType'
+import OrderType from '../Enums/OrderType'
 import Announcement from '../Models/Announcement'
 import Chapter from '../Models/Chapter'
 import Order from '../Models/Order'
@@ -70,13 +71,15 @@ export default class NotificationService {
     })
   }
 
-  public static async onCoinAdded(user: User, order: Order) {
+  public static async onCoinAdded(order: Order) {
+    const isCoin = order.type === OrderType.COIN
+
     await this.onNotification({
-      userId: user.id,
-      type: NotificationType.COIN,
+      userId: order.user_id,
+      type: isCoin ? NotificationType.COIN : NotificationType.FREE,
       notificationableType: 'orders',
       notificationableId: order.id,
-      body: `${order.amount} coin yüklendi.`,
+      body: `${order.amount} ${isCoin ? 'pati' : 'paticik'} yüklendi.`,
     })
   }
 

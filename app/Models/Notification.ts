@@ -62,7 +62,7 @@ export default class Notification extends BaseModel {
       case NotificationType.FOLLOW:
         return 'Takip'
       case NotificationType.COIN:
-        return 'Coin'
+        return 'Pati'
       case NotificationType.FREE:
         return 'Paticik'
       default:
