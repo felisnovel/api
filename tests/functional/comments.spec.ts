@@ -23,7 +23,15 @@ test.group('Comments', (group) => {
 
   test('get a paginated list of comments for user and is liked', async ({ client }) => {
     const user = await UserFactory.apply('admin').create()
-    const comment = await CommentFactory.with('user', 1).create()
+    const novel = await NovelFactory.with('volumes', 1).with('user', 1).create()
+    const comment = await CommentFactory.with('user', 1)
+      .with('chapter', 1, (chapterFactory) => {
+        chapterFactory.merge({
+          volume_id: novel.volumes[0].id,
+          novel_id: novel.id,
+        })
+      })
+      .create()
 
     await client.put(`/comments/${comment.id}/like`).loginAs(user)
 
@@ -69,7 +77,15 @@ test.group('Comment Reactions', (group) => {
 
   test('like a comment', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const comment = await CommentFactory.with('user', 1).create()
+    const novel = await NovelFactory.with('volumes', 1).with('user', 1).create()
+    const comment = await CommentFactory.with('user', 1)
+      .with('chapter', 1, (chapterFactory) => {
+        chapterFactory.merge({
+          volume_id: novel.volumes[0].id,
+          novel_id: novel.id,
+        })
+      })
+      .create()
 
     await user.loadCount('commentLikes')
 
@@ -162,7 +178,15 @@ test.group('Comment Notification', (group) => {
 
   test('like a comment', async ({ client }) => {
     const user = await UserFactory.create()
-    const comment = await CommentFactory.with('user', 1).create()
+    const novel = await NovelFactory.with('volumes', 1).with('user', 1).create()
+    const comment = await CommentFactory.with('user', 1)
+      .with('chapter', 1, (chapterFactory) => {
+        chapterFactory.merge({
+          volume_id: novel.volumes[0].id,
+          novel_id: novel.id,
+        })
+      })
+      .create()
 
     await client.put(`/comments/${comment.id}/like`).loginAs(user)
 
