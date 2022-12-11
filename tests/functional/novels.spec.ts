@@ -326,9 +326,22 @@ test.group('Novels', (group) => {
     const user = await UserFactory.apply('user').create()
     const novel = await NovelFactory.with('user', 1).create()
 
-    const response = await client.delete(`/novels/` + novel.id).loginAs(user)
+    const response = await client.delete(`/novels/${novel.id}`).loginAs(user)
 
     response.assertStatus(403)
+  })
+
+  test('should get novel og image', async ({ client }) => {
+    await UserFactory.apply('user').create()
+    const novel = await NovelFactory.with('user', 1).create()
+
+    const response = await client.get(`/novels/${novel.slug}/og-image`)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      name: novel.name,
+      image: novel.image,
+    })
   })
 })
 

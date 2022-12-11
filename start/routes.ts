@@ -79,6 +79,8 @@ Route.resource('/packets', 'PacketController').except(['show'])
 Route.resource('/orders', 'OrderController').only(['index', 'destroy'])
 
 Route.resource('/novels', 'NovelController')
+Route.get('/novels/:slug/og-image', 'NovelController.ogImage')
+
 Route.resource('/reviews', 'ReviewController').except(['show'])
 
 Route.group(() => {

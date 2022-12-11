@@ -1,7 +1,9 @@
 import { test } from '@japa/runner'
+import DateFormat from 'App/constants/DateFormat'
 import NovelFactory from 'Database/factories/NovelFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import { format } from 'date-fns'
 import NotificationType from '../../app/Enums/NotificationType'
 import { cleanAll } from '../utils'
 
@@ -61,9 +63,84 @@ test.group('Reviews', (group) => {
     const admin = await UserFactory.apply('admin').create()
     const review = await ReviewFactory.create()
 
-    const response = await client.delete(`/reviews/` + review.id).loginAs(admin)
+    const response = await client.delete(`/reviews/${review.id}`).loginAs(admin)
 
     response.assertStatus(200)
+  })
+})
+
+test.group('Review Mute', (group) => {
+  group.each.setup(cleanAll)
+
+  test('if user muted should not create review', async ({ client }) => {
+    await UserFactory.apply('editor').create()
+    const mutedUser = await UserFactory.apply('muted').create()
+    const novel = await NovelFactory.with('user', 1).apply('published').create()
+
+    const response = await client
+      .post('/reviews')
+      .form({
+        body: `foo`,
+        novel_id: novel.id,
+      })
+      .loginAs(mutedUser)
+
+    response.assertBodyContains({
+      status: 'failure',
+      message: `Belirtilen tarihe kadar inceleme yapamazsınız. (${format(
+        mutedUser.mutedAt!.toJSDate(),
+        DateFormat
+      )})`,
+    })
+
+    response.assertStatus(401)
+  })
+
+  test('if user muted should not update review', async ({ client }) => {
+    const mutedUser = await UserFactory.apply('muted').create()
+    const review = await ReviewFactory.with('user', 1)
+      .with('novel', 1, (novelFactory) => {
+        novelFactory.with('user', 1)
+      })
+      .create()
+
+    const response = await client
+      .put(`/reviews/${review.id}`)
+      .form({
+        body: `foo`,
+      })
+      .loginAs(mutedUser)
+
+    response.assertBodyContains({
+      status: 'failure',
+      message: `Belirtilen tarihe kadar inceleme güncelleyemezsiniz. (${format(
+        mutedUser.mutedAt!.toJSDate(),
+        DateFormat
+      )})`,
+    })
+
+    response.assertStatus(401)
+  })
+
+  test('if user muted should not delete review', async ({ client }) => {
+    const mutedUser = await UserFactory.apply('muted').create()
+    const review = await ReviewFactory.with('user', 1)
+      .with('novel', 1, (novelFactory) => {
+        novelFactory.with('user', 1)
+      })
+      .create()
+
+    const response = await client.delete(`/reviews/${review.id}`).loginAs(mutedUser)
+
+    response.assertBodyContains({
+      status: 'failure',
+      message: `Belirtilen tarihe kadar inceleme silemezsiniz. (${format(
+        mutedUser.mutedAt!.toJSDate(),
+        DateFormat
+      )})`,
+    })
+
+    response.assertStatus(401)
   })
 })
 

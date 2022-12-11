@@ -1,6 +1,8 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import DateFormat from 'App/constants/DateFormat'
 import Review from 'App/Models/Review'
 import UpdateReviewRequestValidator from 'App/Validators/UpdateReviewRequestValidator'
+import { format } from 'date-fns'
 import NotificationService from '../../Services/NotificationService'
 import CreateReviewRequestValidator from '../../Validators/CreateReviewRequestValidator'
 
@@ -49,6 +51,16 @@ export default class ReviewController {
   async store({ request, auth, response }: HttpContextContract) {
     const user = await auth.authenticate()
 
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar inceleme yapamazsınız. (${format(
+          user.mutedAt.toJSDate(),
+          DateFormat
+        )})`,
+      })
+    }
+
     const data = await request.validate(CreateReviewRequestValidator)
 
     const review = await Review.create({
@@ -63,6 +75,17 @@ export default class ReviewController {
 
   async update({ params, bouncer, auth, request, response }: HttpContextContract) {
     const user = await auth.authenticate()
+
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar inceleme güncelleyemezsiniz. (${format(
+          user.mutedAt.toJSDate(),
+          DateFormat
+        )})`,
+      })
+    }
+
     const review = await Review.findOrFail(params.id)
 
     if (review.user_id !== user.id) {
@@ -79,6 +102,17 @@ export default class ReviewController {
 
   public async destroy({ auth, response, params, bouncer }: HttpContextContract) {
     const user = await auth.authenticate()
+
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar inceleme silemezsiniz. (${format(
+          user.mutedAt.toJSDate(),
+          DateFormat
+        )})`,
+      })
+    }
+
     const review = await Review.findOrFail(params.id)
 
     if (review.user_id !== user.id) {
