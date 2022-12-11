@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
+import MuteUserRequestValidator from 'App/Validators/MuteUserRequestValidator'
 import UserRequestValidator from 'App/Validators/UserRequestValidator'
 import { isNumeric } from '../../../utils/index'
 import Order from '../../Models/Order'
@@ -94,5 +95,17 @@ export default class UserController {
     await NotificationService.onCoinAdded(order)
 
     return response.json(order)
+  }
+
+  async muteUser({ params, request, response }: HttpContextContract) {
+    const data = await request.validate(MuteUserRequestValidator)
+
+    const user = await User.findOrFail(params.id)
+
+    user.mutedAt = data.muted_at
+
+    await user.save()
+
+    return response.status(204)
   }
 }
