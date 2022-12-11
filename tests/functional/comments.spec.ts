@@ -10,6 +10,87 @@ const NEW_COMMENT_EXAMPLE_DATA = {
   body: 'Yüce İblis Hükümdarı sen benim için artik hiç önemli değilsin',
 }
 
+test.group('User Muted', (group) => {
+  group.each.setup(cleanAll)
+
+  test('if user muted should not create comment', async ({ client }) => {
+    const mutedUser = await UserFactory.apply('muted').create()
+    const novel = await NovelFactory.with('volumes', 1).with('user', 1).create()
+    const comment = await CommentFactory.with('user', 1)
+      .with('chapter', 1, (chapterFactory) => {
+        chapterFactory.merge({
+          volume_id: novel.volumes[0].id,
+          novel_id: novel.id,
+        })
+      })
+      .create()
+
+    const response = await client
+      .post('/comments')
+      .form({
+        body: `foo`,
+        chapter_id: comment.chapter_id,
+      })
+      .loginAs(mutedUser)
+
+    response.assertBodyContains({
+      status: 'failure',
+      message: `Belirtilen tarihe kadar yorum yapamazsiniz. (${mutedUser.mutedAt})`,
+    })
+
+    response.assertStatus(401)
+  })
+
+  test('if user muted should not update comment', async ({ client }) => {
+    const mutedUser = await UserFactory.apply('muted').create()
+    const novel = await NovelFactory.with('volumes', 1).with('user', 1).create()
+    const comment = await CommentFactory.with('user', 1)
+      .with('chapter', 1, (chapterFactory) => {
+        chapterFactory.merge({
+          volume_id: novel.volumes[0].id,
+          novel_id: novel.id,
+        })
+      })
+      .create()
+
+    const response = await client
+      .put(`/comments/${comment.id}`)
+      .form({
+        body: `foo`,
+      })
+      .loginAs(mutedUser)
+
+    response.assertBodyContains({
+      status: 'failure',
+      message: `Belirtilen tarihe kadar yorum güncelleyemezsiniz. (${mutedUser.mutedAt})`,
+    })
+
+    response.assertStatus(401)
+  })
+
+  test('if user muted should not delete comment', async ({ client }) => {
+    const mutedUser = await UserFactory.apply('muted').create()
+    const novel = await NovelFactory.with('volumes', 1).with('user', 1).create()
+    const comment = await CommentFactory.with('user', 1)
+      .with('chapter', 1, (chapterFactory) => {
+        chapterFactory.merge({
+          volume_id: novel.volumes[0].id,
+          novel_id: novel.id,
+        })
+      })
+      .create()
+
+    const response = await client.delete(`/comments/${comment.id}`).loginAs(mutedUser)
+
+    response.assertBodyContains({
+      status: 'failure',
+      message: `Belirtilen tarihe kadar yorum silemezsiniz. (${mutedUser.mutedAt})`,
+    })
+
+    response.assertStatus(401)
+  })
+})
+
 test.group('Comments', (group) => {
   group.each.setup(cleanAll)
 

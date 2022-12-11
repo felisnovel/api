@@ -4,6 +4,8 @@ import UserRole from 'App/Enums/UserRole'
 import NovelFactory from 'Database/factories/NovelFactory'
 import PromocodeFactory from 'Database/factories/PromocodeFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import { addDays, format } from 'date-fns'
+import { DateTime } from 'luxon'
 import NotificationType from '../../app/Enums/NotificationType'
 import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
@@ -56,7 +58,7 @@ test.group('Users', (group) => {
 
   /*
   // todo: fix this test
-  
+
   test('check a user avatar', async ({ assert }) => {
     const user = await UserFactory.merge({
       email: 'alpidev9@gmail.com',
@@ -414,6 +416,29 @@ test.group('User Coins', (group) => {
         },
       ],
     })
+  })
+})
+
+test.group('User Mute', (group) => {
+  group.each.setup(cleanAll)
+
+  test('mute user', async ({ assert, client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const user = await UserFactory.create()
+
+    const dateFormat = 'yyyy-MM-dd HH:mm:ss'
+    const mutedAt = addDays(new Date(), 10)
+    const formatedMutedAt = format(mutedAt, dateFormat)
+
+    const response = await client.put(`/users/${user.id}/mute-user`).loginAs(admin).form({
+      muted_at: formatedMutedAt,
+    })
+
+    await user.refresh()
+
+    response.assertStatus(204)
+
+    assert.equal(user.mutedAt.toFormat(dateFormat), formatedMutedAt)
   })
 })
 

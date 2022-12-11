@@ -77,6 +77,13 @@ export default class CommentController {
   async store({ request, auth, response }: HttpContextContract) {
     const user = await auth.authenticate()
 
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar yorum yapamazsiniz. (${user.mutedAt})`,
+      })
+    }
+
     const data = await request.validate(CreateCommentRequestValidator)
 
     const comment = await Comment.create({
@@ -91,6 +98,14 @@ export default class CommentController {
 
   async update({ params, bouncer, auth, request, response }: HttpContextContract) {
     const user = await auth.authenticate()
+
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar yorum güncelleyemezsiniz. (${user.mutedAt})`,
+      })
+    }
+
     const comment = await Comment.findOrFail(params.id)
 
     if (comment.user_id !== user.id) {
@@ -109,6 +124,14 @@ export default class CommentController {
 
   public async destroy({ auth, response, params, bouncer }: HttpContextContract) {
     const user = await auth.authenticate()
+
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar yorum silemezsiniz. (${user.mutedAt})`,
+      })
+    }
+
     const comment = await Comment.findOrFail(params.id)
 
     if (comment.user_id !== user.id) {

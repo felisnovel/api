@@ -45,6 +45,7 @@ Route.group(() => {
   Route.resource('/reviews/reports', 'ReviewReportController').only(['index', 'destroy'])
   Route.group(() => {
     Route.put('/add-coin', 'UserController.addCoin')
+    Route.put('/mute-user', 'UserController.muteUser')
   }).prefix('/users/:id')
   Route.put('/media/upload', 'MediaController.upload')
 

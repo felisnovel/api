@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ['16.15.1', '18.3.0']
+        node-version: ['18.10.0']
 
     container:
       image: node:${{ matrix.node-version }}
@@ -59,3 +59,16 @@ jobs:
           SESSION_DRIVER: memory
           CACHE_VIEWS: false
           DRIVE_DISK: local
+          GOOGLE_CLIENT_ID: clientId
+          GOOGLE_CLIENT_SECRET: clientSecret
+          TWITTER_CLIENT_ID: clientId
+          TWITTER_CLIENT_SECRET: clientSecret
+          DISCORD_CLIENT_ID: clientId
+          DISCORD_CLIENT_SECRET: clientSecret
+          FACEBOOK_CLIENT_ID: clientId
+          FACEBOOK_CLIENT_SECRET: clientSecret
+          S3_KEY: dummyKey
+          S3_SECRET: dummySecret
+          S3_BUCKET: dummyBucket
+          S3_REGION: dummyRegion
+          S3_ENDPOINT: dummyEndpoint
