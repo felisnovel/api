@@ -41,4 +41,6 @@ export default Env.rules({
 
   FACEBOOK_CLIENT_ID: Env.schema.string(),
   FACEBOOK_CLIENT_SECRET: Env.schema.string(),
+
+  CLOUDFLARE_R2: Env.schema.string()
 })
