@@ -4,7 +4,7 @@ import Comment from 'App/Models/Comment'
 import Notification from 'App/Models/Notification'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
-import { getChapterUrl, getNovelUrl } from '../../utils'
+import { getAnnouncementUrl, getChapterUrl, getNovelUrl } from '../../utils'
 import NotificationType from '../Enums/NotificationType'
 import OrderType from '../Enums/OrderType'
 import Announcement from '../Models/Announcement'
@@ -81,6 +81,7 @@ export default class NotificationService {
       notificationableType: 'orders',
       notificationableId: order.id,
       body: `Hesabınıza ${order.amount} ${isCoin ? 'pati' : 'paticik'} yüklenmiştir.`,
+      href: `/profilim#satin-alma-gecmisim`,
     })
   }
 
@@ -233,6 +234,7 @@ export default class NotificationService {
         notificationableType: 'announcements',
         notificationableId: announcement.id,
         body: announcement.title,
+        href: `${getAnnouncementUrl(announcement)}`,
       })
     }
   }

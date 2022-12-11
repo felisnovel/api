@@ -89,6 +89,8 @@ export default class AnnouncementController {
       const deleted = await Announcement.query().where('id', params.id).delete()
 
       if (deleted.includes(1)) {
+        await NotificationService.onDelete('announcements', params.id)
+
         return response.ok(true)
       } else {
         return response.notFound()

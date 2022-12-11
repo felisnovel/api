@@ -53,3 +53,7 @@ export function getChapterUrl(chapter): string {
 export function getNovelUrl(novel): string {
   return `/novel/${novel.slug}`
 }
+
+export function getAnnouncementUrl(announcement): string {
+  return `/duyuru/${announcement.slug}`
+}
