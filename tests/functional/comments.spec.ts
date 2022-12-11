@@ -3,8 +3,11 @@ import ChapterFactory from 'Database/factories/ChapterFactory'
 import CommentFactory from 'Database/factories/CommentFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import { format } from 'date-fns'
 import NotificationType from '../../app/Enums/NotificationType'
 import { cleanAll } from '../utils'
+
+const DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss'
 
 const NEW_COMMENT_EXAMPLE_DATA = {
   body: 'Yüce İblis Hükümdarı sen benim için artik hiç önemli değilsin',
@@ -35,7 +38,10 @@ test.group('User Muted', (group) => {
 
     response.assertBodyContains({
       status: 'failure',
-      message: `Belirtilen tarihe kadar yorum yapamazsiniz. (${mutedUser.mutedAt})`,
+      message: `Belirtilen tarihe kadar yorum yapamazsiniz. (${format(
+        mutedUser.mutedAt!.toJSDate(),
+        DATE_FORMAT
+      )})`,
     })
 
     response.assertStatus(401)
@@ -62,7 +68,10 @@ test.group('User Muted', (group) => {
 
     response.assertBodyContains({
       status: 'failure',
-      message: `Belirtilen tarihe kadar yorum güncelleyemezsiniz. (${mutedUser.mutedAt})`,
+      message: `Belirtilen tarihe kadar yorum güncelleyemezsiniz. (${format(
+        mutedUser.mutedAt!.toJSDate(),
+        DATE_FORMAT
+      )})`,
     })
 
     response.assertStatus(401)
@@ -84,7 +93,10 @@ test.group('User Muted', (group) => {
 
     response.assertBodyContains({
       status: 'failure',
-      message: `Belirtilen tarihe kadar yorum silemezsiniz. (${mutedUser.mutedAt})`,
+      message: `Belirtilen tarihe kadar yorum silemezsiniz. (${format(
+        mutedUser.mutedAt!.toJSDate(),
+        DATE_FORMAT
+      )})`,
     })
 
     response.assertStatus(401)

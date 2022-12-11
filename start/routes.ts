@@ -46,6 +46,7 @@ Route.group(() => {
   Route.group(() => {
     Route.put('/add-coin', 'UserController.addCoin')
     Route.put('/mute-user', 'UserController.muteUser')
+    Route.put('/unmute-user', 'UserController.unmuteUser')
   }).prefix('/users/:id')
   Route.put('/media/upload', 'MediaController.upload')
 

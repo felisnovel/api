@@ -108,4 +108,14 @@ export default class UserController {
 
     return response.status(204)
   }
+
+  async unmuteUser({ params, request, response }: HttpContextContract) {
+    const user = await User.findOrFail(params.id)
+
+    user.mutedAt = undefined
+
+    await user.save()
+
+    return response.status(204)
+  }
 }

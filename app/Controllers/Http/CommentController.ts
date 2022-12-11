@@ -1,9 +1,11 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Comment from 'App/Models/Comment'
 import UpdateCommentRequestValidator from 'App/Validators/UpdateCommentRequestValidator'
+import { format } from 'date-fns'
 import NotificationService from '../../Services/NotificationService'
 import CreateCommentRequestValidator from '../../Validators/CreateCommentRequestValidator'
 
+const DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss'
 export default class CommentController {
   async index({ response, auth, request }: HttpContextContract) {
     const user = await auth.authenticate()
@@ -80,7 +82,10 @@ export default class CommentController {
     if (user.mutedAt) {
       return response.unauthorized({
         status: 'failure',
-        message: `Belirtilen tarihe kadar yorum yapamazsiniz. (${user.mutedAt})`,
+        message: `Belirtilen tarihe kadar yorum yapamazsiniz. (${format(
+          user.mutedAt.toJSDate(),
+          DATE_FORMAT
+        )})`,
       })
     }
 
@@ -102,7 +107,10 @@ export default class CommentController {
     if (user.mutedAt) {
       return response.unauthorized({
         status: 'failure',
-        message: `Belirtilen tarihe kadar yorum güncelleyemezsiniz. (${user.mutedAt})`,
+        message: `Belirtilen tarihe kadar yorum güncelleyemezsiniz. (${format(
+          user.mutedAt.toJSDate(),
+          DATE_FORMAT
+        )})`,
       })
     }
 
@@ -128,7 +136,10 @@ export default class CommentController {
     if (user.mutedAt) {
       return response.unauthorized({
         status: 'failure',
-        message: `Belirtilen tarihe kadar yorum silemezsiniz. (${user.mutedAt})`,
+        message: `Belirtilen tarihe kadar yorum silemezsiniz. (${format(
+          user.mutedAt.toJSDate(),
+          DATE_FORMAT
+        )})`,
       })
     }
 

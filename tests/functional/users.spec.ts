@@ -438,7 +438,20 @@ test.group('User Mute', (group) => {
 
     response.assertStatus(204)
 
-    assert.equal(user.mutedAt.toFormat(dateFormat), formatedMutedAt)
+    assert.equal(user.mutedAt?.toFormat(dateFormat), formatedMutedAt)
+  })
+
+  test('unmute user', async ({ assert, client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const user = await UserFactory.create()
+
+    const response = await client.put(`/users/${user.id}/unmute-user`).loginAs(admin)
+
+    await user.refresh()
+
+    response.assertStatus(204)
+
+    assert.equal(user.mutedAt, undefined)
   })
 })
 
