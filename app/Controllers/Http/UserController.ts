@@ -2,6 +2,7 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import MuteUserRequestValidator from 'App/Validators/MuteUserRequestValidator'
 import UserRequestValidator from 'App/Validators/UserRequestValidator'
+import { DateTime } from 'luxon'
 import { isNumeric } from '../../../utils/index'
 import Order from '../../Models/Order'
 import NotificationService from '../../Services/NotificationService'
@@ -111,8 +112,7 @@ export default class UserController {
 
   async unmuteUser({ params, response }: HttpContextContract) {
     const user = await User.findOrFail(params.id)
-
-    user.mutedAt = undefined
+    user.mutedAt = null as unknown as DateTime
 
     await user.save()
 
