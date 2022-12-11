@@ -18,7 +18,7 @@ export default class PurchaseChapter {
     if (isPurchased) {
       return response.status(400).send({
         success: false,
-        message: 'You have already purchased this chapter.',
+        message: 'Bu bölümü zaten satın aldınız.',
       })
     }
 
@@ -26,7 +26,7 @@ export default class PurchaseChapter {
 
     if (!chapter.is_premium) {
       return response.badRequest({
-        message: 'This chapter is free',
+        message: 'Bu bölüm zaten ücretsiz.',
       })
     }
 
