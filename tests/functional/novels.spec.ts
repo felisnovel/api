@@ -341,6 +341,7 @@ test.group('Novels', (group) => {
     response.assertBodyContains({
       name: novel.name,
       image: novel.image,
+      author: novel.author,
     })
   })
 })
