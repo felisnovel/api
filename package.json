@@ -15,7 +15,7 @@
     "make:crud": "node ace crud"
   },
   "devDependencies": {
-    "@adonisjs/assembler": "^5.8.1",
+    "@adonisjs/assembler": "^5.9.5",
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
     "@japa/preset-adonis": "^1.1.0",
