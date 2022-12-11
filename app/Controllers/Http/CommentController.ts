@@ -118,9 +118,9 @@ export default class CommentController {
     try {
       const deleted = await Comment.query().where('id', params.id).delete()
 
-      await NotificationService.onDelete('comments', comment.id)
-
       if (deleted.includes(1)) {
+        await NotificationService.onDelete('comments', comment.id)
+
         return response.ok(true)
       } else {
         return response.notFound()

@@ -224,6 +224,8 @@ export default class ChapterController {
       const deleted = await Chapter.query().where('id', params.id).delete()
 
       if (deleted.includes(1)) {
+        await NotificationService.onDelete('chapters', params.id)
+
         return response.ok(true)
       } else {
         return response.notFound()

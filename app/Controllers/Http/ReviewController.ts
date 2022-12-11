@@ -89,6 +89,8 @@ export default class ReviewController {
       const deleted = await Review.query().where('id', params.id).delete()
 
       if (deleted.includes(1)) {
+        await NotificationService.onDelete('reviews', params.id)
+
         return response.ok(true)
       } else {
         return response.notFound()
