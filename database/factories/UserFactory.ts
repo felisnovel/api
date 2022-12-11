@@ -14,7 +14,7 @@ export default Factory.define(User, ({ faker }) => {
     full_name: faker.name.fullName(),
     email: faker.internet.email(),
     password: faker.internet.password(),
-    username: faker.internet.userName(),
+    username: faker.internet.userName().replace(/[^a-zA-Z0-9]/g, ''),
     role: faker.helpers.arrayElement(Object.values(UserRole)),
     gender: faker.helpers.arrayElement(Object.values(UserGender)),
     bio: faker.lorem.sentence(),

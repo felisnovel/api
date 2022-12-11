@@ -7,7 +7,7 @@ export default class ReadReport {
   async invoke({ request }: HttpContextContract) {
     const startDate = request.input('startDate')
       ? DateTime.fromFormat(request.input('startDate'), 'yyyy/MM/dd')
-      : DateTime.local().minus({ weeks: 1 })
+      : DateTime.local().set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).minus({ weeks: 1 })
     const endDate = DateTime.fromFormat(
       request.input('endDate', DateTime.local().toFormat('yyyy/MM/dd')),
       'yyyy/MM/dd'

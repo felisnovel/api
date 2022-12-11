@@ -3,6 +3,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import UserRole from 'App/Enums/UserRole'
 import Order from 'App/Models/Order'
 import User from '../../Models/User'
+import NotificationService from '../../Services/NotificationService'
 
 export default class OrderController {
   async index({ auth, request, response }: HttpContextContract) {
@@ -50,6 +51,8 @@ export default class OrderController {
 
         const user = await User.query().where('id', order.user_id).firstOrFail()
         await user.syncBalance()
+
+        await NotificationService.onDelete('orders', order.id)
 
         if (deleted.includes(1)) {
           return response.ok(true)

@@ -28,32 +28,36 @@ test.group('Reports', (group) => {
     const response = await client.get(`/reports/reads`).loginAs(admin)
 
     response.assertStatus(200)
-    response.assertBodyContains([
-      {
-        name: novel1.name,
+    response.assertBodyContains({
+      chart: {
         data: [
           {
-            value: NOVEL1_READ_COUNT,
+            name: novel1.name,
+            data: [
+              {
+                value: NOVEL1_READ_COUNT,
+              },
+            ],
+          },
+          {
+            name: novel2.name,
+            data: [
+              {
+                value: NOVEL2_READ_COUNT,
+              },
+            ],
+          },
+          {
+            name: novel3.name,
+            data: [
+              {
+                value: NOVEL3_READ_COUNT,
+              },
+            ],
           },
         ],
       },
-      {
-        name: novel2.name,
-        data: [
-          {
-            value: NOVEL2_READ_COUNT,
-          },
-        ],
-      },
-      {
-        name: novel3.name,
-        data: [
-          {
-            value: NOVEL3_READ_COUNT,
-          },
-        ],
-      },
-    ])
+    })
   })
 })
 

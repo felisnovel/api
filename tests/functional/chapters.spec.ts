@@ -6,6 +6,7 @@ import NovelFactory from 'Database/factories/NovelFactory'
 import PlanFactory from 'Database/factories/PlanFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import VolumeFactory from 'Database/factories/VolumeFactory'
+import NotificationType from '../../app/Enums/NotificationType'
 import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
 
@@ -76,6 +77,9 @@ test.group('Chapters', (group) => {
       .with('volumes', 1, (volumeFactory) => {
         volumeFactory.apply('published')
       })
+      .merge({
+        is_premium: false,
+      })
       .create()
 
     const chapter = await ChapterFactory.merge({
@@ -83,6 +87,7 @@ test.group('Chapters', (group) => {
       volume_id: novel.volumes[0].id,
       translation_note: '*test*',
       context: '*test*',
+      is_premium: false,
     })
       .apply('published')
       .create()
@@ -361,12 +366,21 @@ test.group('Chapter Reads', (group) => {
 
     const prevReadChaptersCount = Number(user.$extras.readChapters_count)
 
-    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1)
+      .with('volumes', 1)
+      .merge({
+        is_premium: false,
+      })
+      .apply('published')
+      .create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
       volume_id: novel.volumes[0].id,
-    }).create()
+      is_premium: false,
+    })
+      .apply('published')
+      .create()
 
     const response = await client.put(`/chapters/${chapter.id}/read`).loginAs(user)
     response.assertStatus(200)
@@ -549,6 +563,41 @@ test.group('Chapter Premium', (group) => {
     responseIsSubscribed.assertBodyContains({
       is_opened: true,
       body: '<p>' + chapter.context + '</p>',
+    })
+  })
+})
+
+test.group('Chapter Notification', (group) => {
+  group.each.setup(cleanAll)
+
+  test('new chapter notification', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const novel = await NovelFactory.with('user', 1)
+      .with('volumes', 1)
+      .with('followers', 1)
+      .create()
+
+    const data = {
+      ...CHAPTER_EXAMPLE_DATA,
+      novel_id: novel.id,
+      volume_id: novel.volumes[0].id,
+      publish_status: ChapterPublishStatus.PUBLISHED,
+    }
+
+    const responseChapter = await client.post('/chapters').loginAs(admin).form(data)
+
+    const chapterFullName = (await responseChapter.body()).fullName
+
+    const response = await client.get('/notifications').loginAs(novel.followers[0])
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.FOLLOW,
+          body: `${chapterFullName} eklendi.`,
+        },
+      ],
     })
   })
 })

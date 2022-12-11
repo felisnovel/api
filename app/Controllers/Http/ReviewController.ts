@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Review from 'App/Models/Review'
 import UpdateReviewRequestValidator from 'App/Validators/UpdateReviewRequestValidator'
+import NotificationService from '../../Services/NotificationService'
 import CreateReviewRequestValidator from '../../Validators/CreateReviewRequestValidator'
 
 export default class ReviewController {
@@ -55,6 +56,8 @@ export default class ReviewController {
       user_id: user.id,
     })
 
+    await NotificationService.onReview(review)
+
     return response.json(review)
   }
 
@@ -86,6 +89,8 @@ export default class ReviewController {
       const deleted = await Review.query().where('id', params.id).delete()
 
       if (deleted.includes(1)) {
+        await NotificationService.onDelete('reviews', params.id)
+
         return response.ok(true)
       } else {
         return response.notFound()

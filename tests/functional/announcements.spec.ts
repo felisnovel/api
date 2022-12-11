@@ -3,6 +3,7 @@ import AnnouncementCategory from 'App/Enums/AnnouncementCategory'
 import AnnouncementFactory from 'Database/factories/AnnouncementFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import AnnouncementPublishStatus from '../../app/Enums/AnnouncementPublishStatus'
+import NotificationType from '../../app/Enums/NotificationType'
 import { cleanAll } from '../utils'
 
 const ANNOUNCEMENT_EXAMPLE_DATA = {
@@ -107,5 +108,29 @@ test.group('Announcements', (group) => {
     const response = await client.delete(`/announcements/` + announcement.id).loginAs(user)
 
     response.assertStatus(403)
+  })
+})
+
+test.group('Announcement Notification', (group) => {
+  group.each.setup(cleanAll)
+
+  test('new announcement notification', async ({ client }) => {
+    const admin = await UserFactory.apply('admin').create()
+
+    const data = ANNOUNCEMENT_EXAMPLE_DATA
+
+    await client.post(`/announcements`).form(data).loginAs(admin)
+
+    const response = await client.get('/notifications').loginAs(admin)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.ANNOUNCEMENT,
+          body: data.title,
+        },
+      ],
+    })
   })
 })
