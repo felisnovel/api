@@ -251,6 +251,9 @@ export default class User extends BaseModel {
   public reviews: HasMany<typeof Review>
 
   @column.dateTime()
+  public mutedAt?: DateTime
+
+  @column.dateTime()
   public bannedAt?: DateTime
 
   @column.dateTime()

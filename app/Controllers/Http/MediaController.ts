@@ -1,4 +1,5 @@
 import Drive from '@ioc:Adonis/Core/Drive'
+import Env from '@ioc:Adonis/Core/Env'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import * as fs from 'fs'
 import { v4 as uuid } from 'uuid'
@@ -22,7 +23,7 @@ export default class MediaController {
     })
 
     return response.json({
-      url: `https://pub-92dce260a1e2475ebb959041fd359166.r2.dev/${fileName}`,
+      url: `${Env.get('CLOUDFLARE_R2')}${fileName}`,
     })
   }
 }

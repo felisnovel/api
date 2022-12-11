@@ -44,39 +44,39 @@ export default class NovelService {
             .where('novel_tag.tag_id', tag)
         })
       }
-
-      const novels = await novelsQuery
-        .preload('country')
-        .preload('latest_chapter', (query) => {
-          query.preload('volume')
-        })
-        .orderBy('id', 'desc')
-        .paginate(inputs.page, inputs.take)
-
-      const fields = String(inputs.fields)
-        .split(',')
-        ?.filter((x) => x !== 'context')
-
-      if (fields) {
-        const novelsJSON = novels.toJSON()
-
-        return {
-          have_fields: true,
-
-          novels: {
-            ...novelsJSON,
-            data: novelsJSON.data.map((novel) => {
-              const result = {}
-              for (const field of fields) {
-                result[field] = novel[field]
-              }
-              return result
-            }),
-          },
-        }
-      }
-
-      return { novels, have_fields: false }
     }
+
+    const novels = await novelsQuery
+      .preload('country')
+      .preload('latest_chapter', (query) => {
+        query.preload('volume')
+      })
+      .orderBy('id', 'desc')
+      .paginate(inputs.page, inputs.take)
+
+    const fields = String(inputs.fields)
+      .split(',')
+      ?.filter((x) => x !== 'context')
+
+    if (fields) {
+      const novelsJSON = novels.toJSON()
+
+      return {
+        have_fields: true,
+
+        novels: {
+          ...novelsJSON,
+          data: novelsJSON.data.map((novel) => {
+            const result = {}
+            for (const field of fields) {
+              result[field] = novel[field]
+            }
+            return result
+          }),
+        },
+      }
+    }
+
+    return { novels, have_fields: false }
   }
 }
