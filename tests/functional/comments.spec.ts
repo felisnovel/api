@@ -242,7 +242,7 @@ test.group('Comment Notification', (group) => {
       unreadNotifications: [
         {
           type: NotificationType.REPLY,
-          body: `${user.username} yorumuna yanıt verdi`,
+          body: `${user.username} yorumuna yanıt verdi.`,
         },
       ],
     })

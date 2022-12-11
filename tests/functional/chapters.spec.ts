@@ -595,7 +595,7 @@ test.group('Chapter Notification', (group) => {
       unreadNotifications: [
         {
           type: NotificationType.FOLLOW,
-          body: chapterFullName,
+          body: `${chapterFullName} eklendi.`,
         },
       ],
     })

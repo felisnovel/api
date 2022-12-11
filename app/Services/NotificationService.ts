@@ -80,7 +80,7 @@ export default class NotificationService {
       type: isCoin ? NotificationType.COIN : NotificationType.FREE,
       notificationableType: 'orders',
       notificationableId: order.id,
-      body: `${order.amount} ${isCoin ? 'pati' : 'paticik'} yüklendi.`,
+      body: `Hesabınıza ${order.amount} ${isCoin ? 'pati' : 'paticik'} yüklenmiştir.`,
     })
   }
 
@@ -189,7 +189,7 @@ export default class NotificationService {
         type: NotificationType.REPLY,
         notificationableType: 'comments',
         notificationableId: comment.id,
-        body: `${comment.user.username} yorumuna yanıt verdi`,
+        body: `${comment.user.username} yorumuna yanıt verdi.`,
         href: `${getChapterUrl(comment.chapter)}#comment${comment.id}`,
       })
     }
@@ -250,7 +250,7 @@ export default class NotificationService {
         type: NotificationType.FOLLOW,
         notificationableType: 'chapters',
         notificationableId: chapter.id,
-        body: chapter.fullName,
+        body: `${chapter.fullName} eklendi.`,
       })
     }
   }

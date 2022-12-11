@@ -380,7 +380,7 @@ test.group('User Coins', (group) => {
       unreadNotifications: [
         {
           type: NotificationType.COIN,
-          body: `${ADD_COIN_DATA.amount} pati yüklendi.`,
+          body: `Hesabınıza ${ADD_COIN_DATA.amount} pati yüklenmiştir.`,
         },
       ],
     })
@@ -410,7 +410,7 @@ test.group('User Coins', (group) => {
       unreadNotifications: [
         {
           type: NotificationType.FREE,
-          body: `${ADD_COIN_DATA.amount} paticik yüklendi.`,
+          body: `Hesabınıza ${ADD_COIN_DATA.amount} paticik yüklenmiştir.`,
         },
       ],
     })
