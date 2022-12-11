@@ -442,7 +442,7 @@ test.group('User Mute', (group) => {
   })
 
   test('unmute user', async ({ assert, client }) => {
-    const admin = await UserFactory.apply('admin').create()
+    const admin = await UserFactory.apply('admin').apply('muted').create()
     const user = await UserFactory.create()
 
     const response = await client.put(`/users/${user.id}/unmute-user`).loginAs(admin)
