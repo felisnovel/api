@@ -4,6 +4,7 @@ import Comment from 'App/Models/Comment'
 import Notification from 'App/Models/Notification'
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
+import { getChapterUrl, getNovelUrl } from '../../utils'
 import NotificationType from '../Enums/NotificationType'
 import OrderType from '../Enums/OrderType'
 import Announcement from '../Models/Announcement'
@@ -88,7 +89,7 @@ export default class NotificationService {
     notificationableType,
     notificationableId,
     content,
-    body,
+    ...dist
   }) {
     const usernames = content.match(/@\w+/g)?.map((x) => x.substr(1))
 
@@ -104,7 +105,7 @@ export default class NotificationService {
           type: NotificationType.MENTION,
           notificationableType,
           notificationableId,
-          body,
+          ...dist,
         })
       }
 
@@ -115,26 +116,36 @@ export default class NotificationService {
   }
 
   public static async onCommentMentions(comment) {
+    await comment.load('chapter')
+    await comment.chapter.load('novel')
+
     return await this.onMentions({
       initiatorUserId: comment.user_id,
       notificationableType: 'comments',
       notificationableId: comment.id,
       content: comment.body,
       body: `${comment.user.username} yorumunda senden bahsetti.`,
+      href: `${getChapterUrl(comment.chapter)}#comment${comment.id}`,
     })
   }
 
   public static async onReviewMentions(review) {
+    await review.load('novel')
+
     return await this.onMentions({
       initiatorUserId: review.user_id,
       notificationableType: 'reviews',
       notificationableId: review.id,
       content: review.body,
       body: `${review.user.username} incelemesinde senden bahsetti.`,
+      href: `${getNovelUrl(review.novel)}#review${review.id}`,
     })
   }
 
   public static async onCommentLike(comment: Comment, initiatorUser: User) {
+    await comment.load('chapter')
+    await comment.chapter.load('novel')
+
     await this.onNotification({
       userId: comment.user_id,
       initiatorUserId: initiatorUser.id,
@@ -142,10 +153,13 @@ export default class NotificationService {
       notificationableType: 'comments',
       notificationableId: comment.id,
       body: `${initiatorUser.username} yorumunu beğendi.`,
+      href: `${getChapterUrl(comment.chapter)}#comment${comment.id}`,
     })
   }
 
   public static async onReviewLike(review: Review, initiatorUser: User) {
+    await review.load('novel')
+
     await this.onNotification({
       userId: review.user_id,
       initiatorUserId: initiatorUser.id,
@@ -153,6 +167,7 @@ export default class NotificationService {
       notificationableType: 'comments',
       notificationableId: review.id,
       body: `${initiatorUser.username} incelemeni beğendi.`,
+      href: `${getNovelUrl(review.novel)}#review${review.id}`,
     })
   }
 
@@ -165,6 +180,9 @@ export default class NotificationService {
     }
 
     if (comment.user_id !== parentComment.user_id) {
+      await comment.load('chapter')
+      await comment.chapter.load('novel')
+
       await this.onNotification({
         userId: parentComment.user_id,
         initiatorUserId: comment.user.id,
@@ -172,6 +190,7 @@ export default class NotificationService {
         notificationableType: 'comments',
         notificationableId: comment.id,
         body: `${comment.user.username} yorumuna yanıt verdi`,
+        href: `${getChapterUrl(comment.chapter)}#comment${comment.id}`,
       })
     }
   }
@@ -264,22 +283,5 @@ export default class NotificationService {
 
   public static async onDelete(notificationableType: string, notificationableId: number) {
     await Notification.query().where({ notificationableType, notificationableId }).delete()
-  }
-
-  public static async getChapterUrl(comment: Comment) {
-    await comment.load('chapter')
-    await comment.chapter.load('novel')
-
-    return `/${comment.chapter.novel.slug}/${comment.chapter.novel.shorthand}-chapter-${comment.chapter.number}`
-  }
-
-  public static async getNovelUrl(review: Review) {
-    await review.load('novel')
-
-    return `/${review.novel.slug}`
-  }
-
-  private static truncate(string: string) {
-    return string.length > 255 ? string.slice(0, 255) + '...' : string
   }
 }
