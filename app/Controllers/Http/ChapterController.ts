@@ -83,7 +83,7 @@ export default class ChapterController {
     }
   }
 
-  async show({ auth, request, params, response }: HttpContextContract) {
+  async show({ auth, request, params, response, session }: HttpContextContract) {
     const novel = request.input('novel')
     const shorthand = request.input('shorthand')
     const number = params.id
@@ -172,6 +172,18 @@ export default class ChapterController {
       chapterProps.translation_note = chapter.translation_note
     } else {
       chapterProps.translation_note = new showdown.Converter().makeHtml(chapter.translation_note)
+    }
+
+    const viewCountKey = `chapter:${chapter.id}:view_count`
+    const viewCount = session.get(viewCountKey)
+    if (!viewCount) {
+      session.put(viewCountKey, true)
+
+      await chapter.merge({ view_count: chapter.view_count + 1 })
+      await chapter.save()
+
+      await chapter.novel.merge({ view_count: chapter.novel.view_count + 1 })
+      await chapter.novel.save()
     }
 
     return response.json({

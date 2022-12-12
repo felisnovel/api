@@ -98,6 +98,39 @@ test.group('Chapters', (group) => {
     })
   })
 
+  test('show a chapter for view count', async ({ client }) => {
+    const novel = await NovelFactory.with('user', 1)
+      .apply('published')
+      .with('volumes', 1, (volumeFactory) => {
+        volumeFactory.apply('published')
+      })
+      .create()
+
+    const chapter = await ChapterFactory.merge({
+      novel_id: novel.id,
+      volume_id: novel.volumes[0].id,
+    })
+      .apply('published')
+      .create()
+
+    const chapterUrl = `/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}`
+
+    const firstRequest = await client.get(chapterUrl)
+    firstRequest.assertBodyContains({
+      view_count: 1,
+    })
+
+    const secondRequest = await client.get(chapterUrl)
+    secondRequest.assertBodyContains({
+      view_count: 2,
+    })
+
+    const thirdRequest = await client.get(chapterUrl)
+    thirdRequest.assertBodyContains({
+      view_count: 3,
+    })
+  })
+
   test('show a chapter for md', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
     const novel = await NovelFactory.with('user', 1)
