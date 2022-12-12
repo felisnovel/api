@@ -91,6 +91,9 @@ export default class Novel extends BaseModel {
   public status: NovelStatus
 
   @column()
+  public view_count: number
+
+  @column()
   public publish_status: NovelPublishStatus
 
   @column()
