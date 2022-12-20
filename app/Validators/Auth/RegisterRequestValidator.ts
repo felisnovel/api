@@ -11,7 +11,7 @@ export default class RegisterRequestValidator {
     bio: schema.string.nullableAndOptional({ trim: true }),
     username: schema.string({ trim: true }, [
       rules.minLength(5),
-      rules.regex(/^[a-zA-Z0-9]*$/),
+      rules.regex(/^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/),
       rules.unique({
         table: 'users',
         column: 'username',
@@ -28,7 +28,9 @@ export default class RegisterRequestValidator {
     ]),
     _password: schema.string({}, [
       rules.minLength(8),
-      rules.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*.?&])[A-Za-z\d@$!.%*?&]{8,}$/),
+      rules.regex(
+        /^(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\-__+.]){1,}).{8,}$/
+      ),
       rules.confirmed(),
     ]),
     rules: schema.string({}, [rules.equalTo('true')]),
