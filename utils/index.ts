@@ -47,7 +47,7 @@ export function isDateDisabled(date: DateTime, disabledDates: Interval | DateTim
 }
 
 export function getChapterUrl(chapter): string {
-  return `/${chapter.novel.slug}/${chapter.novel.shorthand}-chapter-${chapter.number}`
+  return `/novel/${chapter.novel.slug}/${chapter.novel.shorthand}-chapter-${chapter.number}`
 }
 
 export function getNovelUrl(novel): string {
