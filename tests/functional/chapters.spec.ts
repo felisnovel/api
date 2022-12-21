@@ -586,7 +586,7 @@ test.group('Chapter Notification', (group) => {
 
     const responseChapter = await client.post('/chapters').loginAs(admin).form(data)
 
-    const chapterFullName = (await responseChapter.body()).fullName
+    const chapterFullName = (await responseChapter.body()).name
 
     const response = await client.get('/notifications').loginAs(novel.followers[0])
 

@@ -252,7 +252,7 @@ export default class NotificationService {
         type: NotificationType.FOLLOW,
         notificationableType: 'chapters',
         notificationableId: chapter.id,
-        body: `${chapter.fullName} eklendi.`,
+        body: `${chapter.name} eklendi.`,
       })
     }
   }
