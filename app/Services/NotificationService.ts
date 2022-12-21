@@ -283,7 +283,13 @@ export default class NotificationService {
     })
   }
 
-  public static async onDelete(notificationableType: string, notificationableId: number) {
-    await Notification.query().where({ notificationableType, notificationableId }).delete()
+  public static async onDelete(
+    notificationableType: string,
+    notificationableId: number,
+    fields = {}
+  ) {
+    await Notification.query()
+      .where({ notificationableType, notificationableId, ...fields })
+      .delete()
   }
 }
