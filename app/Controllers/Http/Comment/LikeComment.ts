@@ -2,7 +2,6 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { runCommentReaction } from 'App/Services/ReactionService'
 import ReactionTypeEnum from '../../../Enums/ReactionTypeEnum'
 import Comment from '../../../Models/Comment'
-import NotificationService from '../../../Services/NotificationService'
 
 export default class LikeComment {
   async invoke({ params, response, auth }: HttpContextContract) {
@@ -15,8 +14,6 @@ export default class LikeComment {
       value: ReactionTypeEnum.LIKE,
       id: comment.id,
     })
-
-    await NotificationService.onCommentLike(comment, user)
 
     return response.status(200).send({
       success: true,

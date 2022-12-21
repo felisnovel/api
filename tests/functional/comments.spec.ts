@@ -196,21 +196,28 @@ test.group('Comment Reactions', (group) => {
 
   test('dislike a comment', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const comment = await CommentFactory.create()
+    const novel = await NovelFactory.with('volumes', 1).with('user', 1).create()
+    const comment = await CommentFactory.with('user', 1)
+      .with('chapter', 1, (chapterFactory) => {
+        chapterFactory.merge({
+          volume_id: novel.volumes[0].id,
+          novel_id: novel.id,
+        })
+      })
+      .create()
 
     await user.loadCount('commentDislikes')
 
     const prevCommentDislikesCount = Number(user.$extras.commentDislikes_count)
 
     const response = await client.put(`/comments/${comment.id}/dislike`).loginAs(user)
+    response.assertStatus(200)
 
     await user.loadCount('commentDislikes')
 
     const newCommentDislikesCount = Number(user.$extras.commentDislikes_count)
 
     assert.equal(prevCommentDislikesCount + 1, newCommentDislikesCount)
-
-    response.assertStatus(200)
   })
 })
 

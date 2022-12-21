@@ -172,21 +172,24 @@ test.group('Review Reactions', (group) => {
 
   test('dislike a review', async ({ client, assert }) => {
     const user = await UserFactory.create()
-    const review = await ReviewFactory.create()
+    const review = await ReviewFactory.with('user', 1)
+      .with('novel', 1, (novelFactory) => {
+        novelFactory.with('user', 1)
+      })
+      .create()
 
     await user.loadCount('reviewDislikes')
 
     const prevReviewDislikesCount = Number(user.$extras.reviewDislikes_count)
 
     const response = await client.put(`/reviews/${review.id}/dislike`).loginAs(user)
+    response.assertStatus(200)
 
     await user.loadCount('reviewDislikes')
 
     const newReviewDislikesCount = Number(user.$extras.reviewDislikes_count)
 
     assert.equal(prevReviewDislikesCount + 1, newReviewDislikesCount)
-
-    response.assertStatus(200)
   })
 
   test('like and dislike a review', async ({ client, assert }) => {
