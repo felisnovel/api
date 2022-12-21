@@ -9,16 +9,10 @@ export default class UsePromocode {
 
     const promocode = await Promocode.query().where('code', request.input('code')).first()
 
-    if (!promocode || !promocode.active) {
+    if (!promocode || !promocode.active || promocode.limit <= promocode.used) {
       return response.status(400).send({
         message:
           'Bu promosyon kodunun kullanımı sona ermiştir veya yanlış promosyon kodu girmiş olabilirsiniz. Lütfen kodu kontrol ediniz.',
-      })
-    }
-
-    if (promocode.limit <= promocode.used) {
-      return response.status(400).send({
-        message: 'Bu promosyon kodunun kullanımı sona ermiştir',
       })
     }
 

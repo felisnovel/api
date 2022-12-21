@@ -5,7 +5,6 @@ import NovelFactory from 'Database/factories/NovelFactory'
 import PromocodeFactory from 'Database/factories/PromocodeFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import { addDays, format } from 'date-fns'
-import { DateTime } from 'luxon'
 import NotificationType from '../../app/Enums/NotificationType'
 import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
@@ -509,7 +508,8 @@ test.group('User Promocode', (group) => {
 
     response.assertStatus(400)
     response.assertBodyContains({
-      message: 'Bu promosyon kodunun kullanımı sona ermiştir',
+      message:
+        'Bu promosyon kodunun kullanımı sona ermiştir veya yanlış promosyon kodu girmiş olabilirsiniz. Lütfen kodu kontrol ediniz.',
     })
   })
 })
