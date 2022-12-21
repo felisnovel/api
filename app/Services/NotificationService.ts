@@ -165,7 +165,7 @@ export default class NotificationService {
       userId: review.user_id,
       initiatorUserId: initiatorUser.id,
       type: NotificationType.LIKE,
-      notificationableType: 'comments',
+      notificationableType: 'reviews',
       notificationableId: review.id,
       body: `${initiatorUser.username} incelemeni beğendi.`,
       href: `${getNovelUrl(review.novel)}#review${review.id}`,
