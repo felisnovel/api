@@ -48,7 +48,8 @@ export default class ReviewController {
     return response.send(reviewsJson)
   }
 
-  async store({ request, auth, response }: HttpContextContract) {
+  async store({ bouncer, request, auth, response }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
 
     if (user.mutedAt) {
@@ -74,6 +75,7 @@ export default class ReviewController {
   }
 
   async update({ params, bouncer, auth, request, response }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
 
     if (user.mutedAt) {
@@ -101,6 +103,7 @@ export default class ReviewController {
   }
 
   public async destroy({ auth, response, params, bouncer }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
 
     if (user.mutedAt) {

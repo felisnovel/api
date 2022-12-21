@@ -76,7 +76,8 @@ export default class CommentController {
     return response.send(commentsJson)
   }
 
-  async store({ request, auth, response }: HttpContextContract) {
+  async store({ bouncer, request, auth, response }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
 
     if (user.mutedAt) {
@@ -102,6 +103,7 @@ export default class CommentController {
   }
 
   async update({ params, bouncer, auth, request, response }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
 
     if (user.mutedAt) {
@@ -131,6 +133,7 @@ export default class CommentController {
   }
 
   public async destroy({ auth, response, params, bouncer }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
 
     if (user.mutedAt) {
