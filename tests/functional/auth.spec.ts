@@ -119,16 +119,4 @@ test.group('Auth', (group) => {
 
     response.assertStatus(401)
   })
-
-  test('update profile', async ({ client }) => {
-    const user = await UserFactory.create()
-
-    const newData = NEW_USER_EXAMPLE_DATA
-
-    const response = await client.patch(`/auth/profile`).loginAs(user).form(newData)
-
-    response.assertBodyContains(newData)
-
-    response.assertStatus(200)
-  })
 })
