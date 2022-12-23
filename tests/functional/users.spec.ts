@@ -336,8 +336,8 @@ test.group('User Actions', (group) => {
     }).create()
 
     const newData = {
-      password: 'newpassword',
-      password_confirmation: 'newpassword',
+      password: 'NewPassword$123',
+      password_confirmation: 'NewPassword$123',
       old_password: 'password',
       ...NEW_USER_DATA,
     }

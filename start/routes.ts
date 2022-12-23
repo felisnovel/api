@@ -9,7 +9,6 @@ Route.group(() => {
 
   Route.group(() => {
     Route.get('/me', 'AuthController.me')
-    Route.patch('/profile', 'AuthController.updateProfile')
   }).middleware('auth')
 }).prefix('auth')
 
