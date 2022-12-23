@@ -335,6 +335,22 @@ test.group('User Actions', (group) => {
       password: 'password',
     }).create()
 
+    const firstResponse = await client.put(`/user/update`).loginAs(user).form(NEW_USER_DATA)
+    firstResponse.assertBodyContains({
+      message: 'E-posta adresini değiştirmek için mevcut şifrenizi girmelisiniz.',
+    })
+
+    const secondResponse = await client
+      .put(`/user/update`)
+      .loginAs(user)
+      .form({
+        ...NEW_USER_DATA,
+        old_password: 'wrongpassword',
+      })
+    secondResponse.assertBodyContains({
+      message: 'Mevcut şifreniz yanlış.',
+    })
+
     const newData = {
       password: 'NewPassword$123',
       password_confirmation: 'NewPassword$123',

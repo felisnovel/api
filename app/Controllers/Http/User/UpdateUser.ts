@@ -8,12 +8,20 @@ export default class UpdateUser {
 
     const data = await request.validate(UpdateUserRequestValidator)
 
-    if (data.password) {
+    const oldPassword = request.input('old_password')
+
+    if (data.email && !oldPassword) {
+      return response.status(400).send({
+        message: 'E-posta adresini değiştirmek için mevcut şifrenizi girmelisiniz.',
+      })
+    }
+
+    if (oldPassword) {
       const hashValidate = await Hash.verify(user.password, request.input('old_password'))
 
       if (!hashValidate) {
         return response.status(400).send({
-          message: 'Old password is incorrect',
+          message: 'Mevcut şifreniz yanlış.',
         })
       }
     }
