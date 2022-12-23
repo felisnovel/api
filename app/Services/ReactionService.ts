@@ -62,22 +62,24 @@ export async function runReaction({
     event = 'delete'
   }
 
-  const createNotificationKey = {
-    review_id: 'onReviewLike',
-    comment_id: 'onCommentLike',
-  }[key]
+  if (item.user_id !== user.id) {
+    const createNotificationKey = {
+      review_id: 'onReviewLike',
+      comment_id: 'onCommentLike',
+    }[key]
 
-  const notificationableType = {
-    review_id: 'reviews',
-    comment_id: 'comments',
-  }[key]
+    const notificationableType = {
+      review_id: 'reviews',
+      comment_id: 'comments',
+    }[key]
 
-  if (event === 'create') {
-    await NotificationService[createNotificationKey](item, user)
-  } else if (event === 'delete') {
-    await NotificationService.onDelete(notificationableType, item.id, {
-      type: ReactionTypeEnum.LIKE,
-    })
+    if (event === 'create') {
+      await NotificationService[createNotificationKey](item, user)
+    } else if (event === 'delete') {
+      await NotificationService.onDelete(notificationableType, item.id, {
+        type: ReactionTypeEnum.LIKE,
+      })
+    }
   }
 
   return {
