@@ -55,5 +55,5 @@ export function getNovelUrl(novel): string {
 }
 
 export function getAnnouncementUrl(announcement): string {
-  return `/duyuru/${announcement.slug}`
+  return `/duyurular/${announcement.slug}`
 }
