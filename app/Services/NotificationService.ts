@@ -253,6 +253,7 @@ export default class NotificationService {
         notificationableType: 'chapters',
         notificationableId: chapter.id,
         body: `${chapter.name} eklendi.`,
+        href: `${getChapterUrl(chapter)}`,
       })
     }
   }
