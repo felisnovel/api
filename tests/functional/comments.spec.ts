@@ -213,6 +213,9 @@ test.group('Comment Reactions', (group) => {
     const response = await client.put(`/comments/${comment.id}/dislike`).loginAs(user)
     response.assertStatus(200)
 
+    const notifications = await user.related('notifications').query()
+    assert.equal(notifications.length, 0)
+
     await user.loadCount('commentDislikes')
 
     const newCommentDislikesCount = Number(user.$extras.commentDislikes_count)
@@ -299,6 +302,15 @@ test.group('Comment Notification', (group) => {
           body: `${user.username} yorumunu beğendi.`,
         },
       ],
+    })
+
+    await client.put(`/comments/${comment.id}/like`).loginAs(user)
+
+    const secondResponse = await client.get('/notifications').loginAs(comment.user)
+
+    secondResponse.assertStatus(200)
+    secondResponse.assertBodyContains({
+      unreadNotifications: [],
     })
   })
 

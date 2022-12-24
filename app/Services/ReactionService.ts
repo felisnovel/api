@@ -49,17 +49,18 @@ export async function runReaction({
       user_id: user.id,
       type: reactionType,
     })
-    event = 'create'
   } else if (reaction.type === reverseReactionType) {
     reaction.type = reactionType
 
     await reaction.save()
-
-    event = reactionType === ReactionTypeEnum.LIKE ? 'create' : 'delete'
   } else {
     await reaction.delete()
 
     event = 'delete'
+  }
+
+  if (!event) {
+    event = reactionType === ReactionTypeEnum.LIKE ? 'create' : 'delete'
   }
 
   if (item.user_id !== user.id) {
