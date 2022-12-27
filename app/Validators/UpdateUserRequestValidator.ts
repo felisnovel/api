@@ -3,9 +3,12 @@ import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
 import { PASSWORD_REGEX } from '../constants/Regex'
+import BaseValidator from './BaseValidator'
 
-export default class UpdateUserRequestValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class UpdateUserRequestValidator extends BaseValidator {
+  constructor(protected ctx: HttpContextContract) {
+    super()
+  }
 
   public schema = schema.create({
     email: schema.string.optional({}, [
