@@ -1,9 +1,12 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
+import BaseValidator from './BaseValidator'
 
-export default class VolumeRequestValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class VolumeRequestValidator extends BaseValidator {
+  constructor(protected ctx: HttpContextContract) {
+    super()
+  }
 
   public schema = schema.create({
     name: schema.string.nullableAndOptional({ trim: true }),

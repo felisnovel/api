@@ -1,8 +1,11 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
+import BaseValidator from './BaseValidator'
 
-export default class SetPinnedValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class SetPinnedValidator extends BaseValidator {
+  constructor(protected ctx: HttpContextContract) {
+    super()
+  }
 
   public schema = schema.create({
     is_pinned: schema.boolean(),

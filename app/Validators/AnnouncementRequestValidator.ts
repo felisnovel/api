@@ -2,9 +2,12 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import AnnouncementCategory from 'App/Enums/AnnouncementCategory'
 import AnnouncementPublishStatus from '../Enums/AnnouncementPublishStatus'
+import BaseValidator from './BaseValidator'
 
-export default class AnnouncementRequestValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class AnnouncementRequestValidator extends BaseValidator {
+  constructor(protected ctx: HttpContextContract) {
+    super()
+  }
 
   public schema = schema.create({
     title: schema.string({ trim: true }),
