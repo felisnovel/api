@@ -20,6 +20,7 @@ import ReactionTypeEnum from '../Enums/ReactionTypeEnum'
 import Chapter from './Chapter'
 import Comment from './Comment'
 import CommentReaction from './CommentReaction'
+import Notification from './Notification'
 import Novel from './Novel'
 import Order from './Order'
 import Plan from './Plan'
@@ -139,6 +140,11 @@ export default class User extends BaseModel {
   })
   public favorites: ManyToMany<typeof Novel>
 
+  @hasMany(() => Notification, {
+    foreignKey: 'userId',
+  })
+  public notifications: HasMany<typeof Notification>
+
   @hasMany(() => Comment, {
     foreignKey: 'user_id',
   })
@@ -249,6 +255,9 @@ export default class User extends BaseModel {
     foreignKey: 'user_id',
   })
   public reviews: HasMany<typeof Review>
+
+  @column.dateTime()
+  public mutedAt?: DateTime
 
   @column.dateTime()
   public bannedAt?: DateTime

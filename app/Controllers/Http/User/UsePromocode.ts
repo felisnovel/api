@@ -7,17 +7,12 @@ export default class UsePromocode {
   async invoke({ auth, request, response }: HttpContextContract) {
     const user = await auth.authenticate()
 
-    const promocode = await Promocode.query().where('code', request.input('code')).firstOrFail()
+    const promocode = await Promocode.query().where('code', request.input('code')).first()
 
-    if (!promocode.active) {
+    if (!promocode || !promocode.active || promocode.limit <= promocode.used) {
       return response.status(400).send({
-        message: 'Bu promosyon kodu aktif değildir.',
-      })
-    }
-
-    if (promocode.limit <= promocode.used) {
-      return response.status(400).send({
-        message: 'Bu promomosyon kodunun kullanımı sona ermiştir',
+        message:
+          'Bu promosyon kodunun kullanımı sona ermiştir veya yanlış promosyon kodu girmiş olabilirsiniz. Lütfen kodu kontrol ediniz.',
       })
     }
 

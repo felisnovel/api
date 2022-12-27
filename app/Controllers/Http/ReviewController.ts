@@ -1,6 +1,9 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import DateFormat from 'App/constants/DateFormat'
 import Review from 'App/Models/Review'
 import UpdateReviewRequestValidator from 'App/Validators/UpdateReviewRequestValidator'
+import { format } from 'date-fns'
+import NotificationService from '../../Services/NotificationService'
 import CreateReviewRequestValidator from '../../Validators/CreateReviewRequestValidator'
 
 export default class ReviewController {
@@ -45,8 +48,19 @@ export default class ReviewController {
     return response.send(reviewsJson)
   }
 
-  async store({ request, auth, response }: HttpContextContract) {
+  async store({ bouncer, request, auth, response }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
+
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar inceleme yapamazsınız. (${format(
+          user.mutedAt.toJSDate(),
+          DateFormat
+        )})`,
+      })
+    }
 
     const data = await request.validate(CreateReviewRequestValidator)
 
@@ -55,11 +69,25 @@ export default class ReviewController {
       user_id: user.id,
     })
 
+    await NotificationService.onReview(review)
+
     return response.json(review)
   }
 
   async update({ params, bouncer, auth, request, response }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
+
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar inceleme güncelleyemezsiniz. (${format(
+          user.mutedAt.toJSDate(),
+          DateFormat
+        )})`,
+      })
+    }
+
     const review = await Review.findOrFail(params.id)
 
     if (review.user_id !== user.id) {
@@ -75,7 +103,19 @@ export default class ReviewController {
   }
 
   public async destroy({ auth, response, params, bouncer }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
+
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar inceleme silemezsiniz. (${format(
+          user.mutedAt.toJSDate(),
+          DateFormat
+        )})`,
+      })
+    }
+
     const review = await Review.findOrFail(params.id)
 
     if (review.user_id !== user.id) {
@@ -86,6 +126,8 @@ export default class ReviewController {
       const deleted = await Review.query().where('id', params.id).delete()
 
       if (deleted.includes(1)) {
+        await NotificationService.onDelete('reviews', params.id)
+
         return response.ok(true)
       } else {
         return response.notFound()

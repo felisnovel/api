@@ -29,6 +29,8 @@ const NOVEL_EXAMPLE_DATA = {
   is_promoted: false,
   editor: 'İlker Yücel',
   translator: 'İlker Yücel',
+  coin_amount: 10,
+  free_amount: 20,
 }
 
 const NEW_NOVEL_EXAMPLE_DATA = {
@@ -48,6 +50,8 @@ const NEW_NOVEL_EXAMPLE_DATA = {
   is_promoted: true,
   editor: 'yeni İlker Yücel',
   translator: 'yeni İlker Yücel',
+  coin_amount: 0,
+  free_amount: 0,
 }
 
 test.group('Novels', (group) => {
@@ -214,6 +218,7 @@ test.group('Novels', (group) => {
 
   test('show a novel with volumes', async ({ client }) => {
     const novel = await NovelFactory.with('user', 1).apply('published').create()
+
     await VolumeFactory.merge({ volume_novel_id: novel.id, volume_number: 1 })
       .apply('published')
       .create()
@@ -241,10 +246,10 @@ test.group('Novels', (group) => {
     response.assertStatus(200)
 
     expect(volumes[0].name).to.equal('Yardımcı Cilt')
-    expect(volumes[1].volume_number).to.equal(4)
-    expect(volumes[2].volume_number).to.equal(3)
-    expect(volumes[3].volume_number).to.equal(2)
-    expect(volumes[4].volume_number).to.equal(1)
+    expect(volumes[1].volume_number).to.equal('4.00')
+    expect(volumes[2].volume_number).to.equal('3.00')
+    expect(volumes[3].volume_number).to.equal('2.00')
+    expect(volumes[4].volume_number).to.equal('1.00')
   })
 
   test('update a novel', async ({ client }) => {
@@ -321,9 +326,23 @@ test.group('Novels', (group) => {
     const user = await UserFactory.apply('user').create()
     const novel = await NovelFactory.with('user', 1).create()
 
-    const response = await client.delete(`/novels/` + novel.id).loginAs(user)
+    const response = await client.delete(`/novels/${novel.id}`).loginAs(user)
 
     response.assertStatus(403)
+  })
+
+  test('should get novel og image', async ({ client }) => {
+    await UserFactory.apply('user').create()
+    const novel = await NovelFactory.with('user', 1).create()
+
+    const response = await client.get(`/novels/${novel.slug}/og-image`)
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      name: novel.name,
+      image: novel.image,
+      author: novel.author,
+    })
   })
 })
 

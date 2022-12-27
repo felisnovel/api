@@ -9,7 +9,6 @@ Route.group(() => {
 
   Route.group(() => {
     Route.get('/me', 'AuthController.me')
-    Route.patch('/profile', 'AuthController.updateProfile')
   }).middleware('auth')
 }).prefix('auth')
 
@@ -26,6 +25,10 @@ Route.group(() => {
   .middleware('auth')
   .prefix('/novels')
 
+Route.group(() => {
+  Route.get('/notifications', 'NotificationController.index')
+}).middleware('auth')
+
 Route.resource('/user/favorites', 'User/FavoriteController').only(['index', 'store', 'destroy'])
 
 Route.group(() => {
@@ -41,6 +44,8 @@ Route.group(() => {
   Route.resource('/reviews/reports', 'ReviewReportController').only(['index', 'destroy'])
   Route.group(() => {
     Route.put('/add-coin', 'UserController.addCoin')
+    Route.put('/mute-user', 'UserController.muteUser')
+    Route.put('/unmute-user', 'UserController.unmuteUser')
   }).prefix('/users/:id')
   Route.put('/media/upload', 'MediaController.upload')
 
@@ -73,6 +78,8 @@ Route.resource('/packets', 'PacketController').except(['show'])
 Route.resource('/orders', 'OrderController').only(['index', 'destroy'])
 
 Route.resource('/novels', 'NovelController')
+Route.get('/novels/:slug/og-image', 'NovelController.ogImage')
+
 Route.resource('/reviews', 'ReviewController').except(['show'])
 
 Route.group(() => {

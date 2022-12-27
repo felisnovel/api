@@ -4,6 +4,8 @@ import UserRole from 'App/Enums/UserRole'
 import NovelFactory from 'Database/factories/NovelFactory'
 import PromocodeFactory from 'Database/factories/PromocodeFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import { addDays, format } from 'date-fns'
+import NotificationType from '../../app/Enums/NotificationType'
 import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
 
@@ -55,7 +57,7 @@ test.group('Users', (group) => {
 
   /*
   // todo: fix this test
-  
+
   test('check a user avatar', async ({ assert }) => {
     const user = await UserFactory.merge({
       email: 'alpidev9@gmail.com',
@@ -333,9 +335,25 @@ test.group('User Actions', (group) => {
       password: 'password',
     }).create()
 
+    const firstResponse = await client.put(`/user/update`).loginAs(user).form(NEW_USER_DATA)
+    firstResponse.assertBodyContains({
+      message: 'E-posta adresini değiştirmek için mevcut şifrenizi girmelisiniz.',
+    })
+
+    const secondResponse = await client
+      .put(`/user/update`)
+      .loginAs(user)
+      .form({
+        ...NEW_USER_DATA,
+        old_password: 'wrongpassword',
+      })
+    secondResponse.assertBodyContains({
+      message: 'Mevcut şifreniz yanlış.',
+    })
+
     const newData = {
-      password: 'newpassword',
-      password_confirmation: 'newpassword',
+      password: 'NewPassword$123',
+      password_confirmation: 'NewPassword$123',
       old_password: 'password',
       ...NEW_USER_DATA,
     }
@@ -371,6 +389,18 @@ test.group('User Coins', (group) => {
 
     await user.refresh()
     assert.equal(user.coin_balance, ADD_COIN_DATA.amount)
+
+    const responseNotificatons = await client.get('/notifications').loginAs(user)
+
+    responseNotificatons.assertStatus(200)
+    responseNotificatons.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.COIN,
+          body: `Hesabınıza ${ADD_COIN_DATA.amount} pati yüklenmiştir.`,
+        },
+      ],
+    })
   })
 
   test('add free coin to user', async ({ assert, client }) => {
@@ -389,6 +419,54 @@ test.group('User Coins', (group) => {
 
     await user.refresh()
     assert.equal(user.free_balance, ADD_COIN_DATA.amount)
+
+    const responseNotificatons = await client.get('/notifications').loginAs(user)
+
+    responseNotificatons.assertStatus(200)
+    responseNotificatons.assertBodyContains({
+      unreadNotifications: [
+        {
+          type: NotificationType.FREE,
+          body: `Hesabınıza ${ADD_COIN_DATA.amount} paticik yüklenmiştir.`,
+        },
+      ],
+    })
+  })
+})
+
+test.group('User Mute', (group) => {
+  group.each.setup(cleanAll)
+
+  test('mute user', async ({ assert, client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const user = await UserFactory.create()
+
+    const dateFormat = 'yyyy-MM-dd HH:mm:ss'
+    const mutedAt = addDays(new Date(), 10)
+    const formatedMutedAt = format(mutedAt, dateFormat)
+
+    const response = await client.put(`/users/${user.id}/mute-user`).loginAs(admin).form({
+      muted_at: formatedMutedAt,
+    })
+
+    await user.refresh()
+
+    response.assertStatus(204)
+
+    assert.equal(user.mutedAt?.toFormat(dateFormat), formatedMutedAt)
+  })
+
+  test('unmute user', async ({ assert, client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const user = await UserFactory.apply('muted').create()
+
+    const response = await client.put(`/users/${user.id}/unmute-user`).loginAs(admin)
+
+    await user.refresh()
+
+    response.assertStatus(204)
+
+    assert.equal(user.mutedAt, null)
   })
 })
 
@@ -411,7 +489,7 @@ test.group('User Promocode', (group) => {
     assert.equal(user.coin_balance, promocode.amount)
   })
 
-  test('already use a promocode', async ({ assert, client }) => {
+  test('already use a promocode', async ({ client }) => {
     const user = await UserFactory.create()
     const promocode = await PromocodeFactory.with('orders', 1, function (orderFactory) {
       orderFactory.merge({
@@ -446,7 +524,8 @@ test.group('User Promocode', (group) => {
 
     response.assertStatus(400)
     response.assertBodyContains({
-      message: 'Bu promomosyon kodunun kullanımı sona ermiştir',
+      message:
+        'Bu promosyon kodunun kullanımı sona ermiştir veya yanlış promosyon kodu girmiş olabilirsiniz. Lütfen kodu kontrol ediniz.',
     })
   })
 })

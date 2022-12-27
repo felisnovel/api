@@ -1,22 +1,34 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import UserGender from 'App/Enums/UserGender'
+import UserRole from 'App/Enums/UserRole'
+import { PASSWORD_REGEX } from '../constants/Regex'
 
 export default class UpdateUserRequestValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    username: schema.string.optional({ trim: true }),
-    email: schema.string.optional({ trim: true }),
-    bio: schema.string.optional({ trim: true }),
-    gender: schema.enum.optional(Object.values(UserGender)),
-    password: schema.string.optional({ trim: true }, [
-      rules.maxLength(64),
-      rules.confirmed('password_confirmation'),
+    email: schema.string.optional({}, [
+      rules.unique({
+        table: 'users',
+        column: 'email',
+        caseInsensitive: true,
+        whereNot: { id: this.ctx.auth.user?.id },
+      }),
+      rules.email(),
     ]),
-    facebook_handle: schema.string.optional({ trim: true }),
-    twitter_handle: schema.string.optional({ trim: true }),
-    instagram_handle: schema.string.optional({ trim: true }),
-    youtube_handle: schema.string.optional({ trim: true }),
+    password: schema.string.optional({}, [
+      rules.minLength(8),
+      rules.regex(PASSWORD_REGEX),
+      rules.confirmed(),
+    ]),
+    full_name: schema.string.optional({ trim: true }),
+    bio: schema.string.optional(),
+    gender: schema.enum.optional(Object.values(UserGender)),
+    role: schema.enum.optional(Object.values(UserRole)),
+    facebook_handle: schema.string.optional(),
+    twitter_handle: schema.string.optional(),
+    instagram_handle: schema.string.optional(),
+    youtube_handle: schema.string.optional(),
   })
 }

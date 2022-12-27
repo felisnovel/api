@@ -1,6 +1,9 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import DateFormat from 'App/constants/DateFormat'
 import Comment from 'App/Models/Comment'
 import UpdateCommentRequestValidator from 'App/Validators/UpdateCommentRequestValidator'
+import { format } from 'date-fns'
+import NotificationService from '../../Services/NotificationService'
 import CreateCommentRequestValidator from '../../Validators/CreateCommentRequestValidator'
 
 export default class CommentController {
@@ -73,8 +76,19 @@ export default class CommentController {
     return response.send(commentsJson)
   }
 
-  async store({ request, auth, response }: HttpContextContract) {
+  async store({ bouncer, request, auth, response }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
+
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar yorum yapamazsınız. (${format(
+          user.mutedAt.toJSDate(),
+          DateFormat
+        )})`,
+      })
+    }
 
     const data = await request.validate(CreateCommentRequestValidator)
 
@@ -83,11 +97,25 @@ export default class CommentController {
       user_id: user.id,
     })
 
+    await NotificationService.onComment(comment)
+
     return response.json(comment)
   }
 
   async update({ params, bouncer, auth, request, response }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
+
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar yorum güncelleyemezsiniz. (${format(
+          user.mutedAt.toJSDate(),
+          DateFormat
+        )})`,
+      })
+    }
+
     const comment = await Comment.findOrFail(params.id)
 
     if (comment.user_id !== user.id) {
@@ -99,11 +127,25 @@ export default class CommentController {
     await comment.merge(data)
     await comment.save()
 
+    await NotificationService.onUpdate('comments', comment.id, comment.body)
+
     return response.json(comment)
   }
 
   public async destroy({ auth, response, params, bouncer }: HttpContextContract) {
+    await bouncer.authorize('auth')
     const user = await auth.authenticate()
+
+    if (user.mutedAt) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Belirtilen tarihe kadar yorum silemezsiniz. (${format(
+          user.mutedAt.toJSDate(),
+          DateFormat
+        )})`,
+      })
+    }
+
     const comment = await Comment.findOrFail(params.id)
 
     if (comment.user_id !== user.id) {
@@ -114,6 +156,8 @@ export default class CommentController {
       const deleted = await Comment.query().where('id', params.id).delete()
 
       if (deleted.includes(1)) {
+        await NotificationService.onDelete('comments', comment.id)
+
         return response.ok(true)
       } else {
         return response.notFound()

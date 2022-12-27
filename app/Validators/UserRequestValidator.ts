@@ -2,14 +2,13 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
+import { PASSWORD_REGEX } from '../constants/Regex'
 
 export default class UserRequestValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    bio: schema.string.optional(),
-    gender: schema.enum.optional(Object.values(UserGender)),
-    full_name: schema.string.optional({ trim: true }),
+    username: schema.string.optional(),
     email: schema.string.optional({}, [
       rules.unique({
         table: 'users',
@@ -19,8 +18,14 @@ export default class UserRequestValidator {
       }),
       rules.email(),
     ]),
-    username: schema.string.optional(),
-    password: schema.string.optional({}, [rules.confirmed(), rules.minLength(8)]),
+    password: schema.string.optional({}, [
+      rules.minLength(8),
+      rules.regex(PASSWORD_REGEX),
+      rules.confirmed(),
+    ]),
+    full_name: schema.string.optional({ trim: true }),
+    bio: schema.string.optional(),
+    gender: schema.enum.optional(Object.values(UserGender)),
     role: schema.enum.optional(Object.values(UserRole)),
     facebook_handle: schema.string.optional(),
     twitter_handle: schema.string.optional(),

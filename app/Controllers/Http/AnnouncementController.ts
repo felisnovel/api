@@ -4,6 +4,7 @@ import UserRole from 'App/Enums/UserRole'
 import Announcement from 'App/Models/Announcement'
 import AnnouncementRequestValidator from 'App/Validators/AnnouncementRequestValidator'
 import { isNumeric } from '../../../utils'
+import NotificationService from '../../Services/NotificationService'
 
 export default class AnnouncementController {
   async index({ auth, request, response }: HttpContextContract) {
@@ -61,6 +62,8 @@ export default class AnnouncementController {
 
     const announcement = await Announcement.create(data)
 
+    await NotificationService.onAnnouncement(announcement)
+
     return response.json(announcement)
   }
 
@@ -74,6 +77,8 @@ export default class AnnouncementController {
     await announcement.merge(data)
     await announcement.save()
 
+    await NotificationService.onAnnouncement(announcement)
+
     return response.json(announcement)
   }
 
@@ -84,6 +89,8 @@ export default class AnnouncementController {
       const deleted = await Announcement.query().where('id', params.id).delete()
 
       if (deleted.includes(1)) {
+        await NotificationService.onDelete('announcements', params.id)
+
         return response.ok(true)
       } else {
         return response.notFound()

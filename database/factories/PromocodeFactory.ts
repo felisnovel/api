@@ -7,7 +7,7 @@ export default Factory.define(Promocode, ({ faker }) => {
     name: faker.lorem.words(1) + ' Promosyon Kodu',
     code: faker.lorem.slug(2).toUpperCase(),
     active: true,
-    limit: faker.datatype.number(faker.datatype.number({ min: 1, max: 50 })),
+    limit: faker.datatype.number(faker.datatype.number({ min: 10, max: 50 })),
     amount: faker.datatype.number(faker.datatype.number({ min: 1, max: 50 })),
   }
 })

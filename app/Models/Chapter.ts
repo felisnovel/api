@@ -132,10 +132,15 @@ export default class Chapter extends BaseModel {
   }
 
   @computed()
-  public get fullName(): string {
+  public get name(): string {
     return `${this?.novel?.name} - ${
       this?.volume?.volume_number !== 0 ? this?.volume?.volume_number + '.' : 'Yardımcı'
-    } Cilt - Bölüm ${this.number}: ${this.title}`
+    } Cilt - Bölüm ${this.number}`
+  }
+
+  @computed()
+  public get fullName(): string {
+    return `${this.name}: ${this.title}`
   }
 
   public async checkUser(user: null | User) {

@@ -339,4 +339,19 @@ export default class NovelController {
 
     return response.send(novels)
   }
+
+  async ogImage({ params, response }: HttpContextContract) {
+    const novel = await Novel.query()
+      .where('slug', params.slug)
+      .select('image', 'author', 'name')
+      .limit(1)
+
+    const { name, author, image } = novel[0]
+
+    return response.json({
+      name,
+      image,
+      author,
+    })
+  }
 }

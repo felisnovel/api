@@ -7,6 +7,8 @@ import CommentFactory from 'Database/factories/CommentFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
 import OrderFactory from 'Database/factories/OrderFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
+import { addDays } from 'date-fns'
+import { DateTime } from 'luxon'
 import CommentReactionFactory from './CommentReactionFactory'
 
 export default Factory.define(User, ({ faker }) => {
@@ -14,7 +16,7 @@ export default Factory.define(User, ({ faker }) => {
     full_name: faker.name.fullName(),
     email: faker.internet.email(),
     password: faker.internet.password(),
-    username: faker.internet.userName(),
+    username: faker.internet.userName().replace(/[^a-zA-Z0-9]/g, ''),
     role: faker.helpers.arrayElement(Object.values(UserRole)),
     gender: faker.helpers.arrayElement(Object.values(UserGender)),
     bio: faker.lorem.sentence(),
@@ -43,5 +45,8 @@ export default Factory.define(User, ({ faker }) => {
   })
   .state('user', async (item) => {
     item.role = UserRole.USER
+  })
+  .state('muted', (item) => {
+    item.mutedAt = DateTime.now().set({ year: 2099 })
   })
   .build()

@@ -45,3 +45,15 @@ export function isDateDisabled(date: DateTime, disabledDates: Interval | DateTim
 
   return false
 }
+
+export function getChapterUrl(chapter): string {
+  return `/novel/${chapter.novel.slug}/${chapter.novel.shorthand}-chapter-${chapter.number}`
+}
+
+export function getNovelUrl(novel): string {
+  return `/novel/${novel.slug}`
+}
+
+export function getAnnouncementUrl(announcement): string {
+  return `/duyurular/${announcement.slug}`
+}

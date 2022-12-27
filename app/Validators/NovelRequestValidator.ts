@@ -23,6 +23,8 @@ export default class NovelRequestValidator {
     is_premium: schema.boolean(),
     is_promoted: schema.boolean(),
     country_id: schema.number.optional(),
+    free_amount: schema.number.optional(),
+    coin_amount: schema.number.optional(),
 
     editor: schema.string.optional(),
     translator: schema.string.optional(),
