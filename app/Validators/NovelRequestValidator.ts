@@ -3,9 +3,12 @@ import { schema } from '@ioc:Adonis/Core/Validator'
 import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import NovelStatus from 'App/Enums/NovelStatus'
 import NovelTranslationStatus from 'App/Enums/NovelTranslationStatus'
+import BaseValidator from './BaseValidator'
 
-export default class NovelRequestValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class NovelRequestValidator extends BaseValidator {
+  constructor(protected ctx: HttpContextContract) {
+    super()
+  }
 
   public schema = schema.create({
     name: schema.string(),

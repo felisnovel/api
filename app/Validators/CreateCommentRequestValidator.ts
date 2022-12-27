@@ -1,8 +1,11 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
+import BaseValidator from './BaseValidator'
 
-export default class CreateCommentRequestValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class CreateCommentRequestValidator extends BaseValidator {
+  constructor(protected ctx: HttpContextContract) {
+    super()
+  }
 
   public schema = schema.create({
     body: schema.string({ trim: true }),

@@ -1,9 +1,12 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { rules, schema } from '@ioc:Adonis/Core/Validator'
 import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
+import BaseValidator from './BaseValidator'
 
-export default class ChapterRequestValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class ChapterRequestValidator extends BaseValidator {
+  constructor(protected ctx: HttpContextContract) {
+    super()
+  }
 
   public schema = schema.create({
     title: schema.string({ trim: true }),

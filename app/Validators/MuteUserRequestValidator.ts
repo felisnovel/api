@@ -1,8 +1,11 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
+import BaseValidator from './BaseValidator'
 
-export default class MuteUserRequestValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class MuteUserRequestValidator extends BaseValidator {
+  constructor(protected ctx: HttpContextContract) {
+    super()
+  }
 
   public schema = schema.create({
     muted_at: schema.date({
