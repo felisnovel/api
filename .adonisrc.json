@@ -26,7 +26,8 @@
     "@adonisjs/bouncer",
     "@adonisjs/drive-s3",
     "adonis5-sentry",
-    "@adonisjs/mail"
+    "@adonisjs/mail",
+    "@adonisjs/view"
   ],
   "aceProviders": ["@adonisjs/repl"],
   "tests": {
@@ -38,5 +39,11 @@
       }
     ]
   },
-  "testProviders": ["@japa/preset-adonis/TestsProvider"]
+  "testProviders": ["@japa/preset-adonis/TestsProvider"],
+  "metaFiles": [
+    {
+      "pattern": "resources/views/**/*.edge",
+      "reloadServer": false
+    }
+  ]
 }

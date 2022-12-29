@@ -23,7 +23,8 @@
       "@adonisjs/bouncer",
       "@adonisjs/drive-s3",
       "adonis5-sentry",
-      "@adonisjs/mail"
+      "@adonisjs/mail",
+      "@adonisjs/view"
     ]
   }
 }
