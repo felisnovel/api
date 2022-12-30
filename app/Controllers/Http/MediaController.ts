@@ -23,7 +23,7 @@ export default class MediaController {
     })
 
     return response.json({
-      url: `${Env.get('CLOUDFLARE_R2')}${fileName}`,
+      url: `${Env.get('CLOUDFLARE_R2')}/${fileName}`,
     })
   }
 }
