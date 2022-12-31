@@ -9,18 +9,18 @@ export default class UsePromocode {
 
     const promocode = await Promocode.query().where('code', request.input('code')).first()
 
-    if (!promocode || !promocode.active || promocode.limit <= promocode.used) {
-      return response.status(400).send({
-        message:
-          'Bu promosyon kodunun kullanımı sona ermiştir veya yanlış promosyon kodu girmiş olabilirsiniz. Lütfen kodu kontrol ediniz.',
-      })
-    }
-
     const isOrder = await promocode.related('orders').query().where('user_id', user.id).first()
 
     if (isOrder) {
       return response.status(400).send({
         message: 'Bu promosyon kodunu daha önce kullanmışsınız.',
+      })
+    }
+
+    if (!promocode || !promocode.active || promocode.limit <= promocode.used) {
+      return response.status(400).send({
+        message:
+          'Bu promosyon kodunun kullanımı sona ermiştir veya yanlış promosyon kodu girmiş olabilirsiniz. Lütfen kodu kontrol ediniz.',
       })
     }
 
