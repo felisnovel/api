@@ -7,6 +7,9 @@ Route.group(() => {
   Route.get('/:provider/redirect', 'AuthController.redirect')
   Route.get('/:provider/callback', 'AuthController.callback')
 
+  Route.post('/reset-password/:token', 'Auth/ResetPasswordController.invoke')
+  Route.post('/forgot-password', 'Auth/ForgotPasswordController.invoke')
+
   Route.group(() => {
     Route.get('/me', 'AuthController.me')
   }).middleware('auth')
