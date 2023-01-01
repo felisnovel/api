@@ -6,6 +6,7 @@ import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 import showdown from 'showdown'
+import ChapterService from '../../Services/ChapterService'
 import NotificationService from '../../Services/NotificationService'
 
 export default class ChapterController {
@@ -111,47 +112,8 @@ export default class ChapterController {
 
     const chapter = await chapterQuery.firstOrFail()
 
-    const prevChapterQuery = chapter.novel.related('chapters').query()
-
-    prevChapterQuery
-      .where(function (query) {
-        query.where('volume_id', '!=', chapter.volume_id).orWhere(function (orQuery) {
-          orQuery.where('number', '<', chapter.number)
-        })
-      })
-      .leftJoin('volumes', 'volumes.id', 'chapters.volume_id')
-      .where('volumes.volume_number', '<=', chapter.volume.volume_number)
-      .orderBy('volumes.volume_number', 'desc')
-      .orderBy('number', 'desc')
-
-    if (!isAdmin) {
-      prevChapterQuery
-        .where('volumes.publish_status', VolumePublishStatus.PUBLISHED)
-        .where('chapters.publish_status', ChapterPublishStatus.PUBLISHED)
-    }
-
-    const prevChapter = await prevChapterQuery.first()
-
-    const nextChapterQuery = chapter.novel.related('chapters').query()
-
-    nextChapterQuery
-      .where(function (query) {
-        query.where('volume_id', '!=', chapter.volume_id).orWhere(function (orQuery) {
-          orQuery.where('number', '>', chapter.number)
-        })
-      })
-      .leftJoin('volumes', 'volumes.id', 'chapters.volume_id')
-      .where('volumes.volume_number', '>=', chapter.volume.volume_number)
-      .orderBy('volumes.volume_number', 'asc')
-      .orderBy('number', 'asc')
-
-    if (!isAdmin) {
-      nextChapterQuery
-        .where('volumes.publish_status', VolumePublishStatus.PUBLISHED)
-        .where('chapters.publish_status', ChapterPublishStatus.PUBLISHED)
-    }
-
-    const nextChapter = await nextChapterQuery.first()
+    const prevChapter = await ChapterService.getPrevChapter(chapter, !isAdmin)
+    const nextChapter = await ChapterService.getNextChapter(chapter, !isAdmin)
 
     const { isOpened } = await chapter.checkUser(user)
     const isRead = await chapter.isRead(user)

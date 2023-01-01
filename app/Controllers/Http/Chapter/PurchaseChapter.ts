@@ -3,6 +3,7 @@ import OrderBuyType from 'App/Enums/OrderBuyType'
 import { DateTime } from 'luxon'
 import OrderType from '../../../Enums/OrderType'
 import Chapter from '../../../Models/Chapter'
+import ChapterService from '../../../Services/ChapterService'
 
 export default class PurchaseChapter {
   async invoke({ request, params, response, auth }: HttpContextContract) {
@@ -44,6 +45,20 @@ export default class PurchaseChapter {
       return response.badRequest({
         message: 'Yetersiz bakiye!',
       })
+    }
+
+    if (buyType === OrderBuyType.FREE) {
+      const isAvailableFreeBuyableChapter = await ChapterService.isAvailableFreeBuyableOfChapter(
+        chapter,
+        user
+      )
+
+      if (!isAvailableFreeBuyableChapter) {
+        return response.badRequest({
+          message:
+            'Paticik kullanarak sadece sırayla bölüm açabilirsiniz. Lütfen açmadığınız ilk bölümden açmaya başlayınız.',
+        })
+      }
     }
 
     await user.related('orders').create({

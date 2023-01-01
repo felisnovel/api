@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
+import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import ChapterFactory from 'Database/factories/ChapterFactory'
 import CommentFactory from 'Database/factories/CommentFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
@@ -458,6 +459,86 @@ test.group('Chapter Premium', (group) => {
     const newPurchasedChaptersCount = Number(user.$extras.purchasedChapters_count)
 
     assert.equal(newPurchasedChaptersCount, prevPurchasedChaptersCount + 1)
+  })
+
+  test('purchase a chapter for free coin', async ({ assert, client }) => {
+    const novel = await NovelFactory.with('user', 1)
+      .merge({
+        is_premium: true,
+        free_amount: 10,
+        coin_amount: 5,
+      })
+      .apply('published')
+      .create()
+
+    const volume1 = await VolumeFactory.merge({
+      publish_status: VolumePublishStatus.PUBLISHED,
+      volume_novel_id: novel.id,
+      volume_number: 1,
+    }).create()
+
+    const volume2 = await VolumeFactory.merge({
+      publish_status: VolumePublishStatus.PUBLISHED,
+      volume_novel_id: novel.id,
+      volume_number: 2,
+    }).create()
+
+    const defaultChapterAttributes = {
+      publish_status: ChapterPublishStatus.PUBLISHED,
+      novel_id: novel.id,
+      is_premium: true,
+    }
+
+    const defaultChapterForVolume1Attributes = {
+      ...defaultChapterAttributes,
+      volume_id: volume1.id,
+    }
+
+    const defaultChapterForVolume2Attributes = {
+      ...defaultChapterAttributes,
+      volume_id: volume2.id,
+    }
+
+    const chapter1 = await ChapterFactory.merge({
+      number: 1,
+      ...defaultChapterForVolume1Attributes,
+    }).create()
+
+    const chapter2 = await ChapterFactory.merge({
+      number: 2,
+      ...defaultChapterForVolume1Attributes,
+    }).create()
+
+    const chapter3 = await ChapterFactory.merge({
+      number: 3,
+      ...defaultChapterForVolume2Attributes,
+    }).create()
+
+    const user = await UserFactory.with('orders', 1, function (orderFactory) {
+      return orderFactory.merge({
+        type: OrderType.FREE,
+        amount: 100,
+        is_paid: true,
+      })
+    }).create()
+
+    const responseForBuyChapter3 = await client
+      .put(`/chapters/${chapter3.id}/purchase?buy_type=free`)
+      .loginAs(user)
+    await responseForBuyChapter3.assertBodyContains({
+      message:
+        'Paticik kullanarak sadece sırayla bölüm açabilirsiniz. Lütfen açmadığınız ilk bölümden açmaya başlayınız.',
+    })
+
+    const responseForBuyChapter1 = await client
+      .put(`/chapters/${chapter1.id}/purchase?buy_type=free`)
+      .loginAs(user)
+    await responseForBuyChapter1.assertStatus(200)
+
+    const responseForBuyChapter2 = await client
+      .put(`/chapters/${chapter2.id}/purchase?buy_type=free`)
+      .loginAs(user)
+    await responseForBuyChapter2.assertStatus(200)
   })
 
   test('show a purchased chapter for user', async ({ client }) => {
