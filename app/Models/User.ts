@@ -17,6 +17,7 @@ import gravatar from 'gravatar'
 import { DateTime } from 'luxon'
 import OrderType from '../Enums/OrderType'
 import ReactionTypeEnum from '../Enums/ReactionTypeEnum'
+import ApiToken from './ApiToken'
 import Chapter from './Chapter'
 import Comment from './Comment'
 import CommentReaction from './CommentReaction'
@@ -226,6 +227,11 @@ export default class User extends BaseModel {
 
     return true
   }
+
+  @hasMany(() => ApiToken, {
+    foreignKey: 'userId',
+  })
+  public tokens: HasMany<typeof ApiToken>
 
   @hasMany(() => ReviewReaction, {
     foreignKey: 'user_id',
