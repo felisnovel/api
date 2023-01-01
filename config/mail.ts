@@ -9,6 +9,10 @@ import { mailConfig } from '@adonisjs/mail/build/config'
 import Env from '@ioc:Adonis/Core/Env'
 
 export default mailConfig({
+  from: {
+    address: Env.get('MAIL_FROM_ADDRESS'),
+    name: Env.get('MAIL_FROM_NAME'),
+  },
   /*
   |--------------------------------------------------------------------------
   | Default mailer
