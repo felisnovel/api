@@ -4,6 +4,7 @@ import { test } from '@japa/runner'
 import UserFactory from 'Database/factories/UserFactory'
 import { DateTime, Duration } from 'luxon'
 import { cleanAll } from '../../utils'
+const EXAMPLE_PASSWORD = 'Gf4n5gu$'
 test.group('Passwords', (group) => {
   group.each.setup(cleanAll)
 
@@ -11,9 +12,7 @@ test.group('Passwords', (group) => {
     const user = await UserFactory.create()
     const mailer = Mail.fake()
 
-    const response = await client
-      .post('/auth/forgot-password')
-      .json({ email: user.email, resetPasswordUrl: 'url' })
+    const response = await client.post('/auth/forgot-password').json({ email: user.email })
     await response.assertStatus(200)
 
     assert.isTrue(mailer.exists({ to: [{ address: user.email }] }))
@@ -30,9 +29,7 @@ test.group('Passwords', (group) => {
   test('it should create a reset password token', async ({ assert, client }) => {
     const user = await UserFactory.create()
 
-    const response = await client
-      .post('/auth/forgot-password')
-      .json({ email: user.email, resetPasswordUrl: 'url' })
+    const response = await client.post('/auth/forgot-password').json({ email: user.email })
     response.assertStatus(200)
 
     const tokens = await user.related('tokens').query()
@@ -44,11 +41,13 @@ test.group('Passwords', (group) => {
     const { token } = await user
       .related('tokens')
       .create({ token: 'token', type: 'forgotPassword', name: 'Random Bytes Token' })
-    const response = await client.post('/auth/reset-password/' + token).json({ password: '123456' })
+    const response = await client
+      .post('/auth/reset-password/' + token)
+      .json({ password: EXAMPLE_PASSWORD, password_confirmation: EXAMPLE_PASSWORD })
     response.assertStatus(200)
     await user.refresh()
 
-    const checkPassword = await Hash.verify(user.password, '123456')
+    const checkPassword = await Hash.verify(user.password, EXAMPLE_PASSWORD)
     assert.isTrue(checkPassword)
   })
 
@@ -64,7 +63,9 @@ test.group('Passwords', (group) => {
       name: 'Random Bytes Token',
       createdAt: date,
     })
-    const response = await client.post('/auth/reset-password/' + token).json({ password: '123456' })
+    const response = await client
+      .post('/auth/reset-password/' + token)
+      .json({ password: EXAMPLE_PASSWORD, password_confirmation: EXAMPLE_PASSWORD })
     response.assertStatus(410)
     assert.equal(response.body().message, 'Token süresi bitmiş!')
   })
