@@ -1,6 +1,7 @@
 import Hash from '@ioc:Adonis/Core/Hash'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
+import EmailConfirmationService from 'App/Services/EmailConfirmationService'
 import LoginRequestValidator from 'App/Validators/Auth/LoginRequestValidator'
 import RegisterRequestValidator from 'App/Validators/Auth/RegisterRequestValidator'
 import { DateTime } from 'luxon'
@@ -60,6 +61,8 @@ export default class AuthController {
     await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')
 
     const token = await auth.use('api').generate(user, { expiresIn: '7days' })
+
+    await EmailConfirmationService.send(user.email)
 
     return response.json({
       user: await getUserWithActivePlan(user),
