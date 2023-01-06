@@ -1,0 +1,12 @@
+@layout('layouts/main')
+
+@section('body')
+      <mj-text color="#637381" font-size="16px">
+        <p>Merhaba {{user.username}},</p>
+        <p>Üyeliğinizi tamamlamak için lütfen aşağıdaki butona tıklayınız.</p>
+      </mj-text>
+      
+      <mj-button background-color="#7F52D9" align="center" color="#ffffff" font-size="17px" font-weight="bold" href="{{ link }}" width="300px">
+        E-posta Adresimi Onayla 
+      </mj-button>
+@end

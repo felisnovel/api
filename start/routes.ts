@@ -1,6 +1,12 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
+  Route.post('/email-confirmation', 'User/EmailConfirmationController.send')
+}).middleware('auth')
+
+Route.post('/email-confirmation/:token', 'User/EmailConfirmationController.verify')
+
+Route.group(() => {
   Route.post('/login', 'AuthController.login')
   Route.post('/register', 'AuthController.register')
 
