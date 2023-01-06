@@ -269,7 +269,7 @@ export default class User extends BaseModel {
   public bannedAt?: DateTime
 
   @column.dateTime()
-  public confirmedAt: DateTime
+  public confirmedAt: DateTime | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -1,10 +1,13 @@
+import Mail from '@ioc:Adonis/Addons/Mail'
 import { test } from '@japa/runner'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
+import { appTitle } from 'Config/app'
 import NovelFactory from 'Database/factories/NovelFactory'
 import PromocodeFactory from 'Database/factories/PromocodeFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import { addDays, format } from 'date-fns'
+import { DateTime } from 'luxon'
 import NotificationType from '../../app/Enums/NotificationType'
 import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
@@ -330,9 +333,10 @@ const NEW_USER_DATA = {
 test.group('User Actions', (group) => {
   group.each.setup(cleanAll)
 
-  test('update user', async ({ client }) => {
+  test('update user', async ({ assert, client }) => {
     const user = await UserFactory.merge({
       password: 'password',
+      confirmedAt: DateTime.local(),
     }).create()
 
     const firstResponse = await client.put(`/user/update`).loginAs(user).form(NEW_USER_DATA)
@@ -358,10 +362,19 @@ test.group('User Actions', (group) => {
       ...NEW_USER_DATA,
     }
 
+    const mailer = Mail.fake()
+
     const response = await client.put(`/user/update`).loginAs(user).form(newData)
 
     response.assertBodyContains(NEW_USER_DATA)
     response.assertStatus(200)
+
+    await user.refresh()
+    assert.equal(user.confirmedAt, null)
+
+    assert.isTrue(mailer.exists({ subject: `${appTitle}: E-posta Adresini Onayla` }))
+
+    Mail.restore()
   })
 })
 
