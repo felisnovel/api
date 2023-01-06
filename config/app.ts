@@ -27,7 +27,7 @@ export const clientUrl: string = Env.get('CLIENT_URL')
 | be decrypted.
 |
 */
-export const appName: string = Env.get('APP_NAME')
+export const appTitle: string = Env.get('APP_TITLE')
 
 export const appKey: string = Env.get('APP_KEY')
 

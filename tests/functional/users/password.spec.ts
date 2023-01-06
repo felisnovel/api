@@ -1,7 +1,7 @@
 import Mail from '@ioc:Adonis/Addons/Mail'
 import Hash from '@ioc:Adonis/Core/Hash'
 import { test } from '@japa/runner'
-import { appName } from 'Config/app'
+import { appTitle } from 'Config/app'
 import UserFactory from 'Database/factories/UserFactory'
 import { DateTime, Duration } from 'luxon'
 import { cleanAll } from '../../utils'
@@ -18,7 +18,7 @@ test.group('Passwords', (group) => {
 
     assert.isTrue(mailer.exists({ to: [{ address: user.email }] }))
     assert.isTrue(mailer.exists({ from: { address: 'noreply@felisnovel.com' } }))
-    assert.isTrue(mailer.exists({ subject: `${appName}: Şifremi Unuttum` }))
+    assert.isTrue(mailer.exists({ subject: `${appTitle}: Şifremi Unuttum` }))
     assert.isTrue(
       mailer.exists((mail) => {
         return mail.html!.includes(user.username)

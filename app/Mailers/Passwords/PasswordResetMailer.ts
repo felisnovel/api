@@ -2,7 +2,7 @@ import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
 import Config from '@ioc:Adonis/Core/Config'
 import View from '@ioc:Adonis/Core/View'
 import User from 'App/Models/User'
-import { appName } from 'Config/app'
+import { appTitle } from 'Config/app'
 import mjml from 'mjml'
 
 export default class PasswordResetMailer extends BaseMailer {
@@ -19,12 +19,12 @@ export default class PasswordResetMailer extends BaseMailer {
       await View.render('emails/passwords/reset', {
         user: this.user,
         link,
-        appName,
+        appTitle,
       })
     ).html
 
     message
-      .subject(`${appName}: Şifremi Unuttum`)
+      .subject(`${appTitle}: Şifremi Unuttum`)
       .from(Config.get('mail.from.address'), Config.get('mail.from.name'))
       .to(this.user.email)
       .html(html)
