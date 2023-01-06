@@ -24,7 +24,7 @@ export default class PasswordResetMailer extends BaseMailer {
     ).html
 
     message
-      .subject('Felis Novel: Şifremi Unuttum')
+      .subject(`${appName}: Şifremi Unuttum`)
       .from(Config.get('mail.from.address'), Config.get('mail.from.name'))
       .to(this.user.email)
       .html(html)
