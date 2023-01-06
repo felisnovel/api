@@ -330,13 +330,17 @@ const NEW_USER_DATA = {
   gender: UserGender.OTHER,
 }
 
+const NEW_USER_PASSWORD_DATA = {
+  password: 'NewPassword$123',
+  password_confirmation: 'NewPassword$123',
+}
+
 test.group('User Actions', (group) => {
   group.each.setup(cleanAll)
 
   test('update user', async ({ assert, client }) => {
     const user = await UserFactory.merge({
       password: 'password',
-      confirmedAt: DateTime.local(),
     }).create()
 
     const firstResponse = await client.put(`/user/update`).loginAs(user).form(NEW_USER_DATA)
@@ -375,6 +379,41 @@ test.group('User Actions', (group) => {
     assert.isTrue(mailer.exists({ subject: `${appTitle}: E-posta Adresini Onayla` }))
 
     Mail.restore()
+  })
+
+  test('update user password', async ({ assert, client }) => {
+    const user = await UserFactory.merge({
+      password: 'password',
+      confirmedAt: DateTime.local(),
+    }).create()
+
+    const firstResponse = await client
+      .put(`/user/update`)
+      .loginAs(user)
+      .form(NEW_USER_PASSWORD_DATA)
+
+    firstResponse.assertBodyContains({
+      message: 'Şifrenizi değiştirmek için mevcut şifrenizi girmelisiniz.',
+    })
+
+    const secondResponse = await client
+      .put(`/user/update`)
+      .loginAs(user)
+      .form({
+        ...NEW_USER_DATA,
+        old_password: 'wrongpassword',
+      })
+    secondResponse.assertBodyContains({
+      message: 'Mevcut şifreniz yanlış.',
+    })
+
+    const newData = {
+      old_password: 'password',
+      ...NEW_USER_PASSWORD_DATA,
+    }
+
+    const response = await client.put(`/user/update`).loginAs(user).form(newData)
+    response.assertStatus(200)
   })
 })
 

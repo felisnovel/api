@@ -11,12 +11,21 @@ export default class UpdateUser {
 
     const oldPassword = request.input('old_password')
 
-    const isEmailChanged = user.email !== data.email
+    const isEmailChanged = data.email && user.email !== data.email
+    const isPasswordChanged = data.password
 
-    if (data.email && !oldPassword && isEmailChanged) {
-      return response.status(400).send({
-        message: 'E-posta adresini değiştirmek için mevcut şifrenizi girmelisiniz.',
-      })
+    if (!oldPassword) {
+      if (isEmailChanged) {
+        return response.status(400).send({
+          message: 'E-posta adresini değiştirmek için mevcut şifrenizi girmelisiniz.',
+        })
+      }
+
+      if (isPasswordChanged) {
+        return response.status(400).send({
+          message: 'Şifrenizi değiştirmek için mevcut şifrenizi girmelisiniz.',
+        })
+      }
     }
 
     if (oldPassword) {
