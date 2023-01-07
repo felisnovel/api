@@ -33,5 +33,10 @@ export default class UpdateUserRequestValidator extends BaseValidator {
     twitter_handle: schema.string.optional(),
     instagram_handle: schema.string.optional(),
     youtube_handle: schema.string.optional(),
+    marketing_emails_enabled: schema.boolean.optional(),
+    subscriptions_emails_enabled: schema.boolean.optional(),
+    comments_emails_enabled: schema.boolean.optional(),
+    announcements_emails_enabled: schema.boolean.optional(),
+    events_emails_enabled: schema.boolean.optional(),
   })
 }

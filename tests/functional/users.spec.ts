@@ -23,6 +23,11 @@ const USER_EXAMPLE_DATA = {
   twitter_handle: 'twitter.com',
   instagram_handle: 'instagram.com',
   youtube_handle: 'youtube.com',
+  marketing_emails_enabled: true,
+  subscriptions_emails_enabled: true,
+  comments_emails_enabled: true,
+  announcements_emails_enabled: true,
+  events_emails_enabled: true,
 }
 
 const NEW_USER_EXAMPLE_DATA = {
@@ -36,6 +41,11 @@ const NEW_USER_EXAMPLE_DATA = {
   twitter_handle: 'yeni.twitter.com',
   instagram_handle: 'yeni.instagram.com',
   youtube_handle: 'yeni.youtube.com',
+  marketing_emails_enabled: false,
+  subscriptions_emails_enabled: false,
+  comments_emails_enabled: false,
+  announcements_emails_enabled: false,
+  events_emails_enabled: false,
 }
 
 test.group('Users', (group) => {

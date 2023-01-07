@@ -77,6 +77,21 @@ export default class User extends BaseModel {
   @column()
   public coin_balance: number
 
+  @column()
+  public marketing_emails_enabled: boolean
+
+  @column()
+  public subscriptions_emails_enabled: boolean
+
+  @column()
+  public comments_emails_enabled: boolean
+
+  @column()
+  public announcements_emails_enabled: boolean
+
+  @column()
+  public events_emails_enabled: boolean
+
   @computed()
   public get socials() {
     return {
