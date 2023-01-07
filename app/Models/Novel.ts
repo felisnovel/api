@@ -7,6 +7,8 @@ import {
   computed,
   hasMany,
   HasMany,
+  HasManyThrough,
+  hasManyThrough,
   HasOne,
   hasOne,
   ManyToMany,
@@ -19,6 +21,7 @@ import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import showdown from 'showdown'
 import Chapter from './Chapter'
+import ChapterView from './ChapterView'
 import Country from './Country'
 import Review from './Review'
 import Tag from './Tag'
@@ -159,6 +162,12 @@ export default class Novel extends BaseModel {
     onQuery: (query) => query.orderBy('volume_number', 'desc'),
   })
   public latest_volume: HasOne<typeof Volume>
+
+  @hasManyThrough([() => ChapterView, () => Chapter], {
+    foreignKey: 'novel_id',
+    throughForeignKey: 'chapter_id',
+  })
+  public views: HasManyThrough<typeof ChapterView>
 
   @hasOne(() => Chapter, {
     foreignKey: 'novel_id',

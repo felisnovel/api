@@ -13,6 +13,7 @@ import {
 import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import showdown from 'showdown'
+import ChapterView from './ChapterView'
 import Comment from './Comment'
 import Novel from './Novel'
 import Order from './Order'
@@ -73,6 +74,11 @@ export default class Chapter extends BaseModel {
     foreignKey: 'volume_id',
   })
   public volume: BelongsTo<typeof Volume>
+
+  @hasMany(() => ChapterView, {
+    foreignKey: 'chapter_id',
+  })
+  public views: HasMany<typeof ChapterView>
 
   @manyToMany(() => User, {
     localKey: 'id',

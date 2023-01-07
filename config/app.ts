@@ -41,6 +41,14 @@ export const appKey: string = Env.get('APP_KEY')
 |
 */
 export const http: ServerConfig = {
+  getIp(request) {
+    const nginxRealIp = request.header('X-Real-Ip')
+    if (nginxRealIp) {
+      return nginxRealIp
+    }
+
+    return request.ips()[0]
+  },
   /*
   |--------------------------------------------------------------------------
   | Allow method spoofing

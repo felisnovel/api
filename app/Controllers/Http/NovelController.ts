@@ -208,6 +208,8 @@ export default class NovelController {
         query.preload('volume')
       })
       .withCount('likers')
+      .withCount('views')
+      .orderBy('views_count', 'desc')
       .limit(7)
 
     return response.send(novels)

@@ -107,6 +107,12 @@ Route.group(() => {
   }).prefix('chapters/:chapter')
 }).middleware('auth')
 
+Route.group(() => {
+  Route.group(() => {
+    Route.put('/view', 'Chapter/ViewChapter.invoke')
+  }).prefix('chapters/:chapter')
+})
+
 Route.resource('/chapters', 'ChapterController')
 
 Route.resource('/comments', 'CommentController').except(['show'])
