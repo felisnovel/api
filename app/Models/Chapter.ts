@@ -50,9 +50,6 @@ export default class Chapter extends BaseModel {
   public is_mature: boolean
 
   @column()
-  public view_count: number
-
-  @column()
   public publish_status: string
 
   @column()

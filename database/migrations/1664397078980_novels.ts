@@ -24,8 +24,6 @@ export default class extends BaseSchema {
       table.enu('publish_status', Object.values(NovelPublishStatus))
       table.enu('translation_status', Object.values(NovelTranslationStatus))
 
-      table.integer('view_count').defaultTo(0)
-
       table.boolean('is_mature').defaultTo(false)
       table.boolean('is_premium').defaultTo(false)
       table.boolean('is_promoted').defaultTo(false)

@@ -21,8 +21,6 @@ export default class extends BaseSchema {
       table.boolean('is_premium')
       table.boolean('is_mature')
 
-      table.integer('view_count').defaultTo(0)
-
       table.enu('publish_status', Object.values(ChapterPublishStatus))
 
       table.string('editor').nullable()
