@@ -13,14 +13,21 @@ export default class AuthController {
   async login({ request, response, auth }: HttpContextContract) {
     const { email, password } = await request.validate(LoginRequestValidator)
 
-    const user = await User.query().where('email', email).firstOrFail()
+    const user = await User.query().where('email', email).first()
+
+    if (!user) {
+      return response.unauthorized({
+        status: 'failure',
+        message: 'Bu e-posta adresiyle kayıtlı bir hesap bulunamadı.',
+      })
+    }
 
     const hashValidate = await Hash.verify(user.password, password)
 
     if (!hashValidate) {
       return response.unauthorized({
         status: 'failure',
-        message: 'Invalid credentials',
+        message: 'Şifrenizi yanlış girdiniz.',
       })
     }
 

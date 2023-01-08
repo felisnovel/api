@@ -35,7 +35,11 @@ export default class EmailConfirmationService {
   }
 
   public static async confirm(token, email) {
-    const user = await User.query().where('email', email).firstOrFail()
+    const user = await User.query().where('email', email).first()
+
+    if (!user) {
+      throw new HttpException('Üye bilgisi bulunamadı!', 404)
+    }
 
     if (user.confirmedAt) {
       throw new HttpException('E-posta adresiniz zaten doğrulanmış!', 400)

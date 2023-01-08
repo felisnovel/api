@@ -23,6 +23,8 @@ export default class BaseValidator {
 
     'password.regex': PASSWORD_REGEX_MESSAGE,
     '_password.regex': PASSWORD_REGEX_MESSAGE,
+    'password.confirmed': 'Parolalar eşleşmiyor',
+    'password.minLength': 'Parola en az {{ options.minLength }} karakter olmalıdır.',
     'username.regex': 'Kullanıcı adı sadece harf ve rakam içermelidir',
   }
 }
