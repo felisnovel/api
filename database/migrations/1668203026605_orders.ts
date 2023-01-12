@@ -31,6 +31,12 @@ export default class extends BaseSchema {
 
       table.boolean('is_paid').defaultTo(true)
 
+      table.string('payment_reference').nullable()
+
+      table.string('user_name').nullable()
+      table.string('user_address').nullable()
+      table.string('user_phone').nullable()
+
       table.timestamp('starts_at', { useTz: true })
       table.timestamp('ends_at', { useTz: true })
 

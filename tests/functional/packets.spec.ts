@@ -47,6 +47,14 @@ test.group('Packets', (group) => {
     response.assertStatus(403)
   })
 
+  test('show a packet', async ({ client }) => {
+    const packet = await PacketFactory.create()
+
+    const response = await client.get(`/packets/` + packet.id)
+
+    response.assertStatus(200)
+  })
+
   test('update a packet', async ({ client }) => {
     const packet = await PacketFactory.create()
     const admin = await UserFactory.apply('admin').create()

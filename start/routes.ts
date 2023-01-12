@@ -72,6 +72,8 @@ Route.get('/promoted-novels', 'NovelController.promoted')
 Route.get('/last-updated-novels', 'NovelController.lastUpdated')
 Route.get('/last-novels', 'NovelController.lastNovels')
 
+Route.post('/orders/callback', 'OrderController.callback')
+
 Route.group(() => {
   Route.group(() => {
     Route.put('/purchase', 'Packet/PurchasePacket.invoke')
@@ -83,7 +85,7 @@ Route.group(() => {
 }).middleware('auth')
 
 Route.resource('/plans', 'PlanController').except(['show'])
-Route.resource('/packets', 'PacketController').except(['show'])
+Route.resource('/packets', 'PacketController')
 Route.resource('/orders', 'OrderController').only(['index', 'destroy'])
 
 Route.resource('/novels', 'NovelController')
@@ -98,13 +100,13 @@ Route.group(() => {
     Route.put('/set-pinned', 'Review/SetPinnedReview.invoke')
 
     Route.put('/report', 'Review/ReportReview.invoke')
-  }).prefix('reviews/:review')
+  }).prefix('/reviews/:review')
 
   Route.group(() => {
     Route.put('/read', 'Chapter/ReadChapter.invoke')
     Route.put('/unread', 'Chapter/UnreadChapter.invoke')
     Route.put('/purchase', 'Chapter/PurchaseChapter.invoke')
-  }).prefix('chapters/:chapter')
+  }).prefix('/chapters/:chapter')
 }).middleware('auth')
 
 Route.resource('/chapters', 'ChapterController')
