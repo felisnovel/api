@@ -19,6 +19,7 @@ export default class PurchasePacket {
       price: packet.price,
       packet_id: packet.id,
       starts_at: DateTime.local(),
+      is_paid: false,
     })
 
     const iframeToken = await PaytrService.createIframeToken(order, {
