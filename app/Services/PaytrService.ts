@@ -24,30 +24,53 @@ export default class PaytrService {
     }
 
     const basket = JSON.stringify([[order.name, '18.00', order.price]])
-    const userBasket = nodeBase64.encode(basket)
-    const merchantOid = 'IN' + DateTime.local().toMillis() // Sipariş numarası: Her işlemde benzersiz olmalıdır!! Bu bilgi bildirim sayfanıza yapılacak bildirimde geri gönderilir.
-    // Sayfada görüntülenecek taksit adedini sınırlamak istiyorsanız uygun şekilde değiştirin.
-    // Sıfır (0) gönderilmesi durumunda yürürlükteki en fazla izin verilen taksit geçerli olur.
-    const maxInstallment = '0'
-    const noInstallment = '0' // Taksit yapılmasını istemiyorsanız, sadece tek çekim sunacaksanız 1 yapın.
-    const userIp = ip // Müşterinizin IP adresi
-    const email = user.email // Müşterinizin sitenizde kayıtlı veya form vasıtasıyla aldığınız eposta adresi.
-    const paymentAmount = order.price * 100 // Tahsil edilecek tutar. 9.99 için 9.99 * 100 = 999 gönderilmelidir.
-    const currency = 'TL'
-    const testMode = Config.get('paytr.testMode') // Mağaza canlı modda iken test işlem yapmak için 1 olarak gönderilebilir.
-    const userName = data.name // Müşterinizin sitenizde kayıtlı veya form aracılığıyla aldığınız ad ve soyad bilgisi
-    const userAddress = data.address // Müşterinizin sitenizde kayıtlı veya form aracılığıyla aldığınız adres bilgisi
-    const userPhone = data.phone // Müşterinizin sitenizde kayıtlı veya form aracılığıyla aldığınız telefon bilgisi
+    const merchantOid = 'IN' + DateTime.local().toMillis()
+    const userIp = ip
+    const email = user.email
+    const paymentAmount = order.price * 100
+    const testMode = Config.get('paytr.testMode')
+    const userName = data.name
+    const userAddress = data.address
+    const userPhone = data.phone
+    const paymentType = data.payment_type
 
     const merchantOkUrl = Config.get('paytr.merchantOkUrl')
-    // Ödeme sürecinde beklenmedik bir hata oluşması durumunda müşterinizin yönlendirileceği sayfa
-    // Bu sayfa siparişi iptal edeceğiniz sayfa değildir! Yalnızca müşterinizi bilgilendireceğiniz sayfadır!
     const merchantFailUrl = Config.get('paytr.merchantFailUrl')
-    const timeoutLimit = 30 // İşlem zaman aşımı süresi - dakika cinsinden
-    const debugOn = Config.get('paytr.debugOn') // Hata mesajlarının ekrana basılması için entegrasyon ve test sürecinde 1 olarak bırakın. Daha sonra 0 yapabilirsiniz.
-    const lang = 'tr' // Türkçe için tr veya İngilizce için en gönderilebilir. Boş gönderilirse tr geçerli olur.
+    const timeoutLimit = 30
+    const debugOn = Config.get('paytr.debugOn')
+    const lang = 'tr'
 
-    const hashSTR = `${merchantId}${userIp}${merchantOid}${email}${paymentAmount}${userBasket}${noInstallment}${maxInstallment}${currency}${testMode}`
+    let hashSTR
+    let requestExtraParams
+
+    const userBasket = nodeBase64.encode(basket)
+
+    if (paymentType === 'card') {
+      const maxInstallment = '0'
+      const noInstallment = '0'
+      const currency = 'TL'
+      hashSTR = `${merchantId}${userIp}${merchantOid}${email}${paymentAmount}${userBasket}${noInstallment}${maxInstallment}${currency}${testMode}`
+
+      requestExtraParams = {
+        merchant_key: merchantKey,
+        merchant_salt: merchantSalt,
+        currency: currency,
+        user_address: userAddress,
+        no_installment: noInstallment,
+        max_installment: maxInstallment,
+        merchant_ok_url: merchantOkUrl,
+        merchant_fail_url: merchantFailUrl,
+        lang: lang,
+      }
+    } else if (paymentType === 'eft') {
+      hashSTR = `${merchantId}${userIp}${merchantOid}${email}${paymentAmount}${paymentType}${testMode}`
+
+      requestExtraParams = {
+        payment_type: paymentType,
+      }
+    } else {
+      throw new HttpException('Ödeme tipi geçersiz.', 400)
+    }
 
     const paytrToken = hashSTR + merchantSalt
 
@@ -56,27 +79,19 @@ export default class PaytrService {
     const response = await axios.post(
       'https://www.paytr.com/odeme/api/get-token',
       {
+        user_name: userName,
+        user_phone: userPhone,
         merchant_id: merchantId,
-        merchant_key: merchantKey,
-        merchant_salt: merchantSalt,
+        user_basket: userBasket,
         email: email,
         payment_amount: paymentAmount,
         merchant_oid: merchantOid,
-        user_name: userName,
-        user_address: userAddress,
-        user_phone: userPhone,
-        merchant_ok_url: merchantOkUrl,
-        merchant_fail_url: merchantFailUrl,
-        user_basket: userBasket,
         user_ip: userIp,
         timeout_limit: timeoutLimit,
         debug_on: debugOn,
         test_mode: testMode,
-        lang: lang,
-        no_installment: noInstallment,
-        max_installment: maxInstallment,
-        currency: currency,
         paytr_token: token,
+        ...requestExtraParams,
       },
       {
         headers: {
@@ -88,6 +103,7 @@ export default class PaytrService {
     if (response.data.status === 'success') {
       return response.data.token
     } else {
+      console.log('response.data', response.data)
       throw new HttpException('Hata oluştu! ', 400)
     }
   }
