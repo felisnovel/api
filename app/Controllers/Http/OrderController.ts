@@ -4,6 +4,7 @@ import UserRole from 'App/Enums/UserRole'
 import Order from 'App/Models/Order'
 import User from '../../Models/User'
 import NotificationService from '../../Services/NotificationService'
+import PaytrService from '../../Services/PaytrService'
 
 export default class OrderController {
   async index({ auth, request, response }: HttpContextContract) {
@@ -12,7 +13,7 @@ export default class OrderController {
     const user = await auth.authenticate()
     const isAdmin = user?.role === UserRole.ADMIN
 
-    if (!isAdmin) {
+    if (!isAdmin || request.input('user')) {
       if (user) {
         ordersQuery.where('user_id', user.id)
       }
@@ -61,6 +62,16 @@ export default class OrderController {
         }
       })
     } catch {
+      return response.badRequest()
+    }
+  }
+
+  public async callback({ response, request }: HttpContextContract) {
+    const isSuccess = await PaytrService.verifyPayment(request)
+
+    if (isSuccess) {
+      return response.ok(true)
+    } else {
       return response.badRequest()
     }
   }

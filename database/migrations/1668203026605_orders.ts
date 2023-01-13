@@ -29,7 +29,13 @@ export default class extends BaseSchema {
       table.integer('promocode_id').nullable().unsigned()
       table.foreign('promocode_id').references('promocodes.id').onDelete('SET NULL')
 
-      table.boolean('is_paid').defaultTo(true)
+      table.boolean('is_paid').defaultTo(false)
+
+      table.string('payment_reference').nullable()
+
+      table.string('user_name').nullable()
+      table.string('user_address').nullable()
+      table.string('user_phone').nullable()
 
       table.timestamp('starts_at', { useTz: true })
       table.timestamp('ends_at', { useTz: true })

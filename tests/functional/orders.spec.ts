@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import OrderFactory from 'Database/factories/OrderFactory'
+import PacketFactory from 'Database/factories/PacketFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
@@ -44,5 +45,36 @@ test.group('Orders', (group) => {
     const response = await client.delete(`/orders/` + order.id).loginAs(user)
 
     response.assertStatus(403)
+  })
+})
+
+test.group('New order', (group) => {
+  group.each.setup(cleanAll)
+
+  test('create a order', async ({ client }) => {
+    const user = await UserFactory.create()
+    const packet = await PacketFactory.create()
+
+    const purchaseResponse = await client
+      .put(`/packets/` + packet.id + '/purchase')
+      .loginAs(user)
+      .form({
+        name: 'test',
+        phone: '5354511357',
+        address: 'adres',
+      })
+    purchaseResponse.assertStatus(200)
+
+    /*
+    const data = await purchaseResponse.body()
+
+    const callbackResponse = await client.post('/orders/callback').form({
+      merchant_oid: data.merchantOid,
+      status: 'success',
+      total_amount: packet.price * 100,
+      hash: data.iframeToken,
+    })
+    callbackResponse.assertStatus(200)
+    */
   })
 })

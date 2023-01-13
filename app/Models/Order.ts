@@ -16,6 +16,18 @@ export default class Order extends BaseModel {
   public name: string
 
   @column()
+  public user_name: string | null
+
+  @column()
+  public user_address: string | null
+
+  @column()
+  public user_phone: string | null
+
+  @column()
+  public payment_reference: string | null
+
+  @column()
   public type: OrderType
 
   @column()

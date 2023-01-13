@@ -9,6 +9,12 @@ export default class PacketController {
     return response.send(packets)
   }
 
+  async show({ params, response }: HttpContextContract) {
+    const packet = await Packet.findOrFail(params.id)
+
+    return response.json(packet)
+  }
+
   async store({ request, response, bouncer }: HttpContextContract) {
     await bouncer.authorize('isAdmin')
 
