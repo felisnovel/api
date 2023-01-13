@@ -29,7 +29,7 @@ export default class extends BaseSchema {
       table.integer('promocode_id').nullable().unsigned()
       table.foreign('promocode_id').references('promocodes.id').onDelete('SET NULL')
 
-      table.boolean('is_paid').defaultTo(true)
+      table.boolean('is_paid').defaultTo(false)
 
       table.string('payment_reference').nullable()
 
