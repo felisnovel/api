@@ -13,7 +13,7 @@ export default class OrderController {
     const user = await auth.authenticate()
     const isAdmin = user?.role === UserRole.ADMIN
 
-    if (!isAdmin) {
+    if (!isAdmin && request.input('user')) {
       if (user) {
         ordersQuery.where('user_id', user.id)
       }
