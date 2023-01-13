@@ -233,20 +233,20 @@
     "@poppinss/utils" "^4.0.4"
     nanoid "^3.3.4"
 
-"@adonisjs/lucid@^18.2.0":
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/@adonisjs/lucid/-/lucid-18.2.0.tgz#aa496f1b3e58d7a5de610f45d35791b4562f142e"
-  integrity sha512-lF6+euwM5sOvpaUy+de+lfMKWjzpRFCvTbko+36bOz9IbUilQtnO3pzPNf7uTj5XUalFTICpVAzw8b8beQtb3g==
+"@adonisjs/lucid@^18.3.0":
+  version "18.3.0"
+  resolved "https://registry.yarnpkg.com/@adonisjs/lucid/-/lucid-18.3.0.tgz#f491e03c4db2231b0c87a1a1daa7b0cb0902121b"
+  integrity sha512-EgLgwP/VkTdOjA4MvnXjZmXGJl1qQVpGe4D/bCZqyO4859LZ/kHZ5a4VXe5+b2Nk4QDWF8uYq0MbSMDGskZr1Q==
   dependencies:
-    "@faker-js/faker" "^7.5.0"
+    "@faker-js/faker" "^7.6.0"
     "@poppinss/hooks" "^5.0.3"
     "@poppinss/utils" "^5.0.0"
     fast-deep-equal "^3.1.3"
     igniculus "^1.5.0"
     knex "^2.3.0"
     knex-dynamic-connection "^3.0.0"
-    luxon "^3.0.3"
-    macroable "^7.0.1"
+    luxon "^3.1.0"
+    macroable "^7.0.2"
     pretty-hrtime "^1.0.3"
     qs "^6.11.0"
     slash "^3.0.0"
@@ -1581,7 +1581,7 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@faker-js/faker@^7.5.0":
+"@faker-js/faker@^7.6.0":
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-7.6.0.tgz#9ea331766084288634a9247fcd8b84f16ff4ba07"
   integrity sha512-XK6BTq1NDMo9Xqw/YkYyGjSsg44fbNwYRx7QK2CuoQgyy+f1rrTDHoExVM5PsyXCtfl2vs2vVJ0MN0yN6LppRw==
@@ -5627,27 +5627,7 @@ knex-dynamic-connection@^3.0.0:
     debug "^4.3.4"
     knex "^2.0.0"
 
-knex@^2.0.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/knex/-/knex-2.2.0.tgz#86a3176924d37303b3f9ff7f70087418c263ce7a"
-  integrity sha512-yhm1Qe9Ok0TeXBq3nNHqZYJPrQ4Iw2tq9k/HxjrZ/EWec2ifOjJlkNHr26v8cQrWtk5iG3iwfUazTIWy+VKG5g==
-  dependencies:
-    colorette "2.0.19"
-    commander "^9.1.0"
-    debug "4.3.4"
-    escalade "^3.1.1"
-    esm "^3.2.25"
-    get-package-type "^0.1.0"
-    getopts "2.3.0"
-    interpret "^2.2.0"
-    lodash "^4.17.21"
-    pg-connection-string "2.5.0"
-    rechoir "^0.8.0"
-    resolve-from "^5.0.0"
-    tarn "^3.0.2"
-    tildify "2.0.0"
-
-knex@^2.3.0:
+knex@^2.0.0, knex@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/knex/-/knex-2.3.0.tgz#87fa2a9553d7cafb125d7a0645256fbe29ef5967"
   integrity sha512-WMizPaq9wRMkfnwKXKXgBZeZFOSHGdtoSz5SaLAVNs3WRDfawt9O89T4XyH52PETxjV8/kRk0Yf+8WBEP/zbYw==
@@ -5831,27 +5811,12 @@ luxon@^2.3.1:
   resolved "https://registry.yarnpkg.com/luxon/-/luxon-2.5.0.tgz#098090f67d690b247e83c090267a60b1aa8ea96c"
   integrity sha512-IDkEPB80Rb6gCAU+FEib0t4FeJ4uVOuX1CQ9GsvU3O+JAGIgu0J7sf1OarXKaKDygTZIoJyU6YdZzTFRu+YR0A==
 
-luxon@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.0.1.tgz#6901111d10ad06fd267ad4e4128a84bef8a77299"
-  integrity sha512-hF3kv0e5gwHQZKz4wtm4c+inDtyc7elkanAsBq+fundaCdUBNJB1dHEGUZIM6SfSBUlbVFduPwEtNjFK8wLtcw==
+luxon@^3.0.1, luxon@^3.0.3, luxon@^3.0.4, luxon@^3.1.0:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.2.1.tgz#14f1af209188ad61212578ea7e3d518d18cee45f"
+  integrity sha512-QrwPArQCNLAKGO/C+ZIilgIuDnEnKx5QYODdDtbFaxzsbZcc/a7WFq7MhsVYgRlwawLtvOUESTlfJ+hc/USqPg==
 
-luxon@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.0.3.tgz#573e65531efd3d92265feb640f02ba7a192e2388"
-  integrity sha512-+EfHWnF+UT7GgTnq5zXg3ldnTKL2zdv7QJgsU5bjjpbH17E3qi/puMhQyJVYuCq+FRkogvB5WB6iVvUr+E4a7w==
-
-luxon@^3.0.4:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.1.0.tgz#9ac33d7142b7ea18d4ec8583cdeb0b079abef60d"
-  integrity sha512-7w6hmKC0/aoWnEsmPCu5Br54BmbmUp5GfcqBxQngRcXJ+q5fdfjEzn7dxmJh2YdDhgW8PccYtlWKSv4tQkrTQg==
-
-macroable@^7.0.0, macroable@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/macroable/-/macroable-7.0.1.tgz#bd487a3b95f17e3fbf96e1e659fd4bfd194a05f6"
-  integrity sha512-8bbZLq2JoGI7FdvmDIxed41opR2cqgUUrRN4fVEsajARzfHkZDAzbCg0RW+jIY93YhWuBsMOeLcIyYz5WU4HNQ==
-
-macroable@^7.0.2:
+macroable@^7.0.0, macroable@^7.0.1, macroable@^7.0.2:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/macroable/-/macroable-7.0.2.tgz#0aa17b5f3c3b4e4dc2c1a44a245db7859111f489"
   integrity sha512-QS9p+Q20YBxpE0dJBnF6CPURP7p1GUsxnhTxTWH5nG3A1F5w8Rg3T4Xyh5UlrFSbHp88oOciVP/0agsNLhkHdQ==
