@@ -40,18 +40,20 @@ export default class PaytrService {
     const debugOn = Config.get('paytr.debugOn')
     const lang = 'tr'
 
+    await order.merge({ payment_reference: merchantOid }).save()
+
     let hashSTR
     let requestExtraParams
 
-    const userBasket = nodeBase64.encode(basket)
-
     if (paymentType === 'card') {
+      const userBasket = nodeBase64.encode(basket)
       const maxInstallment = '0'
       const noInstallment = '0'
       const currency = 'TL'
       hashSTR = `${merchantId}${userIp}${merchantOid}${email}${paymentAmount}${userBasket}${noInstallment}${maxInstallment}${currency}${testMode}`
 
       requestExtraParams = {
+        user_basket: userBasket,
         merchant_key: merchantKey,
         merchant_salt: merchantSalt,
         currency: currency,
@@ -82,7 +84,6 @@ export default class PaytrService {
         user_name: userName,
         user_phone: userPhone,
         merchant_id: merchantId,
-        user_basket: userBasket,
         email: email,
         payment_amount: paymentAmount,
         merchant_oid: merchantOid,
@@ -103,7 +104,6 @@ export default class PaytrService {
     if (response.data.status === 'success') {
       return response.data.token
     } else {
-      console.log('response.data', response.data)
       throw new HttpException('Hata oluştu! ', 400)
     }
   }
@@ -121,7 +121,7 @@ export default class PaytrService {
       throw new Error('PAYTR notification failed: bad hash')
     }
 
-    if (request.input('status') === 'success') {
+    if (request.input('status') === 'success' && request.input('merchant_oid')) {
       const order = await Order.query()
         .where('payment_reference', request.input('merchant_oid'))
         .firstOrFail()
