@@ -9,6 +9,12 @@ export default class UsePromocode {
 
     const promocode = await Promocode.query().where('code', request.input('code')).first()
 
+    if (!promocode) {
+      return response.status(400).send({
+        message: 'Kod geçerli değil!',
+      })
+    }
+
     const isOrder = await promocode.related('orders').query().where('user_id', user.id).first()
 
     if (isOrder) {
