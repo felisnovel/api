@@ -91,6 +91,7 @@ export default class UserController {
       name: data.name,
       user_id: user.id,
       amount: data.amount,
+      is_paid: true,
     })
 
     await NotificationService.onCoinAdded(order)
