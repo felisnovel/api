@@ -31,6 +31,7 @@ export default class extends BaseSchema {
 
       table.boolean('is_paid').defaultTo(false)
 
+      table.string('payment_type').nullable()
       table.string('payment_reference').nullable()
 
       table.string('user_name').nullable()

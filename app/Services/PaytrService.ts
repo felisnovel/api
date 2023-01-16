@@ -23,6 +23,10 @@ export default class PaytrService {
       throw new HttpException('Sipariş tutarı 0 veya daha düşük olamaz.', 400)
     }
 
+    if (!order.payment_type) {
+      throw new HttpException('Ödeme yöntemi bulunamadı!', 400)
+    }
+
     const basket = JSON.stringify([[order.name, '18.00', order.price]])
     const merchantOid = 'IN' + DateTime.local().toMillis()
     const userIp = ip
@@ -32,7 +36,7 @@ export default class PaytrService {
     const userName = data.name
     const userAddress = data.address
     const userPhone = data.phone
-    const paymentType = data.payment_type
+    const paymentType = order.payment_type
 
     const merchantOkUrl = Config.get('paytr.merchantOkUrl')
     const merchantFailUrl = Config.get('paytr.merchantFailUrl')

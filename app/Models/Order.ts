@@ -1,4 +1,5 @@
 import { BaseModel, beforeSave, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import { DateTime } from 'luxon'
 import OrderBuyType from '../Enums/OrderBuyType'
 import OrderType from '../Enums/OrderType'
@@ -26,6 +27,9 @@ export default class Order extends BaseModel {
 
   @column()
   public payment_reference: string | null
+
+  @column()
+  public payment_type: OrderPaymentType | null
 
   @column()
   public type: OrderType

@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import OrderFactory from 'Database/factories/OrderFactory'
 import PacketFactory from 'Database/factories/PacketFactory'
 import UserFactory from 'Database/factories/UserFactory'
@@ -62,6 +63,7 @@ test.group('New order', (group) => {
         name: 'test',
         phone: '5354511357',
         address: 'adres',
+        payment_type: OrderPaymentType.CARD,
       })
     purchaseResponse.assertStatus(200)
 
