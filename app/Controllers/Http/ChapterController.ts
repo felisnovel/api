@@ -5,6 +5,7 @@ import UserRole from 'App/Enums/UserRole'
 import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
+import { DateTime } from 'luxon'
 import showdown from 'showdown'
 import ChapterService from '../../Services/ChapterService'
 import NotificationService from '../../Services/NotificationService'
@@ -135,6 +136,21 @@ export default class ChapterController {
       chapterProps.translation_note = chapter.translation_note
     } else {
       chapterProps.translation_note = new showdown.Converter().makeHtml(chapter.translation_note)
+    }
+
+    const ip = request.ip()
+    if (ip) {
+      const view = await chapter
+        .related('views')
+        .query()
+        .whereBetween('created_at', [
+          DateTime.local().minus({ days: 1 }).toFormat('yyyy-MM-dd'),
+          DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd'),
+        ])
+        .where('ip', ip)
+        .first()
+
+      if (!view) await chapter.related('views').create({ ip })
     }
 
     return response.json({
