@@ -12,7 +12,8 @@ export default class SubscribePlan {
 
     if (subscribed) {
       return response.badRequest({
-        message: 'This plan is subscribed',
+        message:
+          'Hali hazırda bir planınız bulunmaktadır. Plan değişikliği sadece üst planlara doğru olmaktadır.',
       })
     }
 
