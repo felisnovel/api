@@ -92,6 +92,7 @@ Route.resource('/novels', 'NovelController')
 Route.get('/novels/:slug/og-image', 'NovelController.ogImage')
 
 Route.resource('/reviews', 'ReviewController').except(['show'])
+Route.resource('/contacts', 'ContactController').except(['show'])
 
 Route.group(() => {
   Route.group(() => {
