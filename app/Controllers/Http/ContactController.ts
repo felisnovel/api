@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import ContactType from 'App/Enums/ContactType'
 import Contact from 'App/Models/Contact'
 import CreateContactRequestValidator from 'App/Validators/CreateContactRequestValidator'
 import UpdateContactRequestValidator from 'App/Validators/UpdateContactRequestValidator'
@@ -8,6 +9,10 @@ export default class ContactController {
     await bouncer.authorize('isAdmin')
 
     const contactsQuery = Contact.query()
+
+    if (request.input('type') && Object.values(ContactType).includes(request.input('type'))) {
+      contactsQuery.where('type', request.input('type'))
+    }
 
     const contacts = await contactsQuery
       .preload('user')
