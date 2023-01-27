@@ -7,6 +7,8 @@ import {
   computed,
   hasMany,
   HasMany,
+  HasManyThrough,
+  hasManyThrough,
   HasOne,
   hasOne,
   ManyToMany,
@@ -19,6 +21,7 @@ import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import showdown from 'showdown'
 import Chapter from './Chapter'
+import ChapterView from './ChapterView'
 import Country from './Country'
 import Review from './Review'
 import Tag from './Tag'
@@ -144,6 +147,14 @@ export default class Novel extends BaseModel {
     foreignKey: 'novel_id',
   })
   public reviews: HasMany<typeof Review>
+
+  @hasManyThrough([() => ChapterView, () => Chapter], {
+    foreignKey: 'novel_id',
+    throughForeignKey: 'chapter_id',
+    throughLocalKey: 'id',
+    localKey: 'id',
+  })
+  public views: HasManyThrough<typeof ChapterView>
 
   @hasMany(() => Volume, {
     foreignKey: 'volume_novel_id',

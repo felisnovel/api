@@ -102,6 +102,7 @@ export default class ChapterController {
       })
       .preload('volume')
       .preload('novel')
+      .withCount('views')
 
     const user = await auth.authenticate()
 
