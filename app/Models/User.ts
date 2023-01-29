@@ -240,6 +240,7 @@ export default class User extends BaseModel {
         'plans.is_promoted',
         'plans.amount as plan_amount'
       )
+      .orderBy('orders.id', 'desc')
       .first()
   }
 

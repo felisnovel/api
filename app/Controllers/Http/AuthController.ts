@@ -129,15 +129,10 @@ export default class AuthController {
 }
 
 async function getUserWithActivePlan(user) {
-  const activePlan = await user.related('subscribedPlans').query().first()
+  const activePlan = await user.subscribed()
 
   return {
     ...user.toJSON(),
-    activePlan: activePlan
-      ? {
-          ...activePlan?.toJSON(),
-          ends_at: activePlan.$extras.pivot_ends_at,
-        }
-      : null,
+    activePlan,
   }
 }
