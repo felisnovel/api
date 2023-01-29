@@ -133,6 +133,11 @@ async function getUserWithActivePlan(user) {
 
   return {
     ...user.toJSON(),
-    activePlan,
+    activePlan: activePlan
+      ? {
+          ...activePlan?.toJSON(),
+          ends_at: activePlan.$extras.pivot_ends_at,
+        }
+      : null,
   }
 }
