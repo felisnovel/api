@@ -1,11 +1,12 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import OrderType from 'App/Enums/OrderType'
 import User from 'App/Models/User'
 import MuteUserRequestValidator from 'App/Validators/MuteUserRequestValidator'
 import UserRequestValidator from 'App/Validators/UserRequestValidator'
 import { DateTime } from 'luxon'
 import { isNumeric } from '../../../utils/index'
-import Order from '../../Models/Order'
 import NotificationService from '../../Services/NotificationService'
+import OrderService from '../../Services/OrderService'
 import AddCoinUserRequestValidator from '../../Validators/AddCoinUserRequestValidator'
 
 export default class UserController {
@@ -86,13 +87,11 @@ export default class UserController {
 
     const user = await User.findOrFail(params.id)
 
-    const order = await Order.create({
-      type: data.type,
-      name: data.name,
-      user_id: user.id,
-      amount: data.amount,
-      is_paid: true,
-    })
+    const order = await OrderService[data.type === OrderType.FREE ? 'addFreeCoin' : 'addCoin'](
+      user,
+      data.amount,
+      data.name
+    )
 
     await NotificationService.onCoinAdded(order)
 
