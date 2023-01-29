@@ -34,10 +34,6 @@ export default class extends BaseSchema {
       table.string('payment_type').nullable()
       table.string('payment_reference').nullable()
 
-      table.string('user_name').nullable()
-      table.string('user_address').nullable()
-      table.string('user_phone').nullable()
-
       table.timestamp('starts_at', { useTz: true })
       table.timestamp('ends_at', { useTz: true })
 
