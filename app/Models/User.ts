@@ -42,6 +42,12 @@ export default class User extends BaseModel {
   public full_name?: string | null | undefined
 
   @column()
+  public address?: string | null
+
+  @column()
+  public phone?: string | null
+
+  @column()
   public username: string
 
   @column({ serializeAs: null })
@@ -206,6 +212,7 @@ export default class User extends BaseModel {
     pivotRelatedForeignKey: 'plan_id',
     pivotForeignKey: 'user_id',
     pivotTable: 'orders',
+    pivotColumns: ['ends_at'],
     onQuery: (query) => {
       query
         .where('type', OrderType.PLAN)
@@ -223,7 +230,16 @@ export default class User extends BaseModel {
       .where('ends_at', '>=', DateTime.now().toSQL())
       .where('starts_at', '<=', DateTime.now().toSQL())
       .leftJoin('plans', 'orders.plan_id', 'plans.id')
-      .select('orders.id as order_id', 'plans.*')
+      .select(
+        'orders.id as order_id',
+        'orders.*',
+        'plans.no_ads',
+        'plans.premium_eps',
+        'plans.download',
+        'plans.discord_features',
+        'plans.is_promoted',
+        'plans.amount as plan_amount'
+      )
       .first()
   }
 

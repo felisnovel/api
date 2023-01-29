@@ -49,10 +49,10 @@ export default class Order extends BaseModel {
   @column()
   public is_free: boolean
 
-  @column.dateTime()
+  @column.date()
   public starts_at: DateTime
 
-  @column.dateTime()
+  @column.date()
   public ends_at: DateTime
 
   @column()

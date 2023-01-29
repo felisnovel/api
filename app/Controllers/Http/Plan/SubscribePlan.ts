@@ -1,6 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { DateTime } from 'luxon'
-import OrderType from '../../../Enums/OrderType'
+import SubscriptionService from 'App/Services/SubscriptionService'
 import Plan from '../../../Models/Plan'
 
 export default class SubscribePlan {
@@ -10,31 +9,17 @@ export default class SubscribePlan {
 
     const subscribed = await user.subscribed()
 
+    let subscription
+
     if (subscribed) {
-      return response.badRequest({
-        message:
-          'Hali hazırda bir planınız bulunmaktadır. Plan değişikliği sadece üst planlara doğru olmaktadır.',
-      })
+      subscription = await SubscriptionService.upgradePlan(user, plan)
+    } else {
+      subscription = await SubscriptionService.newSubscription(user, plan)
     }
-
-    if (!user.buyableOf(plan.amount)) {
-      return response.badRequest({
-        message: 'Yetersiz bakiye!',
-      })
-    }
-
-    await user.related('orders').create({
-      type: OrderType.PLAN,
-      name: plan.name,
-      amount: plan.amount,
-      is_paid: true,
-      plan_id: plan.id,
-      starts_at: DateTime.local(),
-      ends_at: DateTime.local().plus({ months: 1 }),
-    })
 
     return response.status(200).send({
       success: true,
+      subscription,
     })
   }
 }
