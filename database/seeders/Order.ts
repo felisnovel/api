@@ -21,6 +21,7 @@ export default class extends BaseSeeder {
       price: 1,
       amount: 100,
       packet_id: 1,
+      is_paid: true,
     })
 
     await admin.related('orders').create({
@@ -29,6 +30,7 @@ export default class extends BaseSeeder {
       price: 50,
       amount: 500,
       packet_id: 5,
+      is_paid: true,
     })
 
     await admin.related('orders').create({
