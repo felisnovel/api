@@ -1,3 +1,4 @@
+import Database from '@ioc:Adonis/Lucid/Database'
 import OrderType from 'App/Enums/OrderType'
 import Order from 'App/Models/Order'
 import Plan from 'App/Models/Plan'
@@ -10,7 +11,7 @@ export default class SubscriptionService {
     plan: Plan,
     startsAt?: DateTime,
     endsAt?: DateTime
-  ) {
+  ): Promise<any> {
     const subscribed = await user.subscribed()
 
     if (subscribed) {
@@ -19,10 +20,10 @@ export default class SubscriptionService {
 
     const _startsAt = startsAt || DateTime.local()
 
-    return this.subscribePlan(user, plan, _startsAt, endsAt || _startsAt.plus({ days: 30 }))
+    return await this.subscribePlan(user, plan, _startsAt, endsAt || _startsAt.plus({ days: 30 }))
   }
 
-  public static async upgradePlan(user: User, plan: Plan) {
+  public static async upgradePlan(user: User, plan: Plan, isPreview = false): Promise<any> {
     const subscribed = await user.subscribed()
 
     if (!subscribed) {
@@ -44,17 +45,39 @@ export default class SubscriptionService {
 
     const dayAmount = subscribed.amount / endsAt.diff(startsAt, ['days']).days
     const usedDays = now.startOf('day').diff(startsAt, ['days']).days
-    const usedPrice = dayAmount * usedDays
+    const usedAmount = dayAmount * usedDays
 
-    await Order.query().where('id', subscribed.id).update({
-      ends_at: now,
-      amount: usedPrice,
+    return await Database.transaction(async () => {
+      if (isPreview) {
+        const newPlan = await this.subscribePlan(user, plan, now, endsAt, true)
+
+        return {
+          activePlan: {
+            prevAmount: subscribed.amount,
+            newAmount: usedAmount,
+          },
+          newPlan,
+        }
+      }
+
+      await Order.query().where('id', subscribed.id).update({
+        ends_at: now,
+        amount: usedAmount,
+      })
+
+      await user.refresh()
+
+      return await this.subscribePlan(user, plan, now, endsAt)
     })
-
-    return this.subscribePlan(user, plan, now, endsAt)
   }
 
-  public static async subscribePlan(user: User, plan: Plan, startsAt: DateTime, endsAt: DateTime) {
+  public static async subscribePlan(
+    user: User,
+    plan: Plan,
+    startsAt: DateTime,
+    endsAt: DateTime,
+    isPreview = false
+  ): Promise<any> {
     if (!user.buyableOf(plan.amount)) {
       throw new Error('Yetersiz bakiye!')
     }
@@ -63,6 +86,13 @@ export default class SubscriptionService {
     const endsAtStartOfDay = endsAt.startOf('day')
     const dayPrice = plan.amount / 30
     const amount = dayPrice * endsAtStartOfDay.diff(startsAStartOfDay, ['days']).days
+
+    if (isPreview) {
+      return {
+        prevAmount: plan.amount,
+        newAmount: amount,
+      }
+    }
 
     const subscription = await user.related('orders').create({
       type: OrderType.PLAN,

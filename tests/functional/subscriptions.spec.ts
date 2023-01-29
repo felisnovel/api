@@ -99,4 +99,38 @@ test.group('Subscriptions', (group) => {
     assert.equal(body.subscription.ends_at, endsAt.toFormat('yyyy-MM-dd'))
     assert.equal(body.subscription.amount, 400)
   })
+
+  test('upgrade subscription for preview', async ({ client, assert }) => {
+    const plan = await PlanFactory.merge({
+      amount: 600,
+    }).create()
+    const user = await UserFactory.create()
+    await OrderService.addCoin(user, 2000, 'Hediye Coin')
+
+    const startsAt = DateTime.local().minus({ days: 10 })
+    const endsAt = DateTime.local().plus({ days: 20 })
+
+    const firstSubscription = await SubscriptionService.newSubscription(
+      user,
+      plan,
+      startsAt,
+      endsAt
+    )
+
+    const newPlan = await PlanFactory.merge({
+      amount: 1200,
+    }).create()
+
+    const response = await client.put(`/plans/${newPlan.id}/subscribe?preview=true`).loginAs(user)
+    response.assertStatus(200)
+
+    const body = response.body()
+
+    await firstSubscription.refresh()
+    assert.equal(body.subscription.activePlan.prevAmount, 600)
+    assert.equal(body.subscription.activePlan.newAmount, 200)
+
+    assert.equal(body.subscription.newPlan.prevAmount, 1200)
+    assert.equal(body.subscription.newPlan.newAmount, 800)
+  })
 })
