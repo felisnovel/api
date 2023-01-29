@@ -34,8 +34,8 @@ export default class extends BaseSchema {
       table.string('payment_type').nullable()
       table.string('payment_reference').nullable()
 
-      table.timestamp('starts_at', { useTz: true })
-      table.timestamp('ends_at', { useTz: true })
+      table.date('starts_at')
+      table.date('ends_at')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
