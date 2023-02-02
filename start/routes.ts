@@ -10,14 +10,14 @@ Route.group(() => {
   Route.post('/login', 'AuthController.login')
   Route.post('/register', 'AuthController.register')
 
-  Route.get('/:provider/redirect', 'AuthController.redirect')
-  Route.get('/:provider/callback', 'AuthController.callback')
-
   Route.post('/reset-password/:token', 'Auth/ResetPasswordController.invoke')
   Route.post('/forgot-password', 'Auth/ForgotPasswordController.invoke')
 
   Route.group(() => {
     Route.get('/me', 'AuthController.me')
+
+    Route.get('/discord/redirect', 'Auth/DiscordController.redirect')
+    Route.get('/discord/callback', 'Auth/DiscordController.callback')
   }).middleware('auth')
 }).prefix('auth')
 

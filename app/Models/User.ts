@@ -75,6 +75,9 @@ export default class User extends BaseModel {
   public instagram_handle?: string
 
   @column()
+  public discordId?: string
+
+  @column()
   public youtube_handle?: string
 
   @column()
