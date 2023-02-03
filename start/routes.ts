@@ -6,6 +6,12 @@ Route.group(() => {
 
 Route.post('/email-confirmation/:token', 'User/EmailConfirmationController.verify')
 
+Route.get('/sitemap.xml', 'SitemapController.index')
+Route.get('/sitemap_static.xml', 'SitemapController.static')
+Route.get('/sitemap_novels.xml', 'SitemapController.novels')
+Route.get('/sitemap_chapters.xml', 'SitemapController.chapters')
+Route.get('/sitemap_announcements.xml', 'SitemapController.announcements')
+
 Route.group(() => {
   Route.post('/login', 'AuthController.login')
   Route.post('/register', 'AuthController.register')
