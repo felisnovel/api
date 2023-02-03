@@ -107,6 +107,10 @@ export default class Chapter extends BaseModel {
     return false
   }
 
+  public getSlug() {
+    return `novel/${this.novel.slug}/${this.novel.shorthand}-chapter-${this.number}`
+  }
+
   public async isRead(user: null | User) {
     if (!user) return false
 
