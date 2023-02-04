@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import User from 'App/Models/User'
 
 export default class DiscordController {
   async redirect({ response, auth, bouncer, ally }: HttpContextContract) {
@@ -40,5 +41,22 @@ export default class DiscordController {
     return response.json({
       success: true,
     })
+  }
+
+  async users({}: HttpContextContract) {
+    const users = await User.query().whereNotNull('discordId')
+
+    return await Promise.all(
+      users.map(async (user) => {
+        const subscribed = await user.subscribed()
+
+        return {
+          id: user.id,
+          discord_id: user.discordId,
+          isSubscribed: subscribed?.plan_id ? true : false,
+          plan_id: subscribed?.plan_id || null,
+        }
+      })
+    )
   }
 }
