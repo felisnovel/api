@@ -230,6 +230,7 @@ export default class User extends BaseModel {
       .from('orders')
       .where('user_id', this.id)
       .where('type', OrderType.PLAN)
+      .where('is_paid', true)
       .where('ends_at', '>=', DateTime.now().toSQL())
       .where('starts_at', '<=', DateTime.now().toSQL())
       .leftJoin('plans', 'orders.plan_id', 'plans.id')
