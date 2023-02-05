@@ -13,6 +13,8 @@ Route.get('/sitemap_static.xml', 'SitemapController.static')
 Route.get('/sitemap_novels.xml', 'SitemapController.novels')
 Route.get('/sitemap_chapters.xml', 'SitemapController.chapters')
 Route.get('/sitemap_announcements.xml', 'SitemapController.announcements')
+Route.get('/feed/chapters', 'FeedController.chapters')
+Route.get('/feed/announcements', 'FeedController.announcements')
 
 Route.group(() => {
   Route.post('/login', 'AuthController.login')
