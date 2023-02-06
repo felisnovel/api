@@ -67,6 +67,12 @@ jobs:
           DISCORD_CLIENT_SECRET: clientSecret
           FACEBOOK_CLIENT_ID: clientId
           FACEBOOK_CLIENT_SECRET: clientSecret
+          SMTP_HOST: dummyHost
+          SMTP_PORT: 465
+          SMTP_USERNAME: noreply@felisnovel.com
+          SMTP_PASSWORD: dummyPassword
+          MAIL_FROM_ADDRESS: noreply@felisnovel.com
+          MAIL_FROM_NAME: 'Felis Novel'
           CLOUDFLARE_R2: dummyLink
           S3_KEY: dummyKey
           S3_SECRET: dummySecret

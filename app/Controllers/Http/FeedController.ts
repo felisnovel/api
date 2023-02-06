@@ -47,7 +47,10 @@ export default class FeedController {
   public async chapters({ response }: HttpContextContract) {
     const feed = await this.feed()
 
-    const chapters = await Chapter.query().preload('novel').orderBy('created_at', 'desc')
+    const chapters = await Chapter.query()
+      .preload('volume')
+      .preload('novel')
+      .orderBy('created_at', 'desc')
 
     chapters.forEach((chapter) => {
       feed.addItem({
