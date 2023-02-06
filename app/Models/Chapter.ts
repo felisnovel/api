@@ -141,8 +141,10 @@ export default class Chapter extends BaseModel {
   @computed()
   public get name(): string {
     return `${this?.novel?.name} - ${
-      this?.volume?.volume_number !== 0 ? this?.volume?.volume_number + '.' : 'Yardımcı'
-    } Cilt - Bölüm ${this.number}`
+      this?.volume?.volume_number !== 0
+        ? this?.volume?.volume_number + '. Cilt'
+        : this?.volume?.name
+    } - Bölüm ${this.number}`
   }
 
   @computed()
