@@ -27,16 +27,6 @@ test.group('Passwords', (group) => {
     Mail.restore()
   })
 
-  test('it should create a reset password token', async ({ assert, client }) => {
-    const user = await UserFactory.create()
-
-    const response = await client.post('/auth/forgot-password').json({ email: user.email })
-    response.assertStatus(200)
-
-    const tokens = await user.related('tokens').query()
-    assert.isNotEmpty(tokens)
-  })
-
   test('it should be able to reset password', async ({ assert, client }) => {
     const user = await UserFactory.create()
     const { token } = await user

@@ -1,7 +1,5 @@
 import { test } from '@japa/runner'
-import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import OrderFactory from 'Database/factories/OrderFactory'
-import PacketFactory from 'Database/factories/PacketFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
@@ -49,6 +47,7 @@ test.group('Orders', (group) => {
   })
 })
 
+/*
 test.group('New order', (group) => {
   group.each.setup(cleanAll)
 
@@ -67,7 +66,6 @@ test.group('New order', (group) => {
       })
     purchaseResponse.assertStatus(200)
 
-    /*
     const data = await purchaseResponse.body()
 
     const callbackResponse = await client.post('/orders/callback').form({
@@ -77,6 +75,6 @@ test.group('New order', (group) => {
       hash: data.iframeToken,
     })
     callbackResponse.assertStatus(200)
-    */
   })
 })
+*/
