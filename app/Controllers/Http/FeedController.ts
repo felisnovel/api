@@ -41,7 +41,7 @@ export default class FeedController {
       })
     })
 
-    return response.send(feed.atom1())
+    return response.send(feed.json1())
   }
 
   public async chapters({ response }: HttpContextContract) {
@@ -62,6 +62,6 @@ export default class FeedController {
       })
     })
 
-    return response.send(feed.atom1())
+    return response.send(feed.json1())
   }
 }
