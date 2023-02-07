@@ -8,8 +8,8 @@ import CountryFactory from 'Database/factories/CountryFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
 import OrderFactory from 'Database/factories/OrderFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
-import { addDays } from 'date-fns'
 import { DateTime } from 'luxon'
+import CityFactory from './CityFactory'
 import CommentReactionFactory from './CommentReactionFactory'
 
 export default Factory.define(User, ({ faker }) => {
@@ -36,6 +36,7 @@ export default Factory.define(User, ({ faker }) => {
   .relation('comments', () => CommentFactory)
   .relation('commentReactions', () => CommentReactionFactory)
   .relation('country', () => CountryFactory)
+  .relation('city', () => CityFactory)
   .relation('orders', () => OrderFactory)
   .state('admin', async (item) => {
     item.role = UserRole.ADMIN

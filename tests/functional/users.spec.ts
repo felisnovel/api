@@ -30,6 +30,7 @@ const USER_EXAMPLE_DATA = {
   announcements_emails_enabled: true,
   events_emails_enabled: true,
   country_id: 1,
+  city_id: 1,
 }
 
 const NEW_USER_EXAMPLE_DATA = {
@@ -50,6 +51,7 @@ const NEW_USER_EXAMPLE_DATA = {
   announcements_emails_enabled: false,
   events_emails_enabled: false,
   country_id: 2,
+  city_id: 2,
 }
 
 test.group('Users', (group) => {

@@ -1,4 +1,5 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import City from './City'
 
 export default class Country extends BaseModel {
   @column({ isPrimary: true })
@@ -9,4 +10,9 @@ export default class Country extends BaseModel {
 
   @column()
   public key: string
+
+  @hasMany(() => City, {
+    foreignKey: 'country_id',
+  })
+  public cities: HasMany<typeof City>
 }

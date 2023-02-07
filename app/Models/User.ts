@@ -21,6 +21,7 @@ import OrderType from '../Enums/OrderType'
 import ReactionTypeEnum from '../Enums/ReactionTypeEnum'
 import ApiToken from './ApiToken'
 import Chapter from './Chapter'
+import City from './City'
 import Comment from './Comment'
 import CommentReaction from './CommentReaction'
 import Country from './Country'
@@ -114,6 +115,14 @@ export default class User extends BaseModel {
     foreignKey: 'country_id',
   })
   public country: BelongsTo<typeof Country>
+
+  @column()
+  public city_id?: number | null
+
+  @belongsTo(() => City, {
+    foreignKey: 'city_id',
+  })
+  public city: BelongsTo<typeof City>
 
   @computed()
   public get socials() {
