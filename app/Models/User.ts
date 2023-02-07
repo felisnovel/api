@@ -39,7 +39,10 @@ export default class User extends BaseModel {
   public email: string
 
   @column()
-  public full_name?: string | null | undefined
+  public name?: string | null | undefined
+
+  @column()
+  public surname?: string | null | undefined
 
   @column()
   public address?: string | null

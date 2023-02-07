@@ -13,7 +13,8 @@ import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
 
 const USER_EXAMPLE_DATA = {
-  full_name: 'Ahmet Mehmet',
+  name: 'Ahmet',
+  surname: 'Mehmet',
   email: 'admin@felisnovel.com',
   username: 'admin',
   role: UserRole.ADMIN,
@@ -31,7 +32,8 @@ const USER_EXAMPLE_DATA = {
 }
 
 const NEW_USER_EXAMPLE_DATA = {
-  full_name: 'Yeni Ahmet Mehmet',
+  name: 'Yeni Ahmet',
+  surname: 'Yeni Mehmet',
   email: 'yeniadmin@felisnovel.com',
   username: 'yeniadmin',
   role: UserRole.EDITOR,

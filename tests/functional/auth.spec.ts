@@ -4,7 +4,8 @@ import UserFactory from 'Database/factories/UserFactory'
 import { cleanAll } from '../utils'
 
 const USER_EXAMPLE_DATA = {
-  full_name: 'Ahmet Mehmet',
+  name: 'Ahmet',
+  surname: 'Mehmet',
   email: 'email@felisnovel.com',
   username: 'username',
   bio: "I'm a bio",

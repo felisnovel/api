@@ -13,7 +13,8 @@ import CommentReactionFactory from './CommentReactionFactory'
 
 export default Factory.define(User, ({ faker }) => {
   return {
-    full_name: faker.name.fullName(),
+    name: faker.name.firstName(),
+    surname: faker.name.lastName(),
     email: faker.internet.email(),
     password: faker.internet.password(),
     username: faker.internet.userName().replace(/[^a-zA-Z0-9]/g, ''),
