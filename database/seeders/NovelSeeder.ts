@@ -1,4 +1,5 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
+import OrderType from 'App/Enums/OrderType'
 import ChapterFactory from 'Database/factories/ChapterFactory'
 import CommentFactory from 'Database/factories/CommentFactory'
 import NovelFactory from 'Database/factories/NovelFactory'
@@ -6,7 +7,6 @@ import OrderFactory from 'Database/factories/OrderFactory'
 import ReviewFactory from 'Database/factories/ReviewFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import { DateTime } from 'luxon'
-import OrderType from '../../app/Enums/OrderType'
 
 export default class extends BaseSeeder {
   public async run() {

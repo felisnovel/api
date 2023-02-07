@@ -1,9 +1,9 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import OrderBuyType from 'App/Enums/OrderBuyType'
+import OrderType from 'App/Enums/OrderType'
+import Chapter from 'App/Models/Chapter'
+import User from 'App/Models/User'
 import { DateTime } from 'luxon'
-import OrderType from '../../app/Enums/OrderType'
-import Chapter from '../../app/Models/Chapter'
-import User from '../../app/Models/User'
 
 export default class extends BaseSeeder {
   public async run() {

@@ -6,11 +6,11 @@ export default class MainSeeder extends BaseSeeder {
   }
 
   public async run() {
-    await this.runSeeder(await import('../Novel'))
-    await this.runSeeder(await import('../Announcement'))
-    await this.runSeeder(await import('../Country'))
-    await this.runSeeder(await import('../Packet'))
-    await this.runSeeder(await import('../Plan'))
-    await this.runSeeder(await import('../Order'))
+    await this.runSeeder(await import('../CountrySeeder'))
+    await this.runSeeder(await import('../NovelSeeder'))
+    await this.runSeeder(await import('../AnnouncementSeeder'))
+    await this.runSeeder(await import('../PacketSeeder'))
+    await this.runSeeder(await import('../PlanSeeder'))
+    await this.runSeeder(await import('../OrderSeeder'))
   }
 }

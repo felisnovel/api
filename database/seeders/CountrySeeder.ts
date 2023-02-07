@@ -4,8 +4,8 @@ import CountryFactory from 'Database/factories/CountryFactory'
 export default class extends BaseSeeder {
   public async run() {
     await CountryFactory.merge({
-      name: 'United States',
-      key: 'US',
+      name: 'Türkiye',
+      key: 'TR',
     }).create()
 
     await CountryFactory.merge({
