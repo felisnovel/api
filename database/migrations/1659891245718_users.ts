@@ -15,6 +15,9 @@ export default class UsersSchema extends BaseSchema {
       table.string('username', 255).unique().notNullable()
       table.string('password', 180).notNullable()
 
+      table.string('phone').nullable()
+      table.string('address').nullable()
+
       table.string('discord_id').nullable()
 
       table.decimal('free_balance').defaultTo(0)
@@ -51,6 +54,12 @@ export default class UsersSchema extends BaseSchema {
 
       table.timestamp('banned_at', { useTz: true }).nullable()
       table.timestamp('confirmed_at', { useTz: true }).nullable()
+
+      table.integer('city_id').unsigned().nullable()
+      table.foreign('city_id').references('cities.id').onDelete('RESTRICT')
+
+      table.integer('country_id').unsigned().nullable()
+      table.foreign('country_id').references('countries.id').onDelete('RESTRICT')
 
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()
