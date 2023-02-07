@@ -1,5 +1,25 @@
 {
   "commands": {
+    "create:invoice_for_user": {
+      "settings": {
+        "loadApp": true,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/CreateInvoiceForUser",
+      "commandName": "create:invoice_for_user",
+      "description": "",
+      "args": [
+        {
+          "type": "string",
+          "propertyName": "userId",
+          "name": "userId",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "aliases": [],
+      "flags": []
+    },
     "crud": {
       "settings": {
         "loadApp": false,
