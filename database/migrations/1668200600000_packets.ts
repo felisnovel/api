@@ -8,9 +8,10 @@ export default class extends BaseSchema {
       table.increments('id')
 
       table.string('name')
-      table.decimal('price')
+      table.decimal('original_price')
       table.decimal('amount')
       table.boolean('is_promoted').defaultTo(false)
+      table.decimal('discount_rate').defaultTo(0)
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

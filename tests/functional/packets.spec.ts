@@ -5,14 +5,16 @@ import { cleanAll } from '../utils'
 
 const PACKET_EXAMPLE_DATA = {
   name: '10 Coin',
-  price: 10,
+  original_price: 10,
+  discount_rate: 0,
   amount: 10,
   is_promoted: false,
 }
 
 const NEW_PACKET_EXAMPLE_DATA = {
   name: '20 Coin',
-  price: 20,
+  original_price: 20,
+  discount_rate: 20,
   amount: 20,
   is_promoted: true,
 }

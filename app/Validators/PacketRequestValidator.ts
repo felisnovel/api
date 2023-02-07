@@ -9,8 +9,9 @@ export default class PacketRequestValidator extends BaseValidator {
 
   public schema = schema.create({
     name: schema.string({ trim: true }),
-    price: schema.number(),
+    original_price: schema.number(),
     amount: schema.number(),
     is_promoted: schema.boolean(),
+    discount_rate: schema.number(),
   })
 }

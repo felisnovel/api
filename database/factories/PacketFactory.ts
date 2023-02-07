@@ -6,7 +6,7 @@ export default Factory.define(Packet, ({ faker }) => {
 
   return {
     name: price.toString() + ' Coin',
-    price,
+    original_price: price,
     amount: price,
   }
 })
