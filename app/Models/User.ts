@@ -3,6 +3,8 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import {
   BaseModel,
   beforeSave,
+  belongsTo,
+  BelongsTo,
   column,
   computed,
   hasMany,
@@ -21,6 +23,7 @@ import ApiToken from './ApiToken'
 import Chapter from './Chapter'
 import Comment from './Comment'
 import CommentReaction from './CommentReaction'
+import Country from './Country'
 import Notification from './Notification'
 import Novel from './Novel'
 import Order from './Order'
@@ -103,6 +106,14 @@ export default class User extends BaseModel {
 
   @column()
   public events_emails_enabled: boolean
+
+  @column()
+  public country_id?: number | null
+
+  @belongsTo(() => Country, {
+    foreignKey: 'country_id',
+  })
+  public country: BelongsTo<typeof Country>
 
   @computed()
   public get socials() {
