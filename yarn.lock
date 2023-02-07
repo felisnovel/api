@@ -8828,6 +8828,11 @@ word-wrap@^1.2.3:
   resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.3.tgz#610636f6b1f703891bd34771ccb17fb93b47079c"
   integrity sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==
 
+wordwrap@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-1.0.0.tgz#27584810891456a4171c8d0226441ade90cbcaeb"
+  integrity sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==
+
 wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
@@ -8964,12 +8969,14 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-youch-terminal@^2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/youch-terminal/-/youch-terminal-2.1.4.tgz#5dbae9202d90654b20ff591723606af536dfbc22"
-  integrity sha512-pxJ8JmnqWDg9Eayefy9WuiZFtFrT9+fBTZBWHCocuo0Iv0CW3daAkwCGxh7IDZtq6/OA/v+5MhH52cde0p0ZSA==
+youch-terminal@^2.1.4, youch-terminal@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/youch-terminal/-/youch-terminal-2.2.0.tgz#a210d95d078d69be56ed034f957bb3956f1bc218"
+  integrity sha512-LLYtvG/4XoRO/vhf2eBkzT6dI1hWliLSp7NuXRKsvBAITuIxODS61X7AQOHl5Aaf8oquS9JlHSpjTFjX140XKA==
   dependencies:
-    kleur "^4.1.4"
+    kleur "^4.1.5"
+    string-width "^4.2.3"
+    wordwrap "^1.0.0"
 
 youch@^3.2.0:
   version "3.2.0"
