@@ -12,14 +12,6 @@ const USER_EXAMPLE_DATA = {
   gender: UserGender.MALE,
 }
 
-const NEW_USER_EXAMPLE_DATA = {
-  full_name: 'Yeni Ahmet Mehmet',
-  email: 'newemail@felisnovel.com',
-  username: 'newusername',
-  bio: "Yeni I'm a bio",
-  gender: UserGender.FEMALE,
-}
-
 const PASSWORD_EXAMPLE_DATA = {
   _password: '0154Qwe0154*',
   _password_confirmation: '0154Qwe0154*',
