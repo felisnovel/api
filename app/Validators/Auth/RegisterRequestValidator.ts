@@ -10,7 +10,8 @@ export default class RegisterRequestValidator extends BaseValidator {
   }
 
   public schema = schema.create({
-    full_name: schema.string.nullableAndOptional({ trim: true }),
+    name: schema.string.nullableAndOptional({ trim: true }),
+    surname: schema.string.nullableAndOptional({ trim: true }),
     gender: schema.enum.nullableAndOptional(Object.values(UserGender)),
     bio: schema.string.nullableAndOptional({ trim: true }),
     username: schema.string({ trim: true }, [
