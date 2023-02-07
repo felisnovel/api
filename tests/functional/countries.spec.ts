@@ -4,8 +4,13 @@ import UserFactory from 'Database/factories/UserFactory'
 import { cleanAll } from '../utils'
 
 const COUNTRY_EXAMPLE_DATA = {
-  name: 'Turkey',
-  key: 'TR',
+  name: 'XTurkey',
+  key: 'XTR',
+}
+
+const NEW_COUNTRY_EXAMPLE_DATA = {
+  name: 'New Turkey',
+  key: 'NEWTR',
 }
 
 test.group('Countries', (group) => {
@@ -42,7 +47,7 @@ test.group('Countries', (group) => {
     const country = await CountryFactory.create()
     const admin = await UserFactory.apply('admin').create()
 
-    const newData = COUNTRY_EXAMPLE_DATA
+    const newData = NEW_COUNTRY_EXAMPLE_DATA
 
     const response = await client.patch(`/countries/${country.id}`).loginAs(admin).form(newData)
 
