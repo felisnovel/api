@@ -1,9 +1,18 @@
-import { BaseModel, beforeSave, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  beforeSave,
+  BelongsTo,
+  belongsTo,
+  column,
+  ManyToMany,
+  manyToMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import { DateTime } from 'luxon'
 import OrderBuyType from '../Enums/OrderBuyType'
 import OrderType from '../Enums/OrderType'
 import Chapter from './Chapter'
+import Invoice from './Invoice'
 import Packet from './Packet'
 import Plan from './Plan'
 import Promocode from './Promocode'
@@ -62,6 +71,11 @@ export default class Order extends BaseModel {
     foreignKey: 'chapter_id',
   })
   public chapter: BelongsTo<typeof Chapter>
+
+  @manyToMany(() => Invoice, {
+    pivotTable: 'invoice_order',
+  })
+  public invoices: ManyToMany<typeof Invoice>
 
   @column()
   public plan_id: number
