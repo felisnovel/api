@@ -35,6 +35,7 @@ export default class OrderController {
 
     const orders = await ordersQuery
       .preload('user')
+      .preload('invoices')
       .orderBy('id', 'desc')
       .paginate(request.input('page', 1), request.input('take', 10))
 

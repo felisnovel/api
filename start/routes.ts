@@ -59,6 +59,7 @@ Route.group(() => {
 
 Route.group(() => {
   Route.resource('/promocodes', 'PromocodeController')
+  Route.resource('/invoices', 'InvoiceController').only(['index', 'destroy'])
   Route.resource('/comments/reports', 'CommentReportController').only(['index', 'destroy'])
   Route.resource('/reviews/reports', 'ReviewReportController').only(['index', 'destroy'])
   Route.group(() => {

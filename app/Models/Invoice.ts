@@ -10,7 +10,7 @@ export default class Invoice extends BaseModel {
   public document_id?: string | null
 
   @column()
-  public netTotal: number
+  public net_total: number
 
   @column()
   public user_id: number | null
