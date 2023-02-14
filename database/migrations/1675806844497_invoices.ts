@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.string('uuid', 255).nullable()
+      table.string('document_id', 255).nullable()
 
       table.float('net_total')
       /**
