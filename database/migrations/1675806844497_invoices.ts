@@ -9,6 +9,9 @@ export default class extends BaseSchema {
 
       table.string('document_id', 255).nullable()
 
+      table.integer('user_id').notNullable().unsigned()
+      table.foreign('user_id').references('users.id').onDelete('CASCADE')
+
       table.float('net_total')
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
