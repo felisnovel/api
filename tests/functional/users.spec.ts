@@ -31,6 +31,8 @@ const USER_EXAMPLE_DATA = {
   events_emails_enabled: true,
   country_id: 1,
   city_id: 1,
+  address: 'Istanbul',
+  phone: '+905354511350',
 }
 
 const NEW_USER_EXAMPLE_DATA = {

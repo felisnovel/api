@@ -37,5 +37,7 @@ export default class UserRequestValidator extends BaseValidator {
     youtube_handle: schema.string.optional(),
     country_id: schema.number.optional([rules.exists({ table: 'countries', column: 'id' })]),
     city_id: schema.number.optional([rules.exists({ table: 'cities', column: 'id' })]),
+    phone: schema.string.optional(),
+    address: schema.string.optional(),
   })
 }

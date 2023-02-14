@@ -26,6 +26,8 @@ export default Factory.define(User, ({ faker }) => {
     twitter_handle: faker.internet.userName(),
     instagram_handle: faker.internet.userName(),
     youtube_handle: faker.internet.userName(),
+    address: faker.address.streetAddress(),
+    phone: faker.phone.number(),
   }
 })
   .relation('followNovels', () => NovelFactory)
