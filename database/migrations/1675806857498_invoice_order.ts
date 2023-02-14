@@ -12,11 +12,6 @@ export default class extends BaseSchema {
 
       table.integer('order_id').nullable().unsigned()
       table.foreign('order_id').references('orders.id').onDelete('CASCADE')
-      /**
-       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
-       */
-      table.timestamp('created_at', { useTz: true })
-      table.timestamp('updated_at', { useTz: true })
     })
   }
 
