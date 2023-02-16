@@ -139,4 +139,5 @@ Route.group(() => {
 Route.resource('/tags', 'TagController')
 Route.resource('/announcements', 'AnnouncementController')
 Route.resource('/languages', 'LanguageController').except(['show'])
+Route.resource('/cities', 'CityController').only(['index'])
 Route.resource('/countries', 'CountryController').except(['show'])
