@@ -108,6 +108,11 @@ export default class User extends BaseModel {
   @column()
   public events_emails_enabled: boolean
 
+  @computed()
+  public get fullName(): string {
+    return `${this.name} ${this.surname}`
+  }
+
   @column()
   public country_id?: number | null
 
