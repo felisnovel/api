@@ -45,6 +45,8 @@ export default class AuthController {
 
   async me({ response, auth }: HttpContextContract) {
     const user = await auth.authenticate()
+    await user.load('city')
+    await user.load('country')
     await user.loadCount('followNovels').loadCount('comments').loadCount('reviews')
     await user.serialize()
 
