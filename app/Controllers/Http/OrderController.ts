@@ -72,7 +72,7 @@ export default class OrderController {
     const isSuccess = await paymentService.verifyPayment(request)
 
     if (isSuccess) {
-      return response.ok(true)
+      return 'OK'
     } else {
       return response.badRequest()
     }
