@@ -1,102 +1,90 @@
 import Config from '@ioc:Adonis/Core/Config'
+import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import HttpException from 'App/Exceptions/HttpException'
 import axios from 'axios'
 import crypto from 'crypto'
-import { DateTime } from 'luxon'
 import nodeBase64 from 'nodejs-base64-converter'
-import Order from '../Models/Order'
-
-const merchantId = Config.get('paytr.merchantId')
-const merchantKey = Config.get('paytr.merchantKey')
-const merchantSalt = Config.get('paytr.merchantSalt')
 
 export default class PaytrService {
-  public static async createIframeToken(order: Order, { ip, data }) {
-    await order.load('user')
-    const user = order.user
-
-    if (order.is_paid) {
-      throw new HttpException('Bu sipariş zaten ödenmiş.', 400)
-    }
-
-    if (!order.price || order.price <= 0) {
+  public async createIframeToken({
+    payment_reference,
+    user_name,
+    user_email,
+    user_phone,
+    user_address,
+    payment_type,
+    order_price,
+    order_name,
+    user_ip,
+  }) {
+    if (!order_price || order_price <= 0) {
       throw new HttpException('Sipariş tutarı 0 veya daha düşük olamaz.', 400)
     }
 
-    if (!order.payment_type) {
+    if (!payment_type) {
       throw new HttpException('Ödeme yöntemi bulunamadı!', 400)
     }
 
-    const basket = JSON.stringify([[order.name, '18.00', order.price]])
-    const merchantOid = 'IN' + DateTime.local().toMillis()
-    const userIp = ip
-    const email = user.email
-    const paymentAmount = order.price * 100
-    const testMode = Config.get('paytr.testMode')
-    const userName = data.name
-    const userAddress = data.address
-    const userPhone = data.phone
-    const paymentType = order.payment_type
+    const basket = JSON.stringify([[order_name, '18.00', order_price]])
+    const email = user_email
+    const payment_amount = order_price * 100
 
-    const merchantOkUrl = Config.get('paytr.merchantOkUrl')
-    const merchantFailUrl = Config.get('paytr.merchantFailUrl')
-    const timeoutLimit = 30
-    const debugOn = Config.get('paytr.debugOn')
-    const lang = 'tr'
-
-    await order.merge({ payment_reference: merchantOid }).save()
-
-    let hashSTR
-    let requestExtraParams
-
-    if (paymentType === 'card') {
-      const userBasket = nodeBase64.encode(basket)
-      const maxInstallment = '0'
-      const noInstallment = '0'
-      const currency = 'TL'
-      hashSTR = `${merchantId}${userIp}${merchantOid}${email}${paymentAmount}${userBasket}${noInstallment}${maxInstallment}${currency}${testMode}`
-
-      requestExtraParams = {
-        user_basket: userBasket,
-        merchant_key: merchantKey,
-        merchant_salt: merchantSalt,
-        currency: currency,
-        user_address: userAddress,
-        no_installment: noInstallment,
-        max_installment: maxInstallment,
-        merchant_ok_url: merchantOkUrl,
-        merchant_fail_url: merchantFailUrl,
-        lang: lang,
-      }
-    } else if (paymentType === 'eft') {
-      hashSTR = `${merchantId}${userIp}${merchantOid}${email}${paymentAmount}${paymentType}${testMode}`
-
-      requestExtraParams = {
-        payment_type: paymentType,
-      }
-    } else {
-      throw new HttpException('Ödeme tipi geçersiz.', 400)
+    const data = {
+      merchant_oid: payment_reference,
+      user_name,
+      user_phone,
+      user_address,
+      merchant_id,
+      email,
+      payment_amount,
+      user_ip,
+      basket,
     }
 
-    const paytrToken = hashSTR + merchantSalt
+    const { hash, params } = this.createHashAndParams(payment_type, data)
 
-    const token = crypto.createHmac('sha256', merchantKey).update(paytrToken).digest('base64')
+    const response = await this.getToken(hash, params, data)
+
+    return response.token
+  }
+
+  public async verifyPayment(hash, merchant_oid, status, total_amount) {
+    const paytr_token = merchant_oid + merchant_salt + status + total_amount
+
+    const token = crypto.createHmac('sha256', merchant_key).update(paytr_token).digest('base64')
+
+    if (token !== hash) {
+      throw new Error('PAYTR notification failed: bad hash')
+    }
+
+    if (status === 'success' && merchant_oid) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  private async getToken(hash, params, data) {
+    const { user_name, user_phone, email, payment_amount, merchant_oid, user_ip } = data
+    const token = hash + merchant_salt
+
+    const paytr_token = crypto.createHmac('sha256', merchant_key).update(token).digest('base64')
 
     const response = await axios.post(
       'https://www.paytr.com/odeme/api/get-token',
       {
-        user_name: userName,
-        user_phone: userPhone,
-        merchant_id: merchantId,
-        email: email,
-        payment_amount: paymentAmount,
-        merchant_oid: merchantOid,
-        user_ip: userIp,
-        timeout_limit: timeoutLimit,
-        debug_on: debugOn,
-        test_mode: testMode,
-        paytr_token: token,
-        ...requestExtraParams,
+        merchant_id,
+        user_name,
+        user_phone,
+        email,
+        payment_amount,
+        merchant_oid,
+        user_ip,
+        timeout_limit,
+        debug_on,
+        test_mode,
+        paytr_token,
+        ...params,
       },
       {
         headers: {
@@ -105,36 +93,59 @@ export default class PaytrService {
       }
     )
 
-    if (response.data.status === 'success') {
-      return response.data.token
-    } else {
+    if (response.data.status !== 'success') {
       throw new HttpException('Hata oluştu! ', 400)
     }
+
+    return response.data
   }
 
-  public static async verifyPayment(request) {
-    const paytr_token =
-      request.input('merchant_oid') +
-      merchantSalt +
-      request.input('status') +
-      request.input('total_amount')
+  private createHashAndParams(payment_type, data) {
+    const { basket, user_ip, merchant_oid, email, payment_amount } = data
+    const user_basket = nodeBase64.encode(basket)
 
-    const token = crypto.createHmac('sha256', merchantKey).update(paytr_token).digest('base64')
+    switch (payment_type) {
+      case OrderPaymentType.CARD:
+        const { user_address } = data
 
-    if (token !== request.input('hash')) {
-      throw new Error('PAYTR notification failed: bad hash')
-    }
+        const max_installment = '0'
+        const no_installment = '0'
 
-    if (request.input('status') === 'success' && request.input('merchant_oid')) {
-      const order = await Order.query()
-        .where('payment_reference', request.input('merchant_oid'))
-        .firstOrFail()
-
-      await order.merge({ is_paid: true }).save()
-
-      return true
-    } else {
-      return false
+        return {
+          hash: `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${user_basket}${no_installment}${max_installment}${currency}${test_mode}`,
+          params: {
+            user_address,
+            user_basket,
+            merchant_key,
+            merchant_salt,
+            currency,
+            no_installment,
+            max_installment,
+            merchant_ok_url,
+            merchant_fail_url,
+            lang,
+          },
+        }
+      case OrderPaymentType.EFT:
+        return {
+          hash: `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${user_basket}${test_mode}`,
+          params: {
+            payment_type,
+          },
+        }
+      default:
+        throw new HttpException('Ödeme yöntemi bulunamadı!', 400)
     }
   }
 }
+
+const merchant_id = Config.get('paytr.merchantId')
+const merchant_key = Config.get('paytr.merchantKey')
+const merchant_salt = Config.get('paytr.merchantSalt')
+const merchant_ok_url = Config.get('paytr.merchantOkUrl')
+const merchant_fail_url = Config.get('paytr.merchantFailUrl')
+const test_mode = Config.get('paytr.testMode')
+const debug_on = Config.get('paytr.debugOn')
+const lang = 'tr'
+const timeout_limit = 30
+const currency = 'TL'

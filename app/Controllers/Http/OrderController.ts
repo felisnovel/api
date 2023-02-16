@@ -2,9 +2,9 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
 import UserRole from 'App/Enums/UserRole'
 import Order from 'App/Models/Order'
+import PaymentService from 'App/Services/PaymentService'
 import User from '../../Models/User'
 import NotificationService from '../../Services/NotificationService'
-import PaytrService from '../../Services/PaytrService'
 
 export default class OrderController {
   async index({ auth, request, response }: HttpContextContract) {
@@ -68,7 +68,8 @@ export default class OrderController {
   }
 
   public async callback({ response, request }: HttpContextContract) {
-    const isSuccess = await PaytrService.verifyPayment(request)
+    const paymentService = new PaymentService()
+    const isSuccess = await paymentService.verifyPayment(request)
 
     if (isSuccess) {
       return response.ok(true)

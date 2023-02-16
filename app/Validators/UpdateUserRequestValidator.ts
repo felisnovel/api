@@ -39,5 +39,9 @@ export default class UpdateUserRequestValidator extends BaseValidator {
     comments_emails_enabled: schema.boolean.optional(),
     announcements_emails_enabled: schema.boolean.optional(),
     events_emails_enabled: schema.boolean.optional(),
+    country_id: schema.number.optional([rules.exists({ table: 'countries', column: 'id' })]),
+    city_id: schema.number.optional([rules.exists({ table: 'cities', column: 'id' })]),
+    phone: schema.string.optional(),
+    address: schema.string.optional(),
   })
 }

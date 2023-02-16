@@ -1,34 +1,21 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import PaytrService from 'App/Services/PaytrService'
-import PurchasePacketRequestValidator from 'App/Validators/PurchasePacketRequestValidator'
-import { DateTime } from 'luxon'
-import OrderType from '../../../Enums/OrderType'
+import PaymentService from 'App/Services/PaymentService'
 import Packet from '../../../Models/Packet'
 
 export default class PurchasePacket {
-  async invoke({ params, request, response, auth }: HttpContextContract) {
+  async invoke({ params, request, auth }: HttpContextContract) {
     const user = await auth.authenticate()
     const packet = await Packet.query().where('id', params.packet).firstOrFail()
 
-    const data = await request.validate(PurchasePacketRequestValidator)
+    const payment_type = request.input('payment_type')
 
-    const order = await user.related('orders').create({
-      type: OrderType.COIN,
-      name: packet.name,
-      amount: packet.amount,
-      price: packet.price,
-      packet_id: packet.id,
-      starts_at: DateTime.local(),
-      payment_type: data.payment_type,
-    })
+    const paymentService = await new PaymentService()
 
-    const iframeToken = await PaytrService.createIframeToken(order, {
-      ip: request.ip(),
-      data,
-    })
-
-    return response.status(200).send({
-      iframeToken,
+    return await paymentService.createPayment({
+      user,
+      packet,
+      payment_type,
+      user_ip: request.ip(),
     })
   }
 }

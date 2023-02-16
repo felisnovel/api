@@ -1,6 +1,10 @@
 import { test } from '@japa/runner'
+import OrderPaymentType from 'App/Enums/OrderPaymentType'
+import PaytrService from 'App/Services/PaytrService'
+import OrderFactory from 'Database/factories/OrderFactory'
 import PacketFactory from 'Database/factories/PacketFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import sinon from 'sinon'
 import { cleanAll } from '../utils'
 
 const PACKET_EXAMPLE_DATA = {
@@ -102,5 +106,82 @@ test.group('Packets', (group) => {
     const response = await client.delete(`/packets/` + packet.id).loginAs(user)
 
     response.assertStatus(403)
+  })
+})
+
+test.group('Purchase Packets', (group) => {
+  group.each.setup(cleanAll)
+
+  test('purchase eft to packet', async ({ client }) => {
+    const user = await UserFactory.with('country', 1).with('city', 1).create()
+    const packet = await PacketFactory.create()
+    const payment_type = OrderPaymentType.EFT
+
+    const mock = sinon.mock(PaytrService.prototype)
+    mock.expects('createIframeToken').once().returns({
+      iframe_token: 'dummyIframeToken',
+    })
+
+    const response = await client.put(`/packets/${packet.id}/purchase`).loginAs(user).form({
+      payment_type,
+    })
+
+    mock.verify()
+    mock.restore()
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      iframe_token: 'dummyIframeToken',
+    })
+  })
+
+  test('purchase card to packet', async ({ client }) => {
+    const user = await UserFactory.with('country', 1).with('city', 1).create()
+    const packet = await PacketFactory.create()
+    const payment_type = OrderPaymentType.CARD
+
+    const mock = sinon.mock(PaytrService.prototype)
+    mock.expects('createIframeToken').once().returns('dummyIframeToken')
+
+    const response = await client.put(`/packets/${packet.id}/purchase`).loginAs(user).form({
+      payment_type,
+    })
+
+    mock.verify()
+    mock.restore()
+
+    response.assertStatus(200)
+    response.assertBodyContains({
+      iframe_token: 'dummyIframeToken',
+    })
+  })
+
+  test('callback', async ({ assert, client }) => {
+    const order = await OrderFactory.with('user', 1)
+      .merge({
+        is_paid: false,
+        payment_reference: 'dummyPaymentReference',
+        price: 10,
+      })
+      .create()
+
+    const mock = sinon.mock(PaytrService.prototype)
+    mock.expects('verifyPayment').once().returns(true)
+
+    const response = await client.post(`/orders/callback`).form({
+      merchant_oid: 'dummyPaymentReference',
+      status: 'success',
+      total_amount: 10,
+      currency: 'TL',
+      hash: 'dummyHash',
+    })
+
+    mock.verify()
+    mock.restore()
+
+    response.assertStatus(200)
+
+    await order.refresh()
+    assert.equal(order.is_paid, true)
   })
 })
