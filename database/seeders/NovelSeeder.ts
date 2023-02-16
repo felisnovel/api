@@ -14,6 +14,8 @@ export default class extends BaseSeeder {
       username: 'admin',
       email: 'admin@felis.dev',
       password: 'admin',
+      country_id: 1,
+      city_id: 1,
     })
       .apply('admin')
       .create()
