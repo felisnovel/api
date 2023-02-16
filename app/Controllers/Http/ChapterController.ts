@@ -126,7 +126,9 @@ export default class ChapterController {
       body = chapter.context
     }
 
-    body = new showdown.Converter().makeHtml(body)
+    body = new showdown.Converter({
+      strikethrough: true,
+    }).makeHtml(body)
 
     const chapterProps: any = {
       body,
@@ -136,7 +138,9 @@ export default class ChapterController {
       chapterProps.context = chapter.context
       chapterProps.translation_note = chapter.translation_note
     } else {
-      chapterProps.translation_note = new showdown.Converter().makeHtml(chapter.translation_note)
+      chapterProps.translation_note = new showdown.Converter({
+        strikethrough: true,
+      }).makeHtml(chapter.translation_note)
     }
 
     const ip = request.ip()

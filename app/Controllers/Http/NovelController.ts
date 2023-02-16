@@ -298,7 +298,9 @@ export default class NovelController {
 
     const lastUpdatedNovels = await lastUpdatedNovelsQuery
 
-    const showdownService = new showdown.Converter()
+    const showdownService = new showdown.Converter({
+      strikethrough: true,
+    })
 
     return response.send(
       lastUpdatedNovels.map((novel) => {
