@@ -118,9 +118,7 @@ test.group('Purchase Packets', (group) => {
     const payment_type = OrderPaymentType.EFT
 
     const mock = sinon.mock(PaytrService.prototype)
-    mock.expects('createIframeToken').once().returns({
-      iframe_token: 'dummyIframeToken',
-    })
+    mock.expects('createIframeToken').once().returns('dummyIframeToken')
 
     const response = await client.put(`/packets/${packet.id}/purchase`).loginAs(user).form({
       payment_type,
