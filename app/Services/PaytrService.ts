@@ -101,15 +101,15 @@ export default class PaytrService {
   }
 
   private createHashAndParams(payment_type, data) {
-    const { basket, user_ip, merchant_oid, email, payment_amount } = data
-    const user_basket = nodeBase64.encode(basket)
+    const { user_ip, merchant_oid, email, payment_amount } = data
 
     switch (payment_type) {
       case OrderPaymentType.CARD:
-        const { user_address } = data
+        const { user_address, basket } = data
 
         const max_installment = '0'
         const no_installment = '0'
+        const user_basket = nodeBase64.encode(basket)
 
         return {
           hash: `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${user_basket}${no_installment}${max_installment}${currency}${test_mode}`,
@@ -128,7 +128,7 @@ export default class PaytrService {
         }
       case OrderPaymentType.EFT:
         return {
-          hash: `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${user_basket}${test_mode}`,
+          hash: `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${payment_type}${test_mode}`,
           params: {
             payment_type,
           },
