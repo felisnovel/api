@@ -1,5 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import OrderBuyType from 'App/Enums/OrderBuyType'
 import OrderStatus from 'App/Enums/OrderStatus'
+import OrderType from 'App/Enums/OrderType'
 
 export default class extends BaseSchema {
   protected tableName = 'orders'
@@ -12,8 +14,8 @@ export default class extends BaseSchema {
       table.decimal('amount').nullable()
       table.decimal('price').nullable()
 
-      table.enum('type', ['free', 'coin', 'chapter', 'plan'])
-      table.enum('buy_type', ['free', 'coin']).nullable()
+      table.enum('type', Object.values(OrderType))
+      table.enum('buy_type', Object.values(OrderBuyType)).nullable()
 
       table.integer('packet_id').nullable().unsigned()
       table.foreign('packet_id').references('packets.id').onDelete('SET NULL')
