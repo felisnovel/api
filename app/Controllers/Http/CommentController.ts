@@ -32,6 +32,9 @@ export default class CommentController {
 
     const comments = await commentsQuery
       .preload('user')
+      .preload('chapter', (query) => {
+        query.preload('novel')
+      })
       .preload('subComments', (query) => {
         query.preload('user').withCount('likes').withCount('dislikes')
       })
