@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import OrderPaymentType from 'App/Enums/OrderPaymentType'
+import OrderStatus from 'App/Enums/OrderStatus'
 import PaytrService from 'App/Services/PaytrService'
 import OrderFactory from 'Database/factories/OrderFactory'
 import PacketFactory from 'Database/factories/PacketFactory'
@@ -157,7 +158,7 @@ test.group('Purchase Packets', (group) => {
   test('callback', async ({ assert, client }) => {
     const order = await OrderFactory.with('user', 1)
       .merge({
-        is_paid: false,
+        status: OrderStatus.PAID,
         payment_reference: 'dummyPaymentReference',
         price: 10,
       })
@@ -180,6 +181,6 @@ test.group('Purchase Packets', (group) => {
     response.assertStatus(200)
 
     await order.refresh()
-    assert.equal(order.is_paid, true)
+    assert.equal(order.status, OrderStatus.PAID)
   })
 })

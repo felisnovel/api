@@ -1,4 +1,5 @@
 import OrderPaymentType from 'App/Enums/OrderPaymentType'
+import OrderStatus from 'App/Enums/OrderStatus'
 import OrderType from 'App/Enums/OrderType'
 import Order from 'App/Models/Order'
 import { DateTime } from 'luxon'
@@ -78,7 +79,7 @@ export default class PaymentService {
       .where('payment_reference', request.input('merchant_oid'))
       .firstOrFail()
 
-    await order.merge({ is_paid: true }).save()
+    await order.merge({ status: OrderStatus.PAID }).save()
 
     return true
   }

@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import OrderStatus from 'App/Enums/OrderStatus'
 import PlanFactory from 'Database/factories/PlanFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import OrderType from '../../app/Enums/OrderType'
@@ -110,7 +111,7 @@ test.group('Plan Subscriptions', (group) => {
       return orderFactory.merge({
         type: OrderType.COIN,
         amount: 100,
-        is_paid: true,
+        status: OrderStatus.PAID,
       })
     }).create()
     await user.loadCount('subscribedPlans')

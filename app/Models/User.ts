@@ -13,6 +13,7 @@ import {
   ManyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import OrderBuyType from 'App/Enums/OrderBuyType'
+import OrderStatus from 'App/Enums/OrderStatus'
 import UserGender from 'App/Enums/UserGender'
 import UserRole from 'App/Enums/UserRole'
 import gravatar from 'gravatar'
@@ -258,7 +259,7 @@ export default class User extends BaseModel {
       .from('orders')
       .where('user_id', this.id)
       .where('type', OrderType.PLAN)
-      .where('is_paid', true)
+      .where('status', OrderStatus.PAID)
       .where('ends_at', '>=', DateTime.now().toSQL())
       .where('starts_at', '<=', DateTime.now().toSQL())
       .leftJoin('plans', 'orders.plan_id', 'plans.id')
@@ -354,7 +355,7 @@ export default class User extends BaseModel {
       const amount = Number(order.amount)
 
       if (amount) {
-        if (order.is_paid === true) {
+        if (order.status === OrderStatus.PAID) {
           if (order.type === OrderType.FREE) {
             freeBalance += amount
           } else if (order.type === OrderType.COIN) {
@@ -377,7 +378,7 @@ export default class User extends BaseModel {
     const freeBalanceOrders = await freeBalanceQuery
       .where('user_id', this.id)
       .where('type', OrderType.FREE)
-      .where('is_paid', true)
+      .where('status', OrderStatus.PAID)
       .sum('amount')
 
     const coinBalanceQuery = Database.query().from('orders')
@@ -387,7 +388,7 @@ export default class User extends BaseModel {
     const coinBalanceOrders = await coinBalanceQuery
       .where('user_id', this.id)
       .where('type', OrderType.COIN)
-      .where('is_paid', true)
+      .where('status', OrderStatus.PAID)
       .sum('amount')
 
     const freeChapterQuery = Database.query().from('orders')
@@ -398,7 +399,7 @@ export default class User extends BaseModel {
       .where('buy_type', OrderBuyType.FREE)
       .where('user_id', this.id)
       .where('type', OrderType.CHAPTER)
-      .where('is_paid', true)
+      .where('status', OrderStatus.PAID)
       .sum('amount')
 
     const coinChapterQuery = Database.query().from('orders')
@@ -409,7 +410,7 @@ export default class User extends BaseModel {
       .where('buy_type', OrderBuyType.COIN)
       .where('user_id', this.id)
       .where('type', OrderType.CHAPTER)
-      .where('is_paid', true)
+      .where('status', OrderStatus.PAID)
       .sum('amount')
 
     const planQuery = Database.query().from('orders')
@@ -419,7 +420,7 @@ export default class User extends BaseModel {
     const planOrders = await planQuery
       .where('user_id', this.id)
       .where('type', OrderType.PLAN)
-      .where('is_paid', true)
+      .where('status', OrderStatus.PAID)
       .sum('amount')
 
     freeBalance += (freeBalanceOrders[0].sum ?? 0) - (freeChapterOrders[0].sum ?? 0)

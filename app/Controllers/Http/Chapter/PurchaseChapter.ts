@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import OrderBuyType from 'App/Enums/OrderBuyType'
+import OrderStatus from 'App/Enums/OrderStatus'
 import { DateTime } from 'luxon'
 import OrderType from '../../../Enums/OrderType'
 import Chapter from '../../../Models/Chapter'
@@ -65,7 +66,7 @@ export default class PurchaseChapter {
       type: OrderType.CHAPTER,
       name: chapterJSON.fullName,
       amount,
-      is_paid: true,
+      status: OrderStatus.PAID,
       chapter_id: chapter.id,
       buy_type: buyType,
       starts_at: DateTime.local(),

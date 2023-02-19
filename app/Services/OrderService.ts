@@ -1,3 +1,4 @@
+import OrderStatus from 'App/Enums/OrderStatus'
 import OrderType from 'App/Enums/OrderType'
 import Order from 'App/Models/Order'
 import User from 'App/Models/User'
@@ -9,7 +10,7 @@ export default class OrderService {
       type,
       name,
       amount,
-      is_paid: true,
+      status: OrderStatus.PAID,
     })
   }
 

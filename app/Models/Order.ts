@@ -8,6 +8,7 @@ import {
   manyToMany,
 } from '@ioc:Adonis/Lucid/Orm'
 import OrderPaymentType from 'App/Enums/OrderPaymentType'
+import OrderStatus from 'App/Enums/OrderStatus'
 import { DateTime } from 'luxon'
 import OrderBuyType from '../Enums/OrderBuyType'
 import OrderType from '../Enums/OrderType'
@@ -53,7 +54,7 @@ export default class Order extends BaseModel {
   public price?: number | null
 
   @column()
-  public is_paid: boolean
+  public status: OrderStatus
 
   @column()
   public is_free: boolean

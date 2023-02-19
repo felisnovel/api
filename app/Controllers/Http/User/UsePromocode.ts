@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import OrderStatus from 'App/Enums/OrderStatus'
 import Promocode from 'App/Models/Promocode'
 import { DateTime } from 'luxon'
 import OrderType from '../../../Enums/OrderType'
@@ -37,7 +38,7 @@ export default class UsePromocode {
       type: OrderType.COIN,
       name: promocode.name,
       amount: promocode.amount,
-      is_paid: true,
+      status: OrderStatus.PAID,
       promocode_id: promocode.id,
       starts_at: DateTime.local(),
     })

@@ -1,5 +1,6 @@
 import Factory from '@ioc:Adonis/Lucid/Factory'
 import OrderBuyType from 'App/Enums/OrderBuyType'
+import OrderStatus from 'App/Enums/OrderStatus'
 import UserFactory from 'Database/factories/UserFactory'
 import OrderType from '../../app/Enums/OrderType'
 import Order from '../../app/Models/Order'
@@ -20,7 +21,7 @@ export default Factory.define(Order, ({ faker }) => {
     price,
     buy_type: buyType,
     amount,
-    is_paid: isPaid,
+    status: isPaid ? OrderStatus.PAID : OrderStatus.UNPAID,
   }
 })
   .relation('user', () => UserFactory)

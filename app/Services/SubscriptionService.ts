@@ -1,4 +1,5 @@
 import Database from '@ioc:Adonis/Lucid/Database'
+import OrderStatus from 'App/Enums/OrderStatus'
 import OrderType from 'App/Enums/OrderType'
 import Order from 'App/Models/Order'
 import Plan from 'App/Models/Plan'
@@ -98,7 +99,7 @@ export default class SubscriptionService {
       type: OrderType.PLAN,
       name: plan.name,
       amount,
-      is_paid: true,
+      status: OrderStatus.PAID,
       plan_id: plan.id,
       starts_at: startsAt,
       ends_at: endsAt,

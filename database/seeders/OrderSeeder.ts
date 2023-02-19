@@ -1,5 +1,6 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import OrderBuyType from 'App/Enums/OrderBuyType'
+import OrderStatus from 'App/Enums/OrderStatus'
 import OrderType from 'App/Enums/OrderType'
 import Chapter from 'App/Models/Chapter'
 import User from 'App/Models/User'
@@ -21,7 +22,7 @@ export default class extends BaseSeeder {
       price: 1,
       amount: 100,
       packet_id: 1,
-      is_paid: true,
+      status: OrderStatus.PAID,
     })
 
     await admin.related('orders').create({
@@ -30,7 +31,7 @@ export default class extends BaseSeeder {
       price: 50,
       amount: 500,
       packet_id: 5,
-      is_paid: true,
+      status: OrderStatus.PAID,
     })
 
     await admin.related('orders').create({
@@ -56,7 +57,7 @@ export default class extends BaseSeeder {
       amount: premiumChapter1.novel.coin_amount,
       buy_type: OrderBuyType.COIN,
       chapter_id: premiumChapter1.id,
-      is_paid: true,
+      status: OrderStatus.PAID,
     })
 
     const premiumChapter2 = await Chapter.query()
@@ -73,7 +74,7 @@ export default class extends BaseSeeder {
       amount: premiumChapter2.novel.free_amount,
       buy_type: OrderBuyType.FREE,
       chapter_id: premiumChapter2.id,
-      is_paid: true,
+      status: OrderStatus.PAID,
     })
 
     await order.delete()

@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
+import OrderStatus from 'App/Enums/OrderStatus'
 import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import ChapterFactory from 'Database/factories/ChapterFactory'
 import CommentFactory from 'Database/factories/CommentFactory'
@@ -428,7 +429,7 @@ test.group('Chapter Premium', (group) => {
       return orderFactory.merge({
         type: OrderType.COIN,
         amount: 100,
-        is_paid: true,
+        status: OrderStatus.PAID,
       })
     }).create()
 
@@ -518,7 +519,7 @@ test.group('Chapter Premium', (group) => {
       return orderFactory.merge({
         type: OrderType.FREE,
         amount: 100,
-        is_paid: true,
+        status: OrderStatus.PAID,
       })
     }).create()
 
@@ -546,7 +547,7 @@ test.group('Chapter Premium', (group) => {
       return orderFactory.merge({
         type: OrderType.COIN,
         amount: 100,
-        is_paid: true,
+        status: OrderStatus.PAID,
       })
     }).create()
 
@@ -596,7 +597,7 @@ test.group('Chapter Premium', (group) => {
       return orderFactory.merge({
         type: OrderType.COIN,
         amount: 100,
-        is_paid: true,
+        status: OrderStatus.PAID,
       })
     }).create()
 

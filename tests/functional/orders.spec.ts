@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import OrderStatus from 'App/Enums/OrderStatus'
 import OrderFactory from 'Database/factories/OrderFactory'
 import UserFactory from 'Database/factories/UserFactory'
 import OrderType from '../../app/Enums/OrderType'
@@ -19,7 +20,7 @@ test.group('Orders', (group) => {
       .merge({
         type: OrderType.FREE,
         buy_type: null,
-        is_paid: true,
+        status: OrderStatus.PAID,
         amount: 10,
       })
       .create()
