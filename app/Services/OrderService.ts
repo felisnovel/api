@@ -21,4 +21,11 @@ export default class OrderService {
   public static async addCoin(user: User, amount: number, name: string) {
     return await this.createOrder(user, OrderType.COIN, name, amount)
   }
+
+  public static async updateStatus(order: Order, status: OrderStatus) {
+    await order.merge({
+      status,
+    })
+    await order.save()
+  }
 }

@@ -46,36 +46,33 @@ test.group('Orders', (group) => {
 
     response.assertStatus(403)
   })
-})
 
-/*
-test.group('New order', (group) => {
-  group.each.setup(cleanAll)
-
-  test('create a order', async ({ client }) => {
-    const user = await UserFactory.create()
-    const packet = await PacketFactory.create()
-
-    const purchaseResponse = await client
-      .put(`/packets/` + packet.id + '/purchase')
-      .loginAs(user)
-      .form({
-        name: 'test',
-        phone: '5354511357',
-        address: 'adres',
-        payment_type: OrderPaymentType.CARD,
-      })
-    purchaseResponse.assertStatus(200)
-
-    const data = await purchaseResponse.body()
-
-    const callbackResponse = await client.post('/orders/callback').form({
-      merchant_oid: data.merchantOid,
-      status: 'success',
-      total_amount: packet.price * 100,
-      hash: data.iframeToken,
+  test('update order status', async ({ assert, client }) => {
+    const admin = await UserFactory.apply('admin').create()
+    const order = await OrderFactory.merge({
+      status: OrderStatus.UNPAID,
     })
-    callbackResponse.assertStatus(200)
+      .with('user', 1)
+      .create()
+
+    const response = await client
+      .put(`/orders/${order.id}/status/${OrderStatus.PAID}`)
+      .loginAs(admin)
+
+    response.assertStatus(200)
+
+    await order.refresh()
+    assert.equal(order.status, OrderStatus.PAID)
+  })
+
+  test('user cannot update order status', async ({ client }) => {
+    const user = await UserFactory.apply('user').create()
+    const order = await OrderFactory.with('user', 1).create()
+
+    const response = await client
+      .put(`/orders/${order.id}/status/${OrderStatus.PAID}`)
+      .loginAs(user)
+
+    response.assertStatus(403)
   })
 })
-*/

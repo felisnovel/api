@@ -87,6 +87,10 @@ Route.post('/orders/callback', 'OrderController.callback')
 
 Route.group(() => {
   Route.group(() => {
+    Route.put('/status/:status', 'Order/UpdateOrderStatus.invoke')
+  }).prefix('orders/:order')
+
+  Route.group(() => {
     Route.put('/purchase', 'Packet/PurchasePacket.invoke')
   }).prefix('packets/:packet')
 
