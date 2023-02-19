@@ -22,6 +22,7 @@ export default class ReviewController {
 
     const reviews = await reviewsQuery
       .preload('user')
+      .preload('novel')
       .withCount('likes')
       .withCount('dislikes')
       .orderBy('is_pinned', 'desc')
