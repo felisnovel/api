@@ -4,7 +4,7 @@ import CountryRequestValidator from 'App/Validators/CountryRequestValidator'
 
 export default class CountryController {
   async index({ response }: HttpContextContract) {
-    const countries = await Country.query()
+    const countries = await Country.query().orderBy('name', 'asc')
 
     return response.send(countries)
   }
