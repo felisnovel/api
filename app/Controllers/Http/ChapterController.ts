@@ -7,6 +7,7 @@ import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
 import { DateTime } from 'luxon'
 import showdown from 'showdown'
+import { getRandomInt, replaceAllWithId } from '../../../utils'
 import ChapterService from '../../Services/ChapterService'
 import NotificationService from '../../Services/NotificationService'
 
@@ -129,6 +130,12 @@ export default class ChapterController {
     body = new showdown.Converter({
       strikethrough: true,
     }).makeHtml(body)
+
+    body = replaceAllWithId(
+      body,
+      '[TN]',
+      () => `<span class="tn_tag" id="tn_tag_${getRandomInt(100000, 999999)}">`
+    ).replaceAll('[/TN]', '</span>')
 
     const chapterProps: any = {
       body,

@@ -57,3 +57,15 @@ export function getNovelUrl(novel): string {
 export function getAnnouncementUrl(announcement): string {
   return `/duyurular/${announcement.slug}`
 }
+
+export function escapeRegExp(str) {
+  return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1')
+}
+
+export function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export function replaceAllWithId(str, find, replace) {
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace)
+}

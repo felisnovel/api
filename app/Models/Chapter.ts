@@ -37,6 +37,7 @@ export default class Chapter extends BaseModel {
     const showdownService = new showdown.Converter({
       strikethrough: true,
     })
+
     return showdownService
       .makeHtml(this?.context)
       .replace(/<[^>]*>?/gm, '')
