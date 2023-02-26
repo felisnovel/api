@@ -28,8 +28,6 @@ export default class ChapterController {
         }
       })
       .join('volumes', 'chapters.volume_id', 'volumes.id')
-      .orderBy('volumes.volume_number', 'asc')
-      .orderBy('chapters.number', 'asc')
       .select('chapters.*')
       .preload('novel')
       .preload('volume')
@@ -44,6 +42,12 @@ export default class ChapterController {
 
     if (request.input('fields')) {
       chaptersQuery.select(request.input('fields'))
+    }
+
+    if (request.input('sort') === 'created') {
+      chaptersQuery.orderBy('created_at', 'desc')
+    } else {
+      chaptersQuery.orderBy('volumes.volume_number', 'asc').orderBy('chapters.number', 'asc')
     }
 
     if (request.input('volume_id')) chaptersQuery.where('volume_id', request.input('volume_id'))
