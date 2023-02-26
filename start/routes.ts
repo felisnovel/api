@@ -101,7 +101,7 @@ Route.group(() => {
 
 Route.resource('/plans', 'PlanController').except(['show'])
 Route.resource('/packets', 'PacketController')
-Route.resource('/orders', 'OrderController').only(['index', 'destroy'])
+Route.resource('/orders', 'OrderController').only(['index', 'show', 'destroy'])
 
 Route.resource('/novels', 'NovelController')
 Route.get('/novels/:slug/og-image', 'NovelController.ogImage')

@@ -42,6 +42,14 @@ export default class OrderController {
     return response.send(orders)
   }
 
+  async show({ params, auth, response }: HttpContextContract) {
+    const user = await auth.authenticate()
+
+    const order = await Order.query().where('user_id', user.id).where('id', params.id).firstOrFail()
+
+    return response.json(order)
+  }
+
   public async destroy({ response, params, bouncer }: HttpContextContract) {
     await bouncer.authorize('isAdmin')
 
