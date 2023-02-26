@@ -23,6 +23,7 @@ export default class ChapterService {
       })
       .leftJoin('volumes', 'volumes.id', 'chapters.volume_id')
       .where('volumes.volume_number', '<=', chapter.volume.volume_number)
+      .select('chapters.*')
       .orderBy('volumes.volume_number', 'desc')
       .orderBy('number', 'desc')
 
@@ -63,6 +64,7 @@ export default class ChapterService {
       })
       .leftJoin('volumes', 'volumes.id', 'chapters.volume_id')
       .where('volumes.volume_number', '>=', chapter.volume.volume_number)
+      .select('chapters.*')
       .orderBy('volumes.volume_number', 'asc')
       .orderBy('number', 'asc')
 
