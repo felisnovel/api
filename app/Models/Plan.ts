@@ -1,4 +1,4 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
 
 export default class Plan extends BaseModel {
@@ -25,6 +25,11 @@ export default class Plan extends BaseModel {
 
   @column()
   public is_promoted: boolean
+
+  @computed()
+  public get price(): number {
+    return this.amount / 10
+  }
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
