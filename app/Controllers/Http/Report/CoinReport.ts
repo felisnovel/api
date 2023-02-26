@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import OrderStatus from 'App/Enums/OrderStatus'
 import _ from 'lodash'
 import { DateTime } from 'luxon'
 import OrderType from '../../../Enums/OrderType'
@@ -26,6 +27,7 @@ export default class CoinReport {
     }
 
     const orders = await Order.query()
+      .where('status', OrderStatus.PAID)
       .where('type', OrderType.COIN)
       .preload('packet')
       .whereBetween('created_at', [
