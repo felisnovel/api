@@ -82,7 +82,13 @@ export default class OrderService {
         throw new Error('Yetersiz bakiye!')
       }
 
-      await order.merge({ status: OrderStatus.PAID, buy_type: OrderBuyType.COIN }).save()
+      await order
+        .merge({
+          status: OrderStatus.PAID,
+          buy_type: OrderBuyType.COIN,
+          payment_type: OrderPaymentType.COIN,
+        })
+        .save()
 
       return {
         success: 'true',
