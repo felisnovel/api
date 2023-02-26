@@ -1,5 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 import OrderBuyType from 'App/Enums/OrderBuyType'
+import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import OrderStatus from 'App/Enums/OrderStatus'
 import OrderType from 'App/Enums/OrderType'
 
@@ -33,8 +34,7 @@ export default class extends BaseSchema {
       table.foreign('promocode_id').references('promocodes.id').onDelete('SET NULL')
 
       table.enum('status', Object.values(OrderStatus)).defaultTo(OrderStatus.UNPAID)
-
-      table.string('payment_type').nullable()
+      table.enum('payment_type', Object.values(OrderPaymentType)).nullable()
       table.string('payment_reference').nullable()
 
       table.date('starts_at')
