@@ -1,12 +1,36 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Plan from 'App/Models/Plan'
+import { usePreviewUpgradeSubscription } from 'App/Services/SubscriptionService'
 import PlanRequestValidator from 'App/Validators/PlanRequestValidator'
 
 export default class PlanController {
-  async index({ response }: HttpContextContract) {
+  async index({ response, auth }: HttpContextContract) {
     const plans = await Plan.query().orderBy('id', 'desc')
 
-    return response.send(plans)
+    const user = await auth.authenticate()
+
+    let plansJSON: any = plans
+
+    if (user) {
+      const subscribed = await user.subscribed()
+
+      plansJSON = await Promise.all(
+        plansJSON.map(async (plan) => {
+          if (subscribed) {
+            const { amount } = usePreviewUpgradeSubscription(subscribed, plan)
+
+            return {
+              ...plan.toJSON(),
+              remaining_amount: amount,
+            }
+          } else {
+            return plan
+          }
+        })
+      )
+    }
+
+    return response.send(plansJSON)
   }
 
   async store({ request, response, bouncer }: HttpContextContract) {

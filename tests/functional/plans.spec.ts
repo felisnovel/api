@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import OrderStatus from 'App/Enums/OrderStatus'
 import PlanFactory from 'Database/factories/PlanFactory'
 import UserFactory from 'Database/factories/UserFactory'
@@ -6,8 +7,8 @@ import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
 
 const PLAN_EXAMPLE_DATA = {
-  name: 'Basic',
-  amount: 19.99,
+  name: 'Van',
+  amount: 350,
   no_ads: true,
   premium_eps: true,
   download: true,
@@ -16,8 +17,8 @@ const PLAN_EXAMPLE_DATA = {
 }
 
 const NEW_PLAN_EXAMPLE_DATA = {
-  name: 'Pro',
-  amount: 29.99,
+  name: 'Ankara',
+  amount: 700,
   no_ads: false,
   premium_eps: false,
   download: false,
@@ -106,22 +107,35 @@ test.group('Plans', (group) => {
 test.group('Plan Subscriptions', (group) => {
   group.each.setup(cleanAll)
 
-  test('subscribe a plan', async ({ assert, client }) => {
-    const user = await UserFactory.with('orders', 1, function (orderFactory) {
-      return orderFactory.merge({
-        type: OrderType.COIN,
-        amount: 100,
-        status: OrderStatus.PAID,
+  test('purchase a plan', async ({ assert, client }) => {
+    const user = await UserFactory.with('country', 1)
+      .with('city', 1)
+      .with('orders', 1, function (orderFactory) {
+        return orderFactory.merge({
+          type: OrderType.COIN,
+          amount: 1000,
+          status: OrderStatus.PAID,
+        })
       })
-    }).create()
+      .create()
     await user.loadCount('subscribedPlans')
 
     const prevSubscribedPlansCount = Number(user.$extras.subscribedPlans_count)
 
     const plan = await PlanFactory.create()
 
-    const response = await client.put(`/plans/${plan.id}/subscribe`).loginAs(user)
-    response.assertStatus(200)
+    const responsePurchase = await client.post(`/plans/${plan.id}/purchase`).loginAs(user)
+    responsePurchase.assertStatus(200)
+
+    const order = responsePurchase.body().order
+
+    const responsePay = await client
+      .post(`/orders/${order.id}/pay`)
+      .form({
+        payment_type: OrderPaymentType.COIN,
+      })
+      .loginAs(user)
+    responsePay.assertStatus(200)
 
     await user.loadCount('subscribedPlans')
 

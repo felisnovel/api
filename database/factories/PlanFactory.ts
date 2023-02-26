@@ -2,7 +2,7 @@ import Factory from '@ioc:Adonis/Lucid/Factory'
 import Plan from 'App/Models/Plan'
 
 export default Factory.define(Plan, ({ faker }) => {
-  const amount = faker.datatype.number({ min: 1, max: 100 })
+  const amount = faker.datatype.number({ min: 100, max: 500 })
 
   return {
     name: amount.toString() + ' Coin',

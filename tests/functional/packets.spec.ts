@@ -118,18 +118,22 @@ test.group('Purchase Packets', (group) => {
     const packet = await PacketFactory.create()
     const payment_type = OrderPaymentType.EFT
 
+    const responsePurchase = await client.post(`/packets/${packet.id}/purchase`).loginAs(user)
+    responsePurchase.assertStatus(200)
+    const order = await responsePurchase.body().order
+
     const mock = sinon.mock(PaytrService.prototype)
     mock.expects('createIframeToken').once().returns('dummyIframeToken')
 
-    const response = await client.put(`/packets/${packet.id}/purchase`).loginAs(user).form({
+    const responsePay = await client.post(`/orders/${order.id}/pay`).loginAs(user).form({
       payment_type,
     })
 
     mock.verify()
     mock.restore()
 
-    response.assertStatus(200)
-    response.assertBodyContains({
+    responsePay.assertStatus(200)
+    responsePay.assertBodyContains({
       iframe_token: 'dummyIframeToken',
     })
   })
@@ -139,18 +143,22 @@ test.group('Purchase Packets', (group) => {
     const packet = await PacketFactory.create()
     const payment_type = OrderPaymentType.CARD
 
+    const responsePurchase = await client.post(`/packets/${packet.id}/purchase`).loginAs(user)
+    responsePurchase.assertStatus(200)
+    const order = await responsePurchase.body().order
+
     const mock = sinon.mock(PaytrService.prototype)
     mock.expects('createIframeToken').once().returns('dummyIframeToken')
 
-    const response = await client.put(`/packets/${packet.id}/purchase`).loginAs(user).form({
+    const responsePay = await client.post(`/orders/${order.id}/pay`).loginAs(user).form({
       payment_type,
     })
 
     mock.verify()
     mock.restore()
 
-    response.assertStatus(200)
-    response.assertBodyContains({
+    responsePay.assertStatus(200)
+    responsePay.assertBodyContains({
       iframe_token: 'dummyIframeToken',
     })
   })

@@ -88,14 +88,16 @@ Route.post('/orders/callback', 'OrderController.callback')
 Route.group(() => {
   Route.group(() => {
     Route.put('/status/:status', 'Order/UpdateOrderStatus.invoke')
+    Route.post('/pay', 'Order/PayOrder.invoke')
   }).prefix('orders/:order')
 
   Route.group(() => {
-    Route.put('/purchase', 'Packet/PurchasePacket.invoke')
+    Route.post('/purchase', 'Packet/PurchasePacket.invoke')
   }).prefix('packets/:packet')
 
   Route.group(() => {
-    Route.put('/subscribe', 'Plan/SubscribePlan.invoke')
+    Route.post('/purchase', 'Plan/PurchasePlan.invoke')
+    Route.post('/upgrade', 'Plan/UpgradePlan.invoke')
   }).prefix('plans/:plan')
 }).middleware('auth')
 

@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
+import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import OrderStatus from 'App/Enums/OrderStatus'
 import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import ChapterFactory from 'Database/factories/ChapterFactory'
@@ -77,7 +78,11 @@ test.group('Chapters', (group) => {
     const novel = await NovelFactory.with('user', 1)
       .apply('published')
       .with('volumes', 1, (volumeFactory) => {
-        volumeFactory.apply('published')
+        volumeFactory
+          .merge({
+            volume_number: 20,
+          })
+          .apply('published')
       })
       .merge({
         is_premium: false,
@@ -90,6 +95,25 @@ test.group('Chapters', (group) => {
       translation_note: '*test*',
       context: '*test*',
       is_premium: false,
+      number: 20,
+    })
+      .apply('published')
+      .create()
+
+    const prevChapter = await ChapterFactory.merge({
+      novel_id: novel.id,
+      volume_id: novel.volumes[0].id,
+      is_premium: false,
+      number: 19,
+    })
+      .apply('published')
+      .create()
+
+    const nextChapter = await ChapterFactory.merge({
+      novel_id: novel.id,
+      volume_id: novel.volumes[0].id,
+      is_premium: false,
+      number: 21,
     })
       .apply('published')
       .create()
@@ -102,6 +126,12 @@ test.group('Chapters', (group) => {
     response.assertBodyContains({
       translation_note: '<p><em>test</em></p>',
       body: '<p><em>test</em></p>',
+      prev_chapter: {
+        id: prevChapter.id,
+      },
+      next_chapter: {
+        id: nextChapter.id,
+      },
     })
   })
 
@@ -596,7 +626,7 @@ test.group('Chapter Premium', (group) => {
     const user = await UserFactory.with('orders', 1, function (orderFactory) {
       return orderFactory.merge({
         type: OrderType.COIN,
-        amount: 100,
+        amount: 1000,
         status: OrderStatus.PAID,
       })
     }).create()
@@ -635,7 +665,18 @@ test.group('Chapter Premium', (group) => {
       premium_eps: true,
     }).create()
 
-    await client.put(`/plans/${plan.id}/subscribe`).loginAs(user)
+    const responsePurchase = await client.post(`/plans/${plan.id}/purchase`).loginAs(user)
+    responsePurchase.assertStatus(200)
+
+    const order = await responsePurchase.body().order
+
+    const responsePay = await client
+      .post(`/orders/${order.id}/pay`)
+      .form({
+        payment_type: OrderPaymentType.COIN,
+      })
+      .loginAs(user)
+    responsePay.assertStatus(200)
 
     const responseIsSubscribed = await client
       .get(`/chapters/${chapter.number}?novel=${novel.slug}&shorthand=${novel.shorthand}`)

@@ -48,7 +48,7 @@ export default class Order extends BaseModel {
   public buy_type?: OrderBuyType | null
 
   @column()
-  public amount?: number | null
+  public amount: number
 
   @column()
   public price?: number | null

@@ -2,11 +2,26 @@ import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import OrderStatus from 'App/Enums/OrderStatus'
 import OrderType from 'App/Enums/OrderType'
 import Order from 'App/Models/Order'
+import User from 'App/Models/User'
 import { DateTime } from 'luxon'
 import PaytrService from './PaytrService'
 
 export default class PaymentService {
-  async createPayment({ packet, user, payment_type, user_ip }) {
+  async createPayment({
+    order,
+    user,
+    payment_type,
+    user_ip,
+  }: {
+    order: Order
+    user: User
+    payment_type: OrderPaymentType
+    user_ip: string
+  }) {
+    if (![OrderType.PLAN, OrderType.COIN].includes(order.type)) {
+      throw new Error('Geçersiz sipariş türü!')
+    }
+
     await user.load('country')
     await user.load('city')
 
@@ -32,16 +47,20 @@ export default class PaymentService {
 
     const payment_reference = 'IN' + DateTime.local().toMillis()
 
+    /*
     const order = await user.related('orders').create({
       type: OrderType.COIN,
-      name: packet.name,
-      amount: packet.amount,
-      price: packet.price,
-      packet_id: packet.id,
+      name,
+      amount,
+      price,
+      // packet_id: packet.id,
       starts_at: DateTime.local(),
       payment_type,
       payment_reference,
+      plan_id,
+      packet_id,
     })
+    */
 
     const paytrService = new PaytrService()
 
@@ -57,9 +76,7 @@ export default class PaymentService {
       payment_type,
     })
 
-    return {
-      iframe_token,
-    }
+    return iframe_token
   }
 
   async verifyPayment(request) {
