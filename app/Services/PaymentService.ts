@@ -1,3 +1,4 @@
+import OrderBuyType from 'App/Enums/OrderBuyType'
 import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import OrderStatus from 'App/Enums/OrderStatus'
 import OrderType from 'App/Enums/OrderType'
@@ -48,22 +49,8 @@ export default class PaymentService {
     const payment_reference = 'IN' + DateTime.local().toMillis()
 
     await order.merge({ payment_reference, payment_type }).save()
-    await order.refresh()
 
-    /*
-    const order = await user.related('orders').create({
-      type: OrderType.COIN,
-      name,
-      amount,
-      price,
-      // packet_id: packet.id,
-      starts_at: DateTime.local(),
-      payment_type,
-      payment_reference,
-      plan_id,
-      packet_id,
-    })
-    */
+    await order.refresh()
 
     const paytrService = new PaytrService()
 
@@ -99,7 +86,7 @@ export default class PaymentService {
       .where('payment_reference', request.input('merchant_oid'))
       .firstOrFail()
 
-    await order.merge({ status: OrderStatus.PAID }).save()
+    await order.merge({ status: OrderStatus.PAID, buy_type: OrderBuyType.TRY }).save()
 
     return true
   }
