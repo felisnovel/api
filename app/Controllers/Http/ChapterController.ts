@@ -94,20 +94,19 @@ export default class ChapterController {
   async show({ auth, request, params, response }: HttpContextContract) {
     const novel = request.input('novel')
     const shorthand = request.input('shorthand')
-    const number = params.id
+    const { id } = params
 
-    if (!novel || !shorthand) {
-      return response.badRequest('Missing number or shorthand')
+    const chapterQuery = Chapter.query().preload('volume').preload('novel').withCount('views')
+
+    if (novel && shorthand) {
+      chapterQuery
+        .whereHas('novel', (query) => {
+          query.where('slug', novel).where('shorthand', shorthand)
+        })
+        .where('number', id)
+    } else {
+      chapterQuery.where('id', id)
     }
-
-    const chapterQuery = Chapter.query()
-      .where('number', number)
-      .whereHas('novel', (query) => {
-        query.where('slug', novel).where('shorthand', shorthand)
-      })
-      .preload('volume')
-      .preload('novel')
-      .withCount('views')
 
     const user = await auth.authenticate()
 
