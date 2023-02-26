@@ -58,7 +58,7 @@ test.group('Subscriptions', (group) => {
     const response = await client.post(`/plans/${newPlan.id}/upgrade`).loginAs(user)
     response.assertStatus(200)
 
-    const body = response.body()
+    const body = await response.body()
 
     await firstSubscription.refresh()
     assert.equal(firstSubscription.amount, 100)
@@ -69,7 +69,6 @@ test.group('Subscriptions', (group) => {
     assert.equal(body.order.amount, 400)
   })
 
-  /*
   test('upgrade subscription 2', async ({ client, assert }) => {
     const plan = await PlanFactory.merge({
       amount: 600,
@@ -88,11 +87,18 @@ test.group('Subscriptions', (group) => {
       endsAt
     )
 
+    await OrderService.pay({
+      order: firstSubscription,
+      user,
+      payment_type: OrderPaymentType.COIN,
+      user_ip: '127.0.0.1',
+    })
+
     const newPlan = await PlanFactory.merge({
       amount: 1200,
     }).create()
 
-    const response = await client.put(`/plans/${newPlan.id}/subscribe`).loginAs(user)
+    const response = await client.post(`/plans/${newPlan.id}/upgrade`).loginAs(user)
     response.assertStatus(200)
 
     const body = response.body()
@@ -105,7 +111,8 @@ test.group('Subscriptions', (group) => {
     assert.equal(body.order.ends_at, endsAt.toFormat('yyyy-MM-dd'))
     assert.equal(body.order.amount, 400)
   })
-  
+
+  /*
   test('upgrade subscription for preview', async ({ client, assert }) => {
     const plan = await PlanFactory.merge({
       amount: 600,

@@ -113,6 +113,8 @@ export default class SubscriptionService {
         buy_type: OrderBuyType.COIN,
       })
       await OrderService.updateStatus(newOrder, OrderStatus.PAID)
+
+      return newOrder
     })
   }
 
