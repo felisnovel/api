@@ -1,3 +1,4 @@
+import Database from '@ioc:Adonis/Lucid/Database'
 import AnnouncementPublishStatus from 'App/Enums/AnnouncementPublishStatus'
 import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
 import Comment from 'App/Models/Comment'
@@ -199,11 +200,19 @@ export default class NotificationService {
   public static async onSync({ onCreate, ...dist }) {
     const { notificationableType, body, notificationableId } = dist
 
-    const isNotification = await Notification.query()
-      .where({ notificationableType, notificationableId })
+    const isNotification = await Database.from('notification_models')
+      .where({
+        notificationable_type: notificationableType,
+        notificationable_id: notificationableId,
+      })
       .first()
 
     if (!isNotification) {
+      await Database.table('notification_models').insert({
+        notificationable_type: notificationableType,
+        notificationable_id: notificationableId,
+      })
+
       await onCreate(dist)
     } else {
       await this.onUpdate(notificationableType, notificationableId, body)
