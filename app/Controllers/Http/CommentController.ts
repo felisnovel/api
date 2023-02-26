@@ -26,7 +26,7 @@ export default class CommentController {
 
     if (request.input('parent_id')) {
       commentsQuery.where('parent_id', request.input('parent_id'))
-    } else {
+    } else if (!request.input('all')) {
       commentsQuery.whereNull('parent_id')
     }
 
