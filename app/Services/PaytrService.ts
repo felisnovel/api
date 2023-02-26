@@ -25,7 +25,7 @@ export default class PaytrService {
       throw new HttpException('Ödeme yöntemi bulunamadı!', 400)
     }
 
-    const basket = JSON.stringify([[order_name, '18.00', order_price]])
+    const basket = JSON.stringify([[order_name, order_price, 1]])
     const email = user_email
     const payment_amount = order_price * 100
 
