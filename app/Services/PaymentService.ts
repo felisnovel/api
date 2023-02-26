@@ -47,6 +47,9 @@ export default class PaymentService {
 
     const payment_reference = 'IN' + DateTime.local().toMillis()
 
+    await order.merge({ payment_reference, payment_type }).save()
+    await order.refresh()
+
     /*
     const order = await user.related('orders').create({
       type: OrderType.COIN,
