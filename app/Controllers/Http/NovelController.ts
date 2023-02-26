@@ -5,7 +5,7 @@ import UserRole from 'App/Enums/UserRole'
 import Novel from 'App/Models/Novel'
 import NovelRequestValidator from 'App/Validators/NovelRequestValidator'
 import showdown from 'showdown'
-import { isNumeric } from '../../../utils'
+import { getChapterVolumeAndChapterTitle, isNumeric } from '../../../utils'
 
 export default class NovelController {
   async index({ auth, response, request }: HttpContextContract) {
@@ -208,6 +208,7 @@ export default class NovelController {
       .preload('latest_chapter', (query) => {
         query.preload('volume')
       })
+      .preload('tags')
       .withCount('likers')
       .limit(7)
 
@@ -316,6 +317,10 @@ export default class NovelController {
             volume: {
               volume_number: novel.latest_chapter_volume_number,
             },
+            name: getChapterVolumeAndChapterTitle(
+              novel.latest_chapter_volume_number,
+              novel.latest_chapter_number
+            ),
           },
         }
       })

@@ -69,3 +69,7 @@ export function getRandomInt(min, max) {
 export function replaceAllWithId(str, find, replace) {
   return str.replace(new RegExp(escapeRegExp(find), 'g'), replace)
 }
+
+export function getChapterVolumeAndChapterTitle(volume, chapter) {
+  return `${volume}. Cilt - ${chapter}. Bölüm`
+}
