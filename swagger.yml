@@ -1,0 +1,3948 @@
+openapi: "3.0.0"
+info:
+  title: "Felis Novel API"
+  version: "1.0.0"
+components:
+  responses:
+    Forbidden:
+      description: "Access token is missing or invalid"
+    Accepted:
+      description: "The request was accepted"
+    Created:
+      description: "The resource has been created"
+    NotFound:
+      description: "The resource has been created"
+    NotAcceptable:
+      description: "The resource has been created"
+  securitySchemes:
+    BearerAuth:
+      type: "http"
+      scheme: "bearer"
+  schemas:
+    Any:
+      description: "Any JSON object not defined as schema"
+    Announcement:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 251
+        title:
+          type: "string"
+          example: "Lorem Ipsum"
+        slug:
+          type: "string"
+          example: "string"
+        publish_status:
+          $ref: "#/components/schemas/AnnouncementPublishStatus"
+          example: "string"
+        body:
+          type: "string"
+          example: "string"
+        category:
+          $ref: "#/components/schemas/AnnouncementCategory"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    ApiToken:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 446
+        user_id:
+          type: "number"
+          example: 321
+        token:
+          type: "string"
+          example: "string"
+        type:
+          type: "string"
+          example: "string"
+        name:
+          type: "string"
+          example: "John Doe"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        expires_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+      description: "Model"
+    Chapter:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 638
+        title:
+          type: "string"
+          example: "Lorem Ipsum"
+        number:
+          type: "number"
+          example: 676
+        body:
+          type: "string"
+          example: "string"
+        views:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ChapterView"
+            example: "string"
+        is_premium:
+          type: "boolean"
+          example: true
+        is_mature:
+          type: "boolean"
+          example: true
+        publish_status:
+          type: "string"
+          example: "string"
+        novel_id:
+          type: "number"
+          example: 675
+        volume_id:
+          type: "number"
+          example: 926
+        editor:
+          type: "string"
+          example: "string"
+        translator:
+          type: "string"
+          example: "string"
+        novel:
+          $ref: "#/components/schemas/Novel"
+          example: "string"
+        volume:
+          $ref: "#/components/schemas/Volume"
+          example: "string"
+        read_users:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/User"
+            example: "string"
+        get_slug:
+          type: "string"
+          example: "string"
+        name:
+          $ref: "#/components/schemas/string"
+          example: "string"
+        full_name:
+          $ref: "#/components/schemas/string"
+          example: "string"
+        full_title:
+          $ref: "#/components/schemas/string"
+          example: "string"
+        comments:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Comment"
+            example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    ChapterView:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 646
+        chapter_id:
+          type: "number"
+          example: 327
+        ip:
+          type: "string"
+          example: "string"
+        chapter:
+          $ref: "#/components/schemas/Chapter"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    City:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 185
+        name:
+          type: "string"
+          example: "John Doe"
+        country_id:
+          type: "number"
+          example: 451
+        country:
+          $ref: "#/components/schemas/Country"
+          example: "United States of America"
+      description: "Model"
+    Comment:
+      type: "object"
+      properties:
+        serialize_extras_true:
+          type: "string"
+          example: "string"
+        id:
+          type: "number"
+          example: 111
+        body:
+          type: "string"
+          example: "string"
+        is_pinned:
+          type: "boolean"
+          example: true
+        is_spoiler:
+          type: "boolean"
+          example: true
+        parent_id:
+          type: "number"
+          example: 217
+        parent:
+          $ref: "#/components/schemas/Comment"
+          example: "string"
+        sub_comments:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Comment"
+            example: "string"
+        likes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CommentReaction"
+            example: "string"
+        dislikes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CommentReaction"
+            example: "string"
+        reports:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CommentReport"
+            example: "string"
+        chapter_id:
+          type: "number"
+          example: 763
+        chapter:
+          $ref: "#/components/schemas/Chapter"
+          example: "string"
+        user_id:
+          type: "number"
+          example: 221
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    CommentReaction:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 134
+        type:
+          $ref: "#/components/schemas/ReactionTypeEnum"
+          example: "string"
+        comment_id:
+          type: "number"
+          example: 645
+        comment:
+          $ref: "#/components/schemas/Comment"
+          example: "string"
+        user_id:
+          type: "number"
+          example: 663
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    CommentReport:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 154
+        body:
+          type: "string"
+          example: "string"
+        comment_id:
+          type: "number"
+          example: 940
+        comment:
+          $ref: "#/components/schemas/Comment"
+          example: "string"
+        user_id:
+          type: "number"
+          example: 30
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    Contact:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 602
+        name:
+          type: "string"
+          example: "John Doe"
+        email:
+          type: "string"
+          example: "johndoe@example.com"
+          format: "email"
+        phone:
+          type: "string"
+          example: "string"
+        user_id:
+          type: "number"
+          example: 96
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        type:
+          $ref: "#/components/schemas/ContactType"
+          example: "string"
+        message:
+          type: "string"
+          example: "string"
+        status:
+          $ref: "#/components/schemas/ContactStatus"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    Country:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 615
+        name:
+          type: "string"
+          example: "John Doe"
+        key:
+          type: "string"
+          example: "string"
+        cities:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/City"
+            example: "string"
+      description: "Model"
+    Invoice:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 489
+        document_id:
+          type: "string"
+          example: "string"
+        net_total:
+          type: "number"
+          example: 476
+        user_id:
+          type: "number"
+          example: 775
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    Language:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 187
+        name:
+          type: "string"
+          example: "John Doe"
+        key:
+          type: "string"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    Notification:
+      type: "object"
+      properties:
+        serialize_extras_true:
+          type: "string"
+          example: "string"
+        id:
+          type: "number"
+          example: 855
+        global:
+          type: "boolean"
+          example: true
+        user_id:
+          type: "number"
+          example: 683
+        initiator_user_id:
+          type: "number"
+          example: 214
+        type:
+          $ref: "#/components/schemas/NotificationType"
+          example: "string"
+        notificationable_type:
+          type: "string"
+          example: "string"
+        notificationable_id:
+          type: "number"
+          example: 589
+        body:
+          type: "string"
+          example: "string"
+        href:
+          type: "string"
+          example: "string"
+        read_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        actioned_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        title:
+          type: "string"
+          example: "string"
+      description: "Model"
+    Novel:
+      type: "object"
+      properties:
+        serialize_extras_true:
+          type: "string"
+          example: "string"
+        id:
+          type: "number"
+          example: 180
+        name:
+          type: "string"
+          example: "John Doe"
+        other_names:
+          type: "string"
+          example: "string"
+        slug:
+          type: "string"
+          example: "string"
+        shorthand:
+          type: "string"
+          example: "string"
+        image:
+          type: "string"
+          example: "string"
+        cover_image:
+          type: "string"
+          example: "string"
+        body:
+          type: "string"
+          example: "string"
+        author:
+          type: "string"
+          example: "string"
+        license_holder:
+          type: "string"
+          example: "string"
+        is_mature:
+          type: "boolean"
+          example: true
+        is_premium:
+          type: "boolean"
+          example: true
+        is_promoted:
+          type: "boolean"
+          example: true
+        editor:
+          type: "string"
+          example: "string"
+        coin_amount:
+          type: "number"
+          example: 321
+        free_amount:
+          type: "number"
+          example: 94
+        translator:
+          type: "string"
+          example: "string"
+        status:
+          $ref: "#/components/schemas/NovelStatus"
+          example: "string"
+        publish_status:
+          $ref: "#/components/schemas/NovelPublishStatus"
+          example: "string"
+        translation_status:
+          $ref: "#/components/schemas/NovelTranslationStatus"
+          example: "string"
+        country_id:
+          type: "number"
+          example: 395
+        country:
+          $ref: "#/components/schemas/Country"
+          example: "United States of America"
+        user_id:
+          type: "number"
+          example: 861
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        tags:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Tag"
+            example: "string"
+        likers:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/User"
+            example: "string"
+        followers:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/User"
+            example: "string"
+        chapters:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Chapter"
+            example: "string"
+        published_chapters:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Chapter"
+            example: "string"
+        reviews:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Review"
+            example: "string"
+        views:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ChapterView"
+            example: "string"
+        volumes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Volume"
+            example: "string"
+        latest_volume:
+          $ref: "#/components/schemas/Volume"
+          example: "string"
+        first_chapter:
+          $ref: "#/components/schemas/Chapter"
+          example: "string"
+        latest_chapter:
+          $ref: "#/components/schemas/Chapter"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    Order:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 93
+        name:
+          type: "string"
+          example: "John Doe"
+        user_name:
+          type: "string"
+          example: "string"
+        user_address:
+          type: "string"
+          example: "string"
+        user_phone:
+          type: "string"
+          example: "string"
+        payment_reference:
+          type: "string"
+          example: "string"
+        payment_type:
+          $ref: "#/components/schemas/OrderPaymentType"
+          example: "string"
+        type:
+          $ref: "#/components/schemas/OrderType"
+          example: "string"
+        buy_type:
+          $ref: "#/components/schemas/OrderBuyType"
+          example: "string"
+        amount:
+          type: "number"
+          example: 995
+        price:
+          type: "number"
+          example: 33
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+          example: "string"
+        is_free:
+          type: "boolean"
+          example: true
+        starts_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        ends_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        chapter_id:
+          type: "number"
+          example: 453
+        chapter:
+          $ref: "#/components/schemas/Chapter"
+          example: "string"
+        invoices:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Invoice"
+            example: "string"
+        plan_id:
+          type: "number"
+          example: 342
+        plan:
+          $ref: "#/components/schemas/Plan"
+          example: "string"
+        promocode_id:
+          type: "number"
+          example: 360
+        promocode:
+          $ref: "#/components/schemas/Promocode"
+          example: "string"
+        packet_id:
+          type: "number"
+          example: 19
+        packet:
+          $ref: "#/components/schemas/Packet"
+          example: "string"
+        user_id:
+          type: "number"
+          example: 204
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    Packet:
+      type: "object"
+      properties:
+        serialize_extras_true:
+          type: "string"
+          example: "string"
+        id:
+          type: "number"
+          example: 559
+        name:
+          type: "string"
+          example: "John Doe"
+        amount:
+          type: "number"
+          example: 729
+        original_price:
+          type: "number"
+          example: 523
+        discount_rate:
+          type: "number"
+          example: 407
+        is_promoted:
+          type: "boolean"
+          example: true
+        price:
+          $ref: "#/components/schemas/number"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    Plan:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 843
+        name:
+          type: "string"
+          example: "John Doe"
+        amount:
+          type: "number"
+          example: 24
+        no_ads:
+          type: "boolean"
+          example: true
+        download:
+          type: "boolean"
+          example: true
+        discord_features:
+          type: "boolean"
+          example: true
+        premium_eps:
+          type: "boolean"
+          example: true
+        is_promoted:
+          type: "boolean"
+          example: true
+        price:
+          $ref: "#/components/schemas/number"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    Promocode:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 757
+        name:
+          type: "string"
+          example: "John Doe"
+        code:
+          type: "string"
+          example: "string"
+        active:
+          type: "boolean"
+          example: true
+        used:
+          type: "number"
+          example: 14
+        amount:
+          type: "number"
+          example: 448
+        limit:
+          type: "number"
+          example: 800
+        orders:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Order"
+            example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    Review:
+      type: "object"
+      properties:
+        serialize_extras_true:
+          type: "string"
+          example: "string"
+        id:
+          type: "number"
+          example: 77
+        body:
+          type: "string"
+          example: "string"
+        novel_id:
+          type: "number"
+          example: 291
+        is_pinned:
+          type: "boolean"
+          example: true
+        is_spoiler:
+          type: "boolean"
+          example: true
+        translation_quality:
+          type: "number"
+          example: 961
+        stability_of_update:
+          type: "number"
+          example: 561
+        story_development:
+          type: "number"
+          example: 463
+        character_design:
+          type: "number"
+          example: 470
+        world_background:
+          type: "number"
+          example: 161
+        ratings:
+          type: "string"
+          example: "string"
+        novel:
+          $ref: "#/components/schemas/Novel"
+          example: "string"
+        likes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ReviewReaction"
+            example: "string"
+        dislikes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ReviewReaction"
+            example: "string"
+        user_id:
+          type: "number"
+          example: 423
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        reports:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ReviewReport"
+            example: "string"
+      description: "Model"
+    ReviewReaction:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 64
+        type:
+          $ref: "#/components/schemas/ReactionTypeEnum"
+          example: "string"
+        review_id:
+          type: "number"
+          example: 134
+        review:
+          $ref: "#/components/schemas/Review"
+          example: "string"
+        user_id:
+          type: "number"
+          example: 460
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    ReviewReport:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 413
+        body:
+          type: "string"
+          example: "string"
+        review_id:
+          type: "number"
+          example: 467
+        review:
+          $ref: "#/components/schemas/Review"
+          example: "string"
+        user_id:
+          type: "number"
+          example: 803
+        user:
+          $ref: "#/components/schemas/User"
+          example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    Tag:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 405
+        name:
+          type: "string"
+          example: "John Doe"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+    User:
+      type: "object"
+      properties:
+        serialize_extras_true:
+          type: "string"
+          example: "string"
+        serialize_computeds_socials:
+          type: "string"
+          example: "string"
+        id:
+          type: "number"
+          example: 4
+        email:
+          type: "string"
+          example: "johndoe@example.com"
+          format: "email"
+        name:
+          type: "string"
+          example: "string"
+        surname:
+          type: "string"
+          example: "string"
+        address:
+          type: "string"
+          example: "string"
+        phone:
+          type: "string"
+          example: "string"
+        username:
+          type: "string"
+          example: "string"
+        role:
+          $ref: "#/components/schemas/UserRole"
+          example: "string"
+        bio:
+          type: "string"
+          example: "string"
+        gender:
+          $ref: "#/components/schemas/UserGender"
+          example: "string"
+        remember_me_token:
+          type: "string"
+          example: "string"
+        facebook_handle:
+          type: "string"
+          example: "string"
+        twitter_handle:
+          type: "string"
+          example: "string"
+        instagram_handle:
+          type: "string"
+          example: "string"
+        discord_id:
+          type: "string"
+          example: "string"
+        youtube_handle:
+          type: "string"
+          example: "string"
+        free_balance:
+          type: "number"
+          example: 586
+        coin_balance:
+          type: "number"
+          example: 251
+        marketing_emails_enabled:
+          type: "boolean"
+          example: true
+        subscriptions_emails_enabled:
+          type: "boolean"
+          example: true
+        comments_emails_enabled:
+          type: "boolean"
+          example: true
+        announcements_emails_enabled:
+          type: "boolean"
+          example: true
+        events_emails_enabled:
+          type: "boolean"
+          example: true
+        full_name:
+          $ref: "#/components/schemas/string"
+          example: "string"
+        country_id:
+          type: "number"
+          example: 134
+        country:
+          $ref: "#/components/schemas/Country"
+          example: "United States of America"
+        city_id:
+          type: "number"
+          example: 156
+        city:
+          $ref: "#/components/schemas/City"
+          example: "Chicago"
+        socials:
+          type: "string"
+          example: "string"
+        read_chapters:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Chapter"
+            example: "string"
+        premium_read_chapters:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Chapter"
+            example: "string"
+        like_novels:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Novel"
+            example: "string"
+        follow_novels:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Novel"
+            example: "string"
+        favorites:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Novel"
+            example: "string"
+        notifications:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Notification"
+            example: "string"
+        comments:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Comment"
+            example: "string"
+        review_reactions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ReviewReaction"
+            example: "string"
+        comment_reactions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CommentReaction"
+            example: "string"
+        review_likes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ReviewReaction"
+            example: "string"
+        orders:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Order"
+            example: "string"
+        purchased_chapters:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Chapter"
+            example: "string"
+        subscribed_plans:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Plan"
+            example: "string"
+        tokens:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ApiToken"
+            example: "string"
+        review_dislikes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ReviewReaction"
+            example: "string"
+        comment_likes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CommentReaction"
+            example: "string"
+        comment_dislikes:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CommentReaction"
+            example: "string"
+        reviews:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Review"
+            example: "string"
+        muted_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        banned_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        confirmed_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        avatar:
+          type: "string"
+          example: "string"
+      description: "Model"
+    Volume:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 13
+        name:
+          type: "string"
+          example: "John Doe"
+        title:
+          $ref: "#/components/schemas/string"
+          example: "string"
+        volume_number:
+          type: "number"
+          example: 788
+        volume_novel_id:
+          type: "number"
+          example: 847
+        publish_status:
+          type: "string"
+          example: "string"
+        novel:
+          $ref: "#/components/schemas/Novel"
+          example: "string"
+        chapters:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Chapter"
+            example: "string"
+        created_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+        updated_at:
+          type: "string"
+          example: "2021-03-23T16:13:08.489+01:00"
+          format: "date-time"
+      description: "Model"
+paths:
+  /uploads/*:
+    get:
+      summary: " (route.ts)"
+      description: ""
+      parameters: []
+      tags:
+        - "UPLOADS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /email-confirmation:
+    post:
+      summary: " (User/EmailConfirmationController::send)"
+      description: ""
+      parameters: []
+      tags:
+        - "EMAIL-CONFIRMATION"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /email-confirmation/{token}:
+    post:
+      summary: " (User/EmailConfirmationController::verify)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "token"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "EMAIL-CONFIRMATION"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /discord/users.json:
+    get:
+      summary: " (Auth/DiscordController::users)"
+      description: ""
+      parameters: []
+      tags:
+        - "DISCORD"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /sitemap.xml:
+    get:
+      summary: "Get a list of sitemap.xml (SitemapController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "SITEMAP.XML"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /sitemap_static.xml:
+    get:
+      summary: " (SitemapController::static)"
+      description: ""
+      parameters: []
+      tags:
+        - "SITEMAP_STATIC.XML"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /sitemap_novels.xml:
+    get:
+      summary: " (SitemapController::novels)"
+      description: ""
+      parameters: []
+      tags:
+        - "SITEMAP_NOVELS.XML"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /sitemap_chapters.xml:
+    get:
+      summary: " (SitemapController::chapters)"
+      description: ""
+      parameters: []
+      tags:
+        - "SITEMAP_CHAPTERS.XML"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /sitemap_announcements.xml:
+    get:
+      summary: " (SitemapController::announcements)"
+      description: ""
+      parameters: []
+      tags:
+        - "SITEMAP_ANNOUNCEMENTS.XML"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /feed/chapters:
+    get:
+      summary: " (FeedController::chapters)"
+      description: ""
+      parameters: []
+      tags:
+        - "FEED"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /feed/announcements:
+    get:
+      summary: " (FeedController::announcements)"
+      description: ""
+      parameters: []
+      tags:
+        - "FEED"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /auth/login:
+    post:
+      summary: " (AuthController::login)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /auth/register:
+    post:
+      summary: " (AuthController::register)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /auth/reset-password/{token}:
+    post:
+      summary: " (Auth/ResetPasswordController::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "token"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /auth/forgot-password:
+    post:
+      summary: " (Auth/ForgotPasswordController::invoke)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /auth/me:
+    get:
+      summary: " (AuthController::me)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /auth/discord/redirect:
+    get:
+      summary: " (Auth/DiscordController::redirect)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /auth/discord/callback:
+    get:
+      summary: " (Auth/DiscordController::callback)"
+      description: ""
+      parameters: []
+      tags:
+        - "AUTH"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /novels/followed:
+    get:
+      summary: " (Novel/FollowedNovelController::invoke)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOVELS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /novels/last-updated-followed:
+    get:
+      summary: " (Novel/FollowedNovelController::invoke)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOVELS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /novels/{novel}/follow:
+    put:
+      summary: " (Novel/FollowNovel::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "novel"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOVELS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /novels/{novel}/unfollow:
+    put:
+      summary: " (Novel/UnfollowNovel::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "novel"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOVELS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /novels/liked:
+    get:
+      summary: " (Novel/LikedNovelController::invoke)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOVELS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /novels/{novel}/like:
+    put:
+      summary: " (Novel/LikeNovel::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "novel"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOVELS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /novels/{novel}/unlike:
+    put:
+      summary: " (Novel/UnlikeNovel::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "novel"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOVELS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /notifications:
+    get:
+      summary: "Get a list of notifications (NotificationController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOTIFICATIONS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+  /user/favorites:
+    get:
+      summary: "Get a list of user (User/FavoriteController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "USER"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (User/FavoriteController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "USER"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /user/favorites/{id}:
+    delete:
+      summary: "Delete user (User/FavoriteController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "USER"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /user/update:
+    put:
+      summary: " (User/UpdateUser::invoke)"
+      description: ""
+      parameters: []
+      tags:
+        - "USER"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /user/use-promocode:
+    put:
+      summary: " (User/UsePromocode::invoke)"
+      description: ""
+      parameters: []
+      tags:
+        - "USER"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /promocodes:
+    get:
+      summary: "Get a list of promocodes (PromocodeController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "PROMOCODES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (PromocodeController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "PROMOCODES"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /promocodes/create:
+    get:
+      summary: " (PromocodeController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "PROMOCODES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /promocodes/{id}:
+    get:
+      summary: "Get a single instance of promocodes (PromocodeController::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PROMOCODES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    put:
+      summary: "Update promocodes (PromocodeController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PROMOCODES"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete promocodes (PromocodeController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PROMOCODES"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /promocodes/{id}/edit:
+    get:
+      summary: " (PromocodeController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PROMOCODES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /invoices:
+    get:
+      summary: "Get a list of invoices (InvoiceController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "INVOICES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /invoices/{id}:
+    delete:
+      summary: "Delete invoices (InvoiceController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "INVOICES"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /comments/reports:
+    get:
+      summary: "Get a list of comments (CommentReportController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "COMMENTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /comments/reports/{id}:
+    delete:
+      summary: "Delete comments (CommentReportController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COMMENTS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /reviews/reports:
+    get:
+      summary: "Get a list of reviews (ReviewReportController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "REVIEWS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /reviews/reports/{id}:
+    delete:
+      summary: "Delete reviews (ReviewReportController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "REVIEWS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /users/{id}/add-coin:
+    put:
+      summary: " (UserController::addCoin)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /users/{id}/mute-user:
+    put:
+      summary: " (UserController::muteUser)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /users/{id}/unmute-user:
+    put:
+      summary: " (UserController::unmuteUser)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /media/upload:
+    put:
+      summary: " (MediaController::upload)"
+      description: ""
+      parameters: []
+      tags:
+        - "MEDIA"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /reports/coins:
+    get:
+      summary: " (Report/CoinReport::invoke)"
+      description: ""
+      parameters: []
+      tags:
+        - "REPORTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /reports/reads:
+    get:
+      summary: " (Report/ReadReport::invoke)"
+      description: ""
+      parameters: []
+      tags:
+        - "REPORTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /users:
+    get:
+      summary: "Get a list of users (UserController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /users/create:
+    get:
+      summary: " (UserController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /users/{id}:
+    get:
+      summary: "Get a single instance of users (UserController::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    put:
+      summary: "Update users (UserController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /users/{id}/edit:
+    get:
+      summary: " (UserController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /popular-novels:
+    get:
+      summary: " (NovelController::popular)"
+      description: ""
+      parameters: []
+      tags:
+        - "POPULAR-NOVELS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /random-novels:
+    get:
+      summary: " (NovelController::random)"
+      description: ""
+      parameters: []
+      tags:
+        - "RANDOM-NOVELS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /promoted-novels:
+    get:
+      summary: " (NovelController::promoted)"
+      description: ""
+      parameters: []
+      tags:
+        - "PROMOTED-NOVELS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /last-updated-novels:
+    get:
+      summary: " (NovelController::lastUpdated)"
+      description: ""
+      parameters: []
+      tags:
+        - "LAST-UPDATED-NOVELS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /last-novels:
+    get:
+      summary: " (NovelController::lastNovels)"
+      description: ""
+      parameters: []
+      tags:
+        - "LAST-NOVELS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /orders/callback:
+    post:
+      summary: " (OrderController::callback)"
+      description: ""
+      parameters: []
+      tags:
+        - "ORDERS"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /orders/{order}/status/{status}:
+    put:
+      summary: " (Order/UpdateOrderStatus::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "order"
+          schema:
+            type: "string"
+          required: true
+        - in: "path"
+          name: "status"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "ORDERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /orders/{order}/pay:
+    post:
+      summary: " (Order/PayOrder::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "order"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "ORDERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /packets/{packet}/purchase:
+    post:
+      summary: " (Packet/PurchasePacket::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "packet"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PACKETS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /plans/{plan}/purchase:
+    post:
+      summary: " (Plan/PurchasePlan::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "plan"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PLANS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /plans/{plan}/upgrade:
+    post:
+      summary: " (Plan/UpgradePlan::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "plan"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PLANS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /plans:
+    get:
+      summary: "Get a list of plans (PlanController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "PLANS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (PlanController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "PLANS"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /plans/create:
+    get:
+      summary: " (PlanController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "PLANS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /plans/{id}/edit:
+    get:
+      summary: " (PlanController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PLANS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /plans/{id}:
+    put:
+      summary: "Update plans (PlanController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PLANS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete plans (PlanController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PLANS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /packets:
+    get:
+      summary: "Get a list of packets (PacketController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "PACKETS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (PacketController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "PACKETS"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /packets/create:
+    get:
+      summary: " (PacketController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "PACKETS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /packets/{id}:
+    get:
+      summary: "Get a single instance of packets (PacketController::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PACKETS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    put:
+      summary: "Update packets (PacketController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PACKETS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete packets (PacketController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PACKETS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /packets/{id}/edit:
+    get:
+      summary: " (PacketController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "PACKETS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /orders:
+    get:
+      summary: "Get a list of orders (OrderController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "ORDERS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /orders/{id}:
+    get:
+      summary: "Get a single instance of orders (OrderController::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "ORDERS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    delete:
+      summary: "Delete orders (OrderController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "ORDERS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /novels:
+    get:
+      summary: "Get a list of novels (NovelController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOVELS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (NovelController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOVELS"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /novels/create:
+    get:
+      summary: " (NovelController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "NOVELS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /novels/{id}:
+    get:
+      summary: "Get a single instance of novels (NovelController::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOVELS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    put:
+      summary: "Update novels (NovelController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOVELS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete novels (NovelController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOVELS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /novels/{id}/edit:
+    get:
+      summary: " (NovelController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOVELS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /novels/{slug}/og-image:
+    get:
+      summary: " (NovelController::ogImage)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "slug"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "NOVELS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /reviews:
+    get:
+      summary: "Get a list of reviews (ReviewController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "REVIEWS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (ReviewController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "REVIEWS"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /reviews/create:
+    get:
+      summary: " (ReviewController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "REVIEWS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /reviews/{id}/edit:
+    get:
+      summary: " (ReviewController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "REVIEWS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /reviews/{id}:
+    put:
+      summary: "Update reviews (ReviewController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "REVIEWS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete reviews (ReviewController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "REVIEWS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /contacts:
+    get:
+      summary: "Get a list of contacts (ContactController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "CONTACTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (ContactController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "CONTACTS"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /contacts/create:
+    get:
+      summary: " (ContactController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "CONTACTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /contacts/{id}/edit:
+    get:
+      summary: " (ContactController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CONTACTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /contacts/{id}:
+    put:
+      summary: "Update contacts (ContactController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CONTACTS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete contacts (ContactController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CONTACTS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /reviews/{review}/like:
+    put:
+      summary: " (Review/LikeReview::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "review"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "REVIEWS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /reviews/{review}/dislike:
+    put:
+      summary: " (Review/DislikeReview::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "review"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "REVIEWS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /reviews/{review}/set-pinned:
+    put:
+      summary: " (Review/SetPinnedReview::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "review"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "REVIEWS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /reviews/{review}/report:
+    put:
+      summary: " (Review/ReportReview::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "review"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "REVIEWS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /chapters/{chapter}/read:
+    put:
+      summary: " (Chapter/ReadChapter::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "chapter"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CHAPTERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /chapters/{chapter}/unread:
+    put:
+      summary: " (Chapter/UnreadChapter::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "chapter"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CHAPTERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /chapters/{chapter}/purchase:
+    put:
+      summary: " (Chapter/PurchaseChapter::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "chapter"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CHAPTERS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /chapters:
+    get:
+      summary: "Get a list of chapters (ChapterController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "CHAPTERS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (ChapterController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "CHAPTERS"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /chapters/create:
+    get:
+      summary: " (ChapterController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "CHAPTERS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /chapters/{id}:
+    get:
+      summary: "Get a single instance of chapters (ChapterController::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CHAPTERS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    put:
+      summary: "Update chapters (ChapterController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CHAPTERS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete chapters (ChapterController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CHAPTERS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /chapters/{id}/edit:
+    get:
+      summary: " (ChapterController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "CHAPTERS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /comments:
+    get:
+      summary: "Get a list of comments (CommentController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "COMMENTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (CommentController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "COMMENTS"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+            example:
+              body: "test"
+              is_spoiler: false
+              parent_id: 1
+              chapter_id: 1
+  /comments/create:
+    get:
+      summary: " (CommentController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "COMMENTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /comments/{id}/edit:
+    get:
+      summary: " (CommentController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COMMENTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /comments/{id}:
+    put:
+      summary: "Update comments (CommentController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COMMENTS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete comments (CommentController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COMMENTS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /volumes:
+    post:
+      summary: " (VolumeController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "VOLUMES"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /volumes/{id}:
+    put:
+      summary: "Update volumes (VolumeController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "VOLUMES"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete volumes (VolumeController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "VOLUMES"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /comments/{comment}/like:
+    put:
+      summary: " (Comment/LikeComment::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "comment"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COMMENTS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /comments/{comment}/dislike:
+    put:
+      summary: " (Comment/DislikeComment::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "comment"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COMMENTS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /comments/{comment}/set-pinned:
+    put:
+      summary: " (Comment/SetPinnedComment::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "comment"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COMMENTS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /comments/{comment}/report:
+    put:
+      summary: " (Comment/ReportComment::invoke)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "comment"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COMMENTS"
+      responses:
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json: {}
+  /tags:
+    get:
+      summary: "Get a list of tags (TagController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "TAGS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (TagController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "TAGS"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /tags/create:
+    get:
+      summary: " (TagController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "TAGS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /tags/{id}:
+    get:
+      summary: "Get a single instance of tags (TagController::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "TAGS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    put:
+      summary: "Update tags (TagController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "TAGS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete tags (TagController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "TAGS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /tags/{id}/edit:
+    get:
+      summary: " (TagController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "TAGS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /announcements:
+    get:
+      summary: "Get a list of announcements (AnnouncementController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "ANNOUNCEMENTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (AnnouncementController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "ANNOUNCEMENTS"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /announcements/create:
+    get:
+      summary: " (AnnouncementController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "ANNOUNCEMENTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /announcements/{id}:
+    get:
+      summary: "Get a single instance of announcements (AnnouncementController::show)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "ANNOUNCEMENTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    put:
+      summary: "Update announcements (AnnouncementController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "ANNOUNCEMENTS"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete announcements (AnnouncementController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "ANNOUNCEMENTS"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /announcements/{id}/edit:
+    get:
+      summary: " (AnnouncementController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "ANNOUNCEMENTS"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /languages:
+    get:
+      summary: "Get a list of languages (LanguageController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "LANGUAGES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (LanguageController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "LANGUAGES"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /languages/create:
+    get:
+      summary: " (LanguageController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "LANGUAGES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /languages/{id}/edit:
+    get:
+      summary: " (LanguageController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "LANGUAGES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /languages/{id}:
+    put:
+      summary: "Update languages (LanguageController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "LANGUAGES"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete languages (LanguageController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "LANGUAGES"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+  /cities:
+    get:
+      summary: "Get a list of cities (CityController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "CITIES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /countries:
+    get:
+      summary: "Get a list of countries (CountryController::index)"
+      description: ""
+      parameters: []
+      tags:
+        - "COUNTRIES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+    post:
+      summary: " (CountryController::store)"
+      description: ""
+      parameters: []
+      tags:
+        - "COUNTRIES"
+      responses:
+        201:
+          description: "Created"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+  /countries/create:
+    get:
+      summary: " (CountryController::create)"
+      description: ""
+      parameters: []
+      tags:
+        - "COUNTRIES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /countries/{id}/edit:
+    get:
+      summary: " (CountryController::edit)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COUNTRIES"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json: {}
+      security: []
+  /countries/{id}:
+    put:
+      summary: "Update countries (CountryController::update)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COUNTRIES"
+      responses:
+        204:
+          description: "No Content"
+          content:
+            application/json: {}
+      security: []
+      requestBody:
+        content:
+          application/json: {}
+    delete:
+      summary: "Delete countries (CountryController::destroy)"
+      description: ""
+      parameters:
+        - in: "path"
+          name: "id"
+          schema:
+            type: "string"
+          required: true
+      tags:
+        - "COUNTRIES"
+      responses:
+        202:
+          description: "Accepted"
+          content:
+            application/json: {}
+      security: []
+tags:
+  - name: "UPLOADS"
+    description: "Everything related to UPLOADS"
+  - name: "EMAIL-CONFIRMATION"
+    description: "Everything related to EMAIL-CONFIRMATION"
+  - name: "DISCORD"
+    description: "Everything related to DISCORD"
+  - name: "SITEMAP.XML"
+    description: "Everything related to SITEMAP.XML"
+  - name: "SITEMAP_STATIC.XML"
+    description: "Everything related to SITEMAP_STATIC.XML"
+  - name: "SITEMAP_NOVELS.XML"
+    description: "Everything related to SITEMAP_NOVELS.XML"
+  - name: "SITEMAP_CHAPTERS.XML"
+    description: "Everything related to SITEMAP_CHAPTERS.XML"
+  - name: "SITEMAP_ANNOUNCEMENTS.XML"
+    description: "Everything related to SITEMAP_ANNOUNCEMENTS.XML"
+  - name: "FEED"
+    description: "Everything related to FEED"
+  - name: "AUTH"
+    description: "Everything related to AUTH"
+  - name: "NOVELS"
+    description: "Everything related to NOVELS"
+  - name: "NOTIFICATIONS"
+    description: "Everything related to NOTIFICATIONS"
+  - name: "USER"
+    description: "Everything related to USER"
+  - name: "PROMOCODES"
+    description: "Everything related to PROMOCODES"
+  - name: "INVOICES"
+    description: "Everything related to INVOICES"
+  - name: "COMMENTS"
+    description: "Everything related to COMMENTS"
+  - name: "REVIEWS"
+    description: "Everything related to REVIEWS"
+  - name: "USERS"
+    description: "Everything related to USERS"
+  - name: "MEDIA"
+    description: "Everything related to MEDIA"
+  - name: "REPORTS"
+    description: "Everything related to REPORTS"
+  - name: "POPULAR-NOVELS"
+    description: "Everything related to POPULAR-NOVELS"
+  - name: "RANDOM-NOVELS"
+    description: "Everything related to RANDOM-NOVELS"
+  - name: "PROMOTED-NOVELS"
+    description: "Everything related to PROMOTED-NOVELS"
+  - name: "LAST-UPDATED-NOVELS"
+    description: "Everything related to LAST-UPDATED-NOVELS"
+  - name: "LAST-NOVELS"
+    description: "Everything related to LAST-NOVELS"
+  - name: "ORDERS"
+    description: "Everything related to ORDERS"
+  - name: "PACKETS"
+    description: "Everything related to PACKETS"
+  - name: "PLANS"
+    description: "Everything related to PLANS"
+  - name: "CONTACTS"
+    description: "Everything related to CONTACTS"
+  - name: "CHAPTERS"
+    description: "Everything related to CHAPTERS"
+  - name: "VOLUMES"
+    description: "Everything related to VOLUMES"
+  - name: "TAGS"
+    description: "Everything related to TAGS"
+  - name: "ANNOUNCEMENTS"
+    description: "Everything related to ANNOUNCEMENTS"
+  - name: "LANGUAGES"
+    description: "Everything related to LANGUAGES"
+  - name: "CITIES"
+    description: "Everything related to CITIES"
+  - name: "COUNTRIES"
+    description: "Everything related to COUNTRIES"
