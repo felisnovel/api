@@ -1,8 +1,10 @@
 import { test } from '@japa/runner'
 import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import OrderStatus from 'App/Enums/OrderStatus'
+import PaytrService from 'App/Services/PaytrService'
 import PlanFactory from 'Database/factories/PlanFactory'
 import UserFactory from 'Database/factories/UserFactory'
+import sinon from 'sinon'
 import OrderType from '../../app/Enums/OrderType'
 import { cleanAll } from '../utils'
 
@@ -142,5 +144,34 @@ test.group('Plan Subscriptions', (group) => {
     const newSubscribedPlansCount = Number(user.$extras.subscribedPlans_count)
 
     assert.equal(newSubscribedPlansCount, prevSubscribedPlansCount + 1)
+  })
+
+  test('purchase try to plan', async ({ assert, client }) => {
+    const user = await UserFactory.with('country', 1).with('city', 1).create()
+    const plan = await PlanFactory.create()
+    const payment_type = OrderPaymentType.CARD
+
+    const responsePlan = await client.post(`/plans/${plan.id}/purchase`).loginAs(user)
+    responsePlan.assertStatus(200)
+    const order = await responsePlan.body().order
+
+    const mock = sinon.mock(PaytrService.prototype)
+    mock.expects('createIframeToken').once().returns('dummyIframeToken')
+
+    const responsePay = await client.post(`/orders/${order.id}/pay`).loginAs(user).form({
+      payment_type,
+    })
+
+    mock.verify()
+    mock.restore()
+
+    responsePay.assertStatus(200)
+    responsePay.assertBodyContains({
+      iframe_token: 'dummyIframeToken',
+    })
+
+    await user.refresh()
+    assert.equal(user.free_balance, 0)
+    assert.equal(user.coin_balance, 0)
   })
 })

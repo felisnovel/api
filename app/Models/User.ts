@@ -360,7 +360,7 @@ export default class User extends BaseModel {
             freeBalance += amount
           } else if (order.type === OrderType.COIN) {
             coinBalance += amount
-          } else if (order.type === OrderType.PLAN) {
+          } else if (order.type === OrderType.PLAN && order.buy_type !== OrderBuyType.TRY) {
             coinBalance -= amount
           } else if (order.buy_type === OrderBuyType.COIN) {
             coinBalance -= amount
