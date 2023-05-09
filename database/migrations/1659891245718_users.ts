@@ -28,6 +28,8 @@ export default class UsersSchema extends BaseSchema {
       table.string('instagram_handle').nullable()
       table.string('youtube_handle').nullable()
 
+      table.boolean('username_changeable_enabled').defaultTo(true)
+
       table.boolean('marketing_emails_enabled').defaultTo(false)
       table.boolean('subscriptions_emails_enabled').defaultTo(false)
       table.boolean('comments_emails_enabled').defaultTo(false)

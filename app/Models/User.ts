@@ -109,6 +109,9 @@ export default class User extends BaseModel {
   @column()
   public events_emails_enabled: boolean
 
+  @column()
+  public username_changeable_enabled: boolean
+
   @computed()
   public get fullName(): string {
     return `${this.name} ${this.surname}`

@@ -103,6 +103,22 @@ test.group('Users', (group) => {
     response.assertBodyContains(newData)
   })
 
+  test('update username for user', async ({ client, assert }) => {
+    const user = await UserFactory.create()
+
+    assert.equal(user.username_changeable_enabled, true)
+
+    const response = await client.put(`/user/update`).loginAs(user).form({
+      username: 'newusername',
+    })
+
+    response.assertStatus(200)
+
+    await user.refresh()
+
+    assert.equal(user.username_changeable_enabled, false)
+  })
+
   test('user cannot update a user', async ({ client }) => {
     const user1 = await UserFactory.create()
     const user2 = await UserFactory.apply('user').create()

@@ -38,6 +38,12 @@ export default class UpdateUser {
       }
     }
 
+    if (data.username && user.username !== data.username) {
+      await user.merge({
+        username_changeable_enabled: false,
+      })
+    }
+
     await user.merge(data)
     await user.save()
 
