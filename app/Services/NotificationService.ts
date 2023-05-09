@@ -28,7 +28,11 @@ export default class NotificationService {
   }
 
   public static async getUnread(userId: number) {
-    return Notification.query().where({ userId }).whereNull('readAt').orderBy('createdAt', 'desc')
+    return Notification.query()
+      .where({ userId })
+      .whereNull('readAt')
+      .orderBy('createdAt', 'desc')
+      .where('createdAt', '>', DateTime.utc().minus({ months: 2 }).toSQL())
   }
 
   public static async getLatestRead(userId: number) {

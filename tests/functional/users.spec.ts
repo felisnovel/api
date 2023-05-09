@@ -119,6 +119,21 @@ test.group('Users', (group) => {
     assert.equal(user.username_changeable_enabled, false)
   })
 
+  test('second update username for user', async ({ client, assert }) => {
+    const user = await UserFactory.merge({
+      username_changeable_enabled: false,
+    }).create()
+
+    const response = await client.put(`/user/update`).loginAs(user).form({
+      username: 'newusername',
+    })
+
+    response.assertStatus(400)
+    response.assertBodyContains({
+      message: 'Sadece bir kez kullanıcı adını değiştirebilirsiniz.',
+    })
+  })
+
   test('user cannot update a user', async ({ client }) => {
     const user1 = await UserFactory.create()
     const user2 = await UserFactory.apply('user').create()

@@ -39,6 +39,12 @@ export default class UpdateUser {
     }
 
     if (data.username && user.username !== data.username) {
+      if (!user.username_changeable_enabled) {
+        return response.status(400).send({
+          message: 'Sadece bir kez kullanıcı adını değiştirebilirsiniz.',
+        })
+      }
+
       await user.merge({
         username_changeable_enabled: false,
       })
