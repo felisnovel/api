@@ -10,5 +10,6 @@ export default class UpdateReviewRequestValidator extends BaseValidator {
   public schema = schema.create({
     body: schema.string({ trim: true }),
     is_spoiler: schema.boolean.optional(),
+    is_recommended: schema.boolean.optional(),
   })
 }

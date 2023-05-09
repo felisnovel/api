@@ -9,6 +9,7 @@ import { cleanAll } from '../utils'
 
 const NEW_REVIEW_EXAMPLE_DATA = {
   body: 'Yüce İblis Hükümdarı sen benim için artik hiç önemli değilsin',
+  is_recommended: true,
 }
 
 test.group('Reviews', (group) => {
@@ -47,7 +48,9 @@ test.group('Reviews', (group) => {
 
   test('update a novel review for admin', async ({ client }) => {
     const admin = await UserFactory.apply('admin').create()
-    const review = await ReviewFactory.create()
+    const review = await ReviewFactory.merge({
+      is_recommended: false,
+    }).create()
 
     const data = {
       ...NEW_REVIEW_EXAMPLE_DATA,

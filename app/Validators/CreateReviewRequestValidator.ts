@@ -11,5 +11,6 @@ export default class CreateReviewRequestValidator extends BaseValidator {
     body: schema.string({ trim: true }),
     is_spoiler: schema.boolean.optional(),
     novel_id: schema.number([rules.exists({ table: 'novels', column: 'id' })]),
+    is_recommended: schema.boolean.optional(),
   })
 }

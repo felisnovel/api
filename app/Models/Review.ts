@@ -1,12 +1,4 @@
-import {
-  BaseModel,
-  BelongsTo,
-  belongsTo,
-  column,
-  computed,
-  hasMany,
-  HasMany,
-} from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
 import ReactionTypeEnum from 'App/Enums/ReactionTypeEnum'
 import { DateTime } from 'luxon'
 import Novel from './Novel'
@@ -30,33 +22,10 @@ export default class Review extends BaseModel {
   public is_pinned: boolean
 
   @column()
+  public is_recommended: boolean
+
+  @column()
   public is_spoiler: boolean
-
-  @column()
-  public translation_quality: number
-
-  @column()
-  public stability_of_update: number
-
-  @column()
-  public story_development: number
-
-  @column()
-  public character_design: number
-
-  @column()
-  public world_background: number
-
-  @computed()
-  public get ratings() {
-    return {
-      translation_quality: this.translation_quality,
-      stability_of_update: this.stability_of_update,
-      story_development: this.story_development,
-      character_design: this.character_design,
-      world_background: this.world_background,
-    }
-  }
 
   @belongsTo(() => Novel, {
     foreignKey: 'novel_id',

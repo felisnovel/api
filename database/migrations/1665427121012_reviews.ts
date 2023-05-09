@@ -19,11 +19,7 @@ export default class extends BaseSchema {
       table.integer('novel_id').unsigned()
       table.foreign('novel_id').references('novels.id').onDelete('CASCADE')
 
-      table.float('translation_quality').nullable()
-      table.float('stability_of_update').nullable()
-      table.float('story_development').nullable()
-      table.float('character_design').nullable()
-      table.float('world_background').nullable()
+      table.boolean('is_recommended').nullable()
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

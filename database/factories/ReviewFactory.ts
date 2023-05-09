@@ -6,6 +6,7 @@ import UserFactory from './UserFactory'
 export default Factory.define(Review, ({ faker }) => {
   return {
     body: faker.lorem.paragraph(),
+    is_recommended: faker.datatype.boolean(),
   }
 })
   .relation('novel', () => NovelFactory)
