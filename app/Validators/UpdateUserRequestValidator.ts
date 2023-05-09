@@ -11,6 +11,7 @@ export default class UpdateUserRequestValidator extends BaseValidator {
   }
 
   public schema = schema.create({
+    username: schema.string.optional(),
     email: schema.string.optional({}, [
       rules.unique({
         table: 'users',
