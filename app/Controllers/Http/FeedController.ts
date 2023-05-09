@@ -1,5 +1,9 @@
 import Config from '@ioc:Adonis/Core/Config'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import AnnouncementPublishStatus from 'App/Enums/AnnouncementPublishStatus'
+import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
+import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
+import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import { Feed } from 'feed'
 import { getClientUrl } from '../../Helpers/index'
 import Announcement from '../../Models/Announcement'
@@ -30,7 +34,9 @@ export default class FeedController {
   public async announcements({ response }: HttpContextContract) {
     const feed = await this.feed()
 
-    const announcements = await Announcement.query().orderBy('created_at', 'desc')
+    const announcements = await Announcement.query()
+      .where('publish_status', AnnouncementPublishStatus.PUBLISHED)
+      .orderBy('created_at', 'desc')
 
     announcements.forEach((announcement) => {
       feed.addItem({
@@ -48,6 +54,13 @@ export default class FeedController {
     const feed = await this.feed()
 
     const chapters = await Chapter.query()
+      .whereHas('volume', (query) => {
+        query.where('publish_status', VolumePublishStatus.PUBLISHED)
+      })
+      .whereHas('novel', (query) => {
+        query.where('publish_status', NovelPublishStatus.PUBLISHED)
+      })
+      .where('chapters.publish_status', ChapterPublishStatus.PUBLISHED)
       .preload('volume')
       .preload('novel')
       .orderBy('created_at', 'desc')
