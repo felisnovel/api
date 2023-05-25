@@ -424,6 +424,7 @@ export default class User extends BaseModel {
       .where('user_id', this.id)
       .where('type', OrderType.PLAN)
       .where('status', OrderStatus.PAID)
+      .where('buy_type', '!=', OrderBuyType.TRY)
       .sum('amount')
 
     freeBalance += (freeBalanceOrders[0].sum ?? 0) - (freeChapterOrders[0].sum ?? 0)

@@ -1,14 +1,11 @@
-import { args, BaseCommand } from '@adonisjs/core/build/standalone'
+import { BaseCommand } from '@adonisjs/core/build/standalone'
 import InvoiceService from 'App/Services/InvoiceService'
 
 export default class CreateInvoiceForUser extends BaseCommand {
   /**
    * Command name is used to run the command
    */
-  public static commandName = 'create:invoice_for_user'
-
-  @args.string({ description: '' })
-  public userId: string
+  public static commandName = 'create:invoice_for_users'
 
   /**
    * Command description is displayed in the "help" output
@@ -33,7 +30,14 @@ export default class CreateInvoiceForUser extends BaseCommand {
 
   public async run() {
     const { default: User } = await import('App/Models/User')
-    const user = await User.findOrFail(this.userId)
-    await new InvoiceService().createEInvoiceForUser(user)
+    const users = await User.query()
+
+    for await (const user of users) {
+      try {
+        await new InvoiceService().createDocumentForUser(user)
+      } catch (e) {
+        console.log(e)
+      }
+    }
   }
 }

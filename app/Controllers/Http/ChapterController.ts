@@ -5,9 +5,10 @@ import UserRole from 'App/Enums/UserRole'
 import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Chapter from 'App/Models/Chapter'
 import ChapterRequestValidator from 'App/Validators/ChapterRequestValidator'
+import { url } from 'Config/app'
 import { DateTime } from 'luxon'
 import showdown from 'showdown'
-import { getRandomInt, replaceAllWithId } from '../../../utils'
+import { getChapterUrl, getRandomInt, replaceAllWithId } from '../../../utils'
 import ChapterService from '../../Services/ChapterService'
 import NotificationService from '../../Services/NotificationService'
 
@@ -56,14 +57,26 @@ export default class ChapterController {
     if (request.input('all')) {
       const chapters = await chaptersQuery.preload('volume')
 
-      return response.send(
-        chapters.map((chapter) => ({
-          id: chapter.id,
-          title: chapter.title,
-          number: chapter.number,
-          volume_number: chapter.volume.volume_number,
-          volume_name: chapter.volume.name,
-        }))
+      return await Promise.all(
+        chapters.map(async (chapter) => {
+          const isRead = await chapter.isRead(user)
+          const { isOpened, isPurchased } = await chapter.checkUser(user)
+
+          return {
+            id: chapter.id,
+            title: chapter.title,
+            number: parseFloat(String(chapter.number)),
+            volume_number: parseFloat(String(chapter.volume.volume_number)),
+            volume_name: chapter.volume.name,
+            volume_full_name: chapter.volume.full_name,
+            novel_name: chapter.novel.name,
+            is_premium: chapter.is_premium,
+            is_read: isRead,
+            is_opened: isOpened,
+            is_purchased: isPurchased,
+            is_mature: chapter.is_mature,
+          }
+        })
       )
     } else {
       const chapters = await chaptersQuery.paginate(
@@ -96,7 +109,11 @@ export default class ChapterController {
     const shorthand = request.input('shorthand')
     const { id } = params
 
-    const chapterQuery = Chapter.query().preload('volume').preload('novel').withCount('views')
+    const chapterQuery = Chapter.query()
+      .preload('volume')
+      .preload('novel')
+      .withCount('comments')
+      .withCount('views')
 
     if (novel && shorthand) {
       chapterQuery
@@ -117,6 +134,8 @@ export default class ChapterController {
     }
 
     const chapter = await chapterQuery.firstOrFail()
+
+    await chapter.loadCount('comments')
 
     const prevChapter = await ChapterService.getPrevChapter(chapter, !isAdmin)
     const nextChapter = await ChapterService.getNextChapter(chapter, !isAdmin)
@@ -171,6 +190,7 @@ export default class ChapterController {
     return response.json({
       ...chapter.toJSON(),
       ...chapterProps,
+      url: `${url}${getChapterUrl(chapter)}`,
       is_read: isRead,
       is_opened: isOpened,
       prev_chapter: prevChapter,

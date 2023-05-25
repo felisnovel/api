@@ -102,6 +102,44 @@ test.group('User Muted', (group) => {
   })
 })
 
+test.group('User Purchase', (group) => {
+  group.each.setup(cleanAll)
+
+  test('user should not create comments if not purchased', async ({ client }) => {
+    const notPurchasedUser = await UserFactory.create()
+    const novel = await NovelFactory.with('volumes', 1)
+      .with('user', 1)
+      .merge({
+        is_premium: true,
+      })
+      .create()
+    const comment = await CommentFactory.with('user', 1)
+      .with('chapter', 1, (chapterFactory) => {
+        chapterFactory.merge({
+          is_premium: true,
+          volume_id: novel.volumes[0].id,
+          novel_id: novel.id,
+        })
+      })
+      .create()
+
+    const response = await client
+      .post('/comments')
+      .form({
+        body: `foo`,
+        chapter_id: comment.chapter_id,
+      })
+      .loginAs(notPurchasedUser)
+
+    response.assertBodyContains({
+      status: 'failure',
+      message: `Yorum yapabilmeniz için bölümü satın almanız gerekmektedir.`,
+    })
+
+    response.assertStatus(401)
+  })
+})
+
 test.group('Comments', (group) => {
   group.each.setup(cleanAll)
 
@@ -322,10 +360,14 @@ test.group('Comment Notification', (group) => {
         volumeFactory.apply('published')
       })
       .apply('published')
+      .merge({
+        is_premium: false,
+      })
       .create()
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
       volume_id: novel.volumes[0].id,
+      is_premium: false,
     })
       .apply('published')
       .create()

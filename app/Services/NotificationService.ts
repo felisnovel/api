@@ -222,7 +222,7 @@ export default class NotificationService {
 
   public static async onNotifications(props) {
     await this.onSync({
-      onCreate: async ({ users, ...dist }) => {
+      onCreate: async ({ users, ...dist }: { users: User[]; type: NotificationType }) => {
         for (const user of users) {
           await this.onNotification({
             userId: user.id,

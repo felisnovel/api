@@ -20,6 +20,18 @@
       "aliases": [],
       "flags": []
     },
+    "create:invoice_for_users": {
+      "settings": {
+        "loadApp": true,
+        "stayAlive": false
+      },
+      "commandPath": "./commands/CreateInvoiceForUsers",
+      "commandName": "create:invoice_for_users",
+      "description": "",
+      "args": [],
+      "aliases": [],
+      "flags": []
+    },
     "crud": {
       "settings": {
         "loadApp": false,

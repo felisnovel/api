@@ -119,7 +119,7 @@ test.group('Users', (group) => {
     assert.equal(user.username_changeable_enabled, false)
   })
 
-  test('second update username for user', async ({ client, assert }) => {
+  test('second update username for user', async ({ client }) => {
     const user = await UserFactory.merge({
       username_changeable_enabled: false,
     }).create()

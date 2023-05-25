@@ -17,7 +17,7 @@ export default Factory.define(Novel, async ({ faker }) => {
     shorthand: faker.lorem.word(3),
     name: faker.lorem.words(3),
     other_names: faker.lorem.words(3),
-    image: faker.image.imageUrl(300, 500),
+    image: 'https://picsum.photos/300/500',
     cover_image: faker.image.imageUrl(),
     context: faker.lorem.paragraphs(3),
     author: faker.name.fullName(),

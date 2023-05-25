@@ -15,7 +15,7 @@ export default class InvoiceController {
       }
     }
 
-    const invoices = invoicesQuery
+    const invoices = await invoicesQuery
       .preload('user')
       .orderBy('id', 'desc')
       .paginate(request.input('page', 1), request.input('take', 10))

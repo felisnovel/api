@@ -323,11 +323,17 @@ test.group('Novel Comments', (group) => {
   })
 
   test('create a chapter comment for user', async ({ client }) => {
-    const novel = await NovelFactory.with('user', 1).with('volumes', 1).create()
+    const novel = await NovelFactory.with('user', 1)
+      .with('volumes', 1)
+      .merge({
+        is_premium: false,
+      })
+      .create()
 
     const chapter = await ChapterFactory.merge({
       novel_id: novel.id,
       volume_id: novel.volumes[0].id,
+      is_premium: false,
     }).create()
 
     const user = await UserFactory.create()

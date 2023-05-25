@@ -26,6 +26,8 @@ export default class ChapterService {
       .select('chapters.*')
       .orderBy('volumes.volume_number', 'desc')
       .orderBy('number', 'desc')
+      .preload('novel')
+      .preload('volume')
 
     if (isPublished) {
       prevChapterQuery
@@ -45,6 +47,12 @@ export default class ChapterService {
     const prevChapter = await prevChapterQuery.first()
 
     return prevChapter
+      ? {
+          ...prevChapter.toJSON(),
+          novel_name: prevChapter.novel.name,
+          volume_number: prevChapter.volume.volume_number,
+        }
+      : null
   }
 
   public static async getNextChapter(chapter: Chapter, options = {}) {
@@ -67,6 +75,8 @@ export default class ChapterService {
       .select('chapters.*')
       .orderBy('volumes.volume_number', 'asc')
       .orderBy('number', 'asc')
+      .preload('novel')
+      .preload('volume')
 
     if (isPublished) {
       nextChapterQuery
@@ -77,6 +87,12 @@ export default class ChapterService {
     const nextChapter = await nextChapterQuery.first()
 
     return nextChapter
+      ? {
+          ...nextChapter.toJSON(),
+          novel_name: nextChapter.novel.name,
+          volume_number: nextChapter.volume.volume_number,
+        }
+      : null
   }
 
   public static async isAvailableFreeBuyableOfChapter(

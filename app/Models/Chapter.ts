@@ -20,6 +20,8 @@ import Order from './Order'
 import Volume from './Volume'
 
 export default class Chapter extends BaseModel {
+  public serializeExtras = true
+
   @column({ isPrimary: true })
   public id: number
 

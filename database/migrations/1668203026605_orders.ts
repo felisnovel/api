@@ -37,6 +37,9 @@ export default class extends BaseSchema {
       table.enum('payment_type', Object.values(OrderPaymentType)).nullable()
       table.string('payment_reference').nullable()
 
+      table.integer('invoice_id').nullable().unsigned()
+      table.foreign('invoice_id').references('invoices.id').onDelete('SET NULL')
+
       table.date('starts_at')
       table.date('ends_at')
 

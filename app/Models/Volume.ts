@@ -1,4 +1,12 @@
-import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  BelongsTo,
+  belongsTo,
+  column,
+  computed,
+  HasMany,
+  hasMany,
+} from '@ioc:Adonis/Lucid/Orm'
 import Novel from 'App/Models/Novel'
 import { DateTime } from 'luxon'
 import Chapter from './Chapter'
@@ -34,4 +42,9 @@ export default class Volume extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @computed()
+  public get full_name(): string {
+    return `${parseFloat(String(this.volume_number))}. Cilt: ${this.name}`
+  }
 }

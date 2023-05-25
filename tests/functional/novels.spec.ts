@@ -450,4 +450,31 @@ test.group('Novel Read Chapters', (group) => {
       },
     })
   })
+
+  test('current read novels', async ({ client, assert }) => {
+    const novel = await NovelFactory.with('user', 1).apply('published').create()
+
+    const chapter = await ChapterFactory.with('readUsers', 3)
+      .with('volume', 1, (volume) =>
+        volume
+          .merge({
+            volume_novel_id: novel.id,
+          })
+          .apply('published')
+      )
+      .merge({
+        novel_id: novel.id,
+      })
+      .apply('published')
+      .create()
+
+    const user = chapter.readUsers[0]
+
+    const response = await client.get('/current-read-novels').loginAs(user)
+    response.assertStatus(200)
+
+    const data = await response.body()
+    assert.equal(data.length, 1)
+    assert.equal(data[0].id, novel.id)
+  })
 })

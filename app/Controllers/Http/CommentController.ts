@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import DateFormat from 'App/constants/DateFormat'
+import Chapter from 'App/Models/Chapter'
 import Comment from 'App/Models/Comment'
 import UpdateCommentRequestValidator from 'App/Validators/UpdateCommentRequestValidator'
 import { format } from 'date-fns'
@@ -36,7 +37,12 @@ export default class CommentController {
         query.preload('novel')
       })
       .preload('subComments', (query) => {
-        query.preload('user').withCount('likes').withCount('dislikes')
+        query
+          .preload('user')
+          .withCount('likes')
+          .withCount('dislikes')
+          .orderBy('is_pinned', 'desc')
+          .orderBy('created_at', 'desc')
       })
       .withCount('subComments')
       .withCount('likes')
@@ -95,12 +101,33 @@ export default class CommentController {
 
     const data = await request.validate(CreateCommentRequestValidator)
 
+    const chapter = await Chapter.query().where('id', data.chapter_id).firstOrFail()
+    const { isOpened } = await chapter.checkUser(user)
+
+    if (!isOpened) {
+      return response.unauthorized({
+        status: 'failure',
+        message: `Yorum yapabilmeniz için bölümü satın almanız gerekmektedir.`,
+      })
+    }
+
     const comment = await Comment.create({
       ...data,
       user_id: user.id,
     })
 
     await NotificationService.onComment(comment)
+
+    await comment.load('user')
+    await comment.load('chapter', (query) => {
+      query.preload('novel')
+    })
+    await comment.load('subComments', (query) => {
+      query.preload('user').withCount('likes').withCount('dislikes')
+    })
+    await comment.loadCount('subComments')
+    await comment.loadCount('likes')
+    await comment.loadCount('dislikes')
 
     return response.json(comment)
   }
@@ -129,6 +156,17 @@ export default class CommentController {
 
     await comment.merge(data)
     await comment.save()
+
+    await comment.load('user')
+    await comment.load('chapter', (query) => {
+      query.preload('novel')
+    })
+    await comment.load('subComments', (query) => {
+      query.preload('user').withCount('likes').withCount('dislikes')
+    })
+    await comment.loadCount('subComments')
+    await comment.loadCount('likes')
+    await comment.loadCount('dislikes')
 
     await NotificationService.onUpdate('comments', comment.id, comment.body)
 

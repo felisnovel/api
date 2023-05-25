@@ -68,16 +68,27 @@ Route.group(() => {
   .prefix('/user')
   .middleware('auth')
 
+Route.get('/e-invoices/:uuid', 'Invoice/GetEInvoice.invoke')
+
 Route.group(() => {
   Route.resource('/promocodes', 'PromocodeController')
   Route.resource('/invoices', 'InvoiceController').only(['index', 'destroy'])
   Route.resource('/comments/reports', 'CommentReportController').only(['index', 'destroy'])
   Route.resource('/reviews/reports', 'ReviewReportController').only(['index', 'destroy'])
+
+  Route.group(() => {
+    // Route.post('/create-document', 'Invoice/CreateDocument.invoke')
+    Route.post('/create-e-invoice', 'Invoice/CreateEInvoice.invoke')
+  }).prefix('/invoices/:invoice')
+
   Route.group(() => {
     Route.put('/add-coin', 'UserController.addCoin')
     Route.put('/mute-user', 'UserController.muteUser')
     Route.put('/unmute-user', 'UserController.unmuteUser')
+    Route.post('/create-e-invoice', 'User/CreateEInvoice.invoke')
+    Route.post('/create-invoice', 'User/CreateInvoice.invoke')
   }).prefix('/users/:id')
+
   Route.put('/media/upload', 'MediaController.upload')
 
   Route.group(() => {
@@ -93,6 +104,10 @@ Route.get('/random-novels', 'NovelController.random')
 Route.get('/promoted-novels', 'NovelController.promoted')
 Route.get('/last-updated-novels', 'NovelController.lastUpdated')
 Route.get('/last-novels', 'NovelController.lastNovels')
+
+Route.group(() => {
+  Route.get('/current-read-novels', 'NovelController.currentReadNovels')
+}).middleware('auth')
 
 Route.post('/orders/callback', 'OrderController.callback')
 

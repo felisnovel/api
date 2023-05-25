@@ -1,7 +1,9 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
+import ChapterPublishStatus from 'App/Enums/ChapterPublishStatus'
 import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import UserRole from 'App/Enums/UserRole'
+import VolumePublishStatus from 'App/Enums/VolumePublishStatus'
 import Novel from 'App/Models/Novel'
 import NovelRequestValidator from 'App/Validators/NovelRequestValidator'
 import showdown from 'showdown'
@@ -204,6 +206,7 @@ export default class NovelController {
       novelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
     }
 
+    // todo: last 10 days / sort by views count
     const novels = await novelsQuery
       .preload('latest_chapter', (query) => {
         query.preload('volume')
@@ -213,6 +216,37 @@ export default class NovelController {
       .limit(7)
 
     return response.send(novels)
+  }
+
+  async currentReadNovels({ auth, response }: HttpContextContract) {
+    const novelsQuery = Novel.query()
+
+    const user = await auth.authenticate()
+
+    const isAdmin = user?.role === UserRole.ADMIN
+    if (!isAdmin) {
+      novelsQuery.where('novels.publish_status', NovelPublishStatus.PUBLISHED)
+    }
+
+    const currentReadNovelsQuery = await novelsQuery
+      .whereExists((query) => {
+        query
+          .select('*')
+          .from('chapter_read')
+          .leftJoin('chapters', (subQuery) => {
+            subQuery
+              .on('chapters.id', 'chapter_read.chapter_id')
+              .andOn('chapters.novel_id', 'novels.id')
+          })
+          .leftJoin('volumes', 'chapters.volume_id', 'volumes.id')
+          .whereRaw('chapter_read.chapter_id = chapters.id')
+          .where('chapter_read.user_id', user.id)
+          .andWhere('chapters.publish_status', ChapterPublishStatus.PUBLISHED)
+          .andWhere('volumes.publish_status', VolumePublishStatus.PUBLISHED)
+      })
+      .limit(7)
+
+    return response.send(currentReadNovelsQuery)
   }
 
   async promoted({ auth, response }: HttpContextContract) {

@@ -68,15 +68,24 @@ export default class extends BaseSeeder {
 
     const premiumChapter2JSON = premiumChapter2.serialize()
 
-    const order = await admin.related('orders').create({
-      type: OrderType.CHAPTER,
-      name: premiumChapter2JSON.fullName,
-      amount: premiumChapter2.novel.free_amount,
-      buy_type: OrderBuyType.FREE,
-      chapter_id: premiumChapter2.id,
+    await admin.related('orders').create({
+      type: OrderType.COIN,
+      name: '100 Coin',
+      price: 10,
+      amount: 100,
+      buy_type: OrderBuyType.TRY,
       status: OrderStatus.PAID,
+      packet_id: 1,
     })
 
-    await order.delete()
+    await admin.related('orders').create({
+      type: OrderType.PLAN,
+      name: 'Premium Paket',
+      price: 100,
+      amount: 100,
+      buy_type: OrderBuyType.TRY,
+      status: OrderStatus.PAID,
+      plan_id: 1,
+    })
   }
 }

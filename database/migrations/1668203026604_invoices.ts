@@ -8,6 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
 
       table.string('document_id', 255).nullable()
+      table.string('e_invoice_uuid', 255).nullable()
 
       table.integer('user_id').notNullable().unsigned()
       table.foreign('user_id').references('users.id').onDelete('CASCADE')

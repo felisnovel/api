@@ -1,9 +1,6 @@
 import Config from '@ioc:Adonis/Core/Config'
-import OrderType from 'App/Enums/OrderType'
-import Packet from 'App/Models/Packet'
 import User from 'App/Models/User'
 import axios from 'axios'
-import { DateTime } from 'luxon'
 
 const kolaybiApiKey = Config.get('kolaybi.apiKey')
 const kolaybiApiUrl = Config.get('kolaybi.apiUrl')
@@ -60,78 +57,108 @@ export default class KolaybiService {
 
       return result.data || null
     } catch (error) {
-      console.log('error', error)
+      console.log('resul', error)
       throw new Error('Kolaybi API iletişim hatası.')
     }
   }
 
   public async listProducts(name) {
-    const response = await this.api('get', '/products', {
-      name,
-    })
+    const response = await this.api('get', `/products?name=${name}`)
 
     return response
   }
 
   public async createProduct(data) {
-    const response = await this.api('post', '/products', {
-      name: data.name,
-    })
+    const response = await this.api('post', '/products', data)
 
     if (!response.data.success) {
-      throw new Error('Kolaybi API iletişim hatası.')
+      throw new Error('Ürün oluşturulurken hata oluştu.')
+    }
+
+    return response.data
+  }
+
+  public async updateProduct(id, data) {
+    const response = await this.api('put', `/products/${id}`, data)
+
+    if (!response.success) {
+      throw new Error('Ürün güncellenirken hata oluştu.')
     }
 
     return response.data
   }
 
   public async createAssociate(data) {
-    const response = await this.api('post', '/associates', {
-      name: data.name,
-      surname: data.surname,
-      identity_no: data.identity_no,
-    })
+    try {
+      const response = await this.api('post', '/associates', {
+        ...data,
+        identity_no: data.identity_no || '11111111111',
+      })
 
-    if (!response.data.success) {
-      throw new Error('Kolaybi API iletişim hatası.')
+      if (!response.success) {
+        throw new Error('Müşteri oluşturulurken hata oluştu.')
+      }
+
+      return response.data
+    } catch (error) {
+      if (error.response.data?.message === 'MODEL.ALREADY_EXISTS') {
+        const responseAssociatesList = await this.listAssociates(data.code)
+
+        if (!responseAssociatesList.success) {
+          throw new Error('Yeni müşteri oluştururken müşteri listesi alınamadı.')
+        }
+
+        const associate = responseAssociatesList.data[0]
+
+        return associate
+      }
     }
-
-    return response.data
   }
 
   public async listAssociates(code) {
-    const response = await this.api('get', '/associates', {
-      code,
-    })
+    const response = await this.api('get', `/associates?code=${code}`)
 
     return response
   }
 
-  public async getProductId(packet: Packet) {
-    const responseProductsList = await this.listProducts(packet.name)
+  public async getProductId(order) {
+    const { name: productName } = order
+
+    const responseProductsList = await this.listProducts(productName)
 
     if (!responseProductsList.success) {
-      throw new Error('Kolaybi API iletişim hatası.')
+      throw new Error('Ürün id bulurken ürün listesi alınamadı.')
     }
 
     if (responseProductsList.data.length === 0) {
       const associate = await this.createProduct({
-        name: packet.name,
+        name: productName,
       })
 
       return associate.data.id
     }
 
-    return responseProductsList.data[0].id
+    const product = responseProductsList.data[0]
+
+    return product.id
+  }
+
+  public async createAddress(data) {
+    const newAddress = await this.api('post', '/address/create', data)
+
+    if (!newAddress.success) {
+      throw new Error('İletişim bilgileri alınırken yeni adres oluşturulamadı.')
+    }
+
+    return newAddress.data
   }
 
   public async getContactDetails(user: User) {
-    const responseAssociatesList = await this.listAssociates(
-      `USR${String(user.id).padStart(6, '0')}`
-    )
+    const code = `USR${String(user.id).padStart(6, '0')}`
+    const responseAssociatesList = await this.listAssociates(code)
 
     if (!responseAssociatesList.success) {
-      throw new Error('Kolaybi API iletişim hatası.')
+      throw new Error('İletişim bilgileri alınırken müşteri listesi alınamadı.')
     }
 
     let associate: any = null
@@ -139,14 +166,15 @@ export default class KolaybiService {
 
     if (responseAssociatesList.data.length === 0) {
       const newAssociate = await this.createAssociate({
+        code,
         name: user.name,
         surname: user.surname,
       })
 
-      associate = newAssociate.data
+      associate = newAssociate
+    } else {
+      associate = responseAssociatesList.data[0]
     }
-
-    associate = responseAssociatesList.data[0]
 
     if (associate.address.length === 0) {
       await user.load('country')
@@ -167,12 +195,12 @@ export default class KolaybiService {
       const newAddress = await this.api('post', '/address/create', {
         associate_id: associate.id,
         address: user.address,
-        country: user.country.id,
-        city: user.city.id,
+        country: user.country.name,
+        city: user.city.name,
       })
 
       if (!newAddress.success) {
-        throw new Error('Kolaybi API iletişim hatası.')
+        throw new Error('İletişim bilgileri alınırken yeni adres oluşturulamadı.')
       }
 
       address = newAddress.data
@@ -186,49 +214,29 @@ export default class KolaybiService {
     }
   }
 
-  public async getOrdersForUser(user: User) {
-    return await user
-      .related('orders')
-      .query()
-      .where('type', OrderType.COIN)
-      .whereNotNull('packet_id')
-      .where('is_paid', true)
-      .has('invoices', '<', 1)
-      .preload('packet')
+  public async getDocumentDetail(document_id) {
+    const response = await this.api('get', `/invoices/${document_id}`)
+
+    return response
   }
 
-  public async createInvoiceForUser(user: User) {
-    const orders = await this.getOrdersForUser(user)
-
-    if (orders.length === 0) {
-      throw new Error('Faturalandırılacak sipariş bulunamadı.')
-    }
-
-    const { associate, address } = await this.getContactDetails(user)
-
-    const items = await Promise.all(
-      orders.map(async (order) => {
-        const productId = await this.getProductId(order.packet)
-
-        return {
-          name: order.name,
-          quantity: 1,
-          product_id: productId,
-          vat_rate: 18,
-          unit_price: order.price,
-        }
-      })
-    )
-
-    const response = await this.api('post', '/invoices', {
-      contact_id: associate.id,
-      address_id: address.id,
-      order_date: DateTime.local().toFormat('yyyy-MM-dd HH:mm:ss'),
-      currency: 'TRY',
-      receiver_email: user.email,
-      items,
+  public async createEInvoice(document_id) {
+    const response = await this.api('post', '/invoices/e-document/create', {
+      document_id,
     })
 
-    return response.data
+    return response
+  }
+
+  public async createDocument(data) {
+    const response = await this.api('post', '/invoices', data)
+
+    return response
+  }
+
+  public async getEDocumentView(uuid) {
+    const response = await this.api('get', `/invoices/e-document/view?uuid=${uuid}`)
+
+    return response
   }
 }

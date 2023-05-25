@@ -1,12 +1,4 @@
-import {
-  BaseModel,
-  beforeSave,
-  BelongsTo,
-  belongsTo,
-  column,
-  ManyToMany,
-  manyToMany,
-} from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeSave, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import OrderPaymentType from 'App/Enums/OrderPaymentType'
 import OrderStatus from 'App/Enums/OrderStatus'
 import { DateTime } from 'luxon'
@@ -73,10 +65,13 @@ export default class Order extends BaseModel {
   })
   public chapter: BelongsTo<typeof Chapter>
 
-  @manyToMany(() => Invoice, {
-    pivotTable: 'invoice_order',
+  @column()
+  public invoice_id?: number
+
+  @belongsTo(() => Invoice, {
+    foreignKey: 'invoice_id',
   })
-  public invoices: ManyToMany<typeof Invoice>
+  public invoice: BelongsTo<typeof Invoice>
 
   @column()
   public plan_id: number
@@ -115,6 +110,18 @@ export default class Order extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  public generateCode() {
+    return this.name
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w-]+/g, '')
+      .replace(/--+/g, '-')
+  }
 
   @beforeSave()
   public static async syncBeforeSave(order: Order) {
