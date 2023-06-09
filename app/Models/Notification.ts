@@ -49,6 +49,79 @@ export default class Notification extends BaseModel {
   public user: BelongsTo<typeof User>
 
   @computed()
+  public get pushNoticationParams() {
+    switch (this.type) {
+      case NotificationType.ANNOUNCEMENT:
+        return {
+          title: 'Yeni bir duyuru var!',
+          body: this.body,
+          route: {
+            screen: 'announcement',
+          },
+        }
+      case NotificationType.REPLY:
+        return {
+          title: 'Yeni bir yanıt var!',
+          body: this.body,
+          route: {
+            screen: 'chapter-comments',
+            params: {
+              chapterId: this.notificationableId,
+            },
+          },
+        }
+      case NotificationType.MENTION:
+        return {
+          title: 'Yeni bir bahsetme var!',
+          body: this.body,
+          route: {
+            screen: 'chapter-comments',
+            params: {
+              chapterId: this.notificationableId,
+            },
+          },
+        }
+      case NotificationType.LIKE:
+        return {
+          title: 'Yeni bir beğeni var!',
+          body: this.body,
+        }
+      case NotificationType.FOLLOW:
+        return {
+          title: 'Yeni bir takip var!',
+          body: this.body,
+          route: {
+            screen: 'profile',
+            params: {
+              userId: this.initiatorUserId,
+            },
+          },
+        }
+      case NotificationType.COIN:
+        return {
+          title: 'Yeni bir pati var!',
+          body: this.body,
+          route: {
+            screen: 'settings',
+          },
+        }
+      case NotificationType.FREE:
+        return {
+          title: 'Yeni bir paticik var!',
+          body: this.body,
+          route: {
+            screen: 'settings',
+          },
+        }
+      default:
+        return {
+          title: 'Yeni bir bildirim var!',
+          body: this.body,
+        }
+    }
+  }
+
+  @computed()
   public get title() {
     switch (this.type) {
       case NotificationType.ANNOUNCEMENT:
