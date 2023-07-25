@@ -3,75 +3,29 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import NovelPublishStatus from 'App/Enums/NovelPublishStatus'
 import UserRole from 'App/Enums/UserRole'
 import Novel from 'App/Models/Novel'
+import NovelService from 'App/Services/NovelService'
 import NovelRequestValidator from 'App/Validators/NovelRequestValidator'
 import showdown from 'showdown'
 import { isNumeric } from '../../../utils'
 
 export default class NovelController {
   async index({ auth, response, request }: HttpContextContract) {
-    const novelsQuery = Novel.query()
-
     const user = await auth.authenticate()
-
     const isAdmin = user?.role === UserRole.ADMIN
 
-    if (!isAdmin) {
-      novelsQuery.where('publish_status', NovelPublishStatus.PUBLISHED)
-    } else {
-      novelsQuery.preload('user')
-
-      if (request.input('publish_status')) {
-        novelsQuery.where('novels.publish_status', request.input('publish_status'))
-      }
+    const requestInputs = {
+      page: request.input('page'),
+      take: request.input('take', 10),
+      tags: request.input('tags'),
+      filter: request.input('filter'),
+      fields: request.input('fields'),
+      publish_status: request.input('publish_status'),
     }
 
-    if (request.input('filter')) {
-      novelsQuery
-        .where('name', 'ilike', `%${request.input('filter')}%`)
-        .orWhere('other_names', 'ilike', `%${request.input('filter')}%`)
-        .orWhere('shorthand', 'ilike', `%${request.input('filter')}%`)
-    }
+    const { have_fields, novels } = await NovelService.onList(user, isAdmin, requestInputs)
 
-    if (request.input('tags')) {
-      const tags = request.input('tags').split(',')
-
-      for (const tag of tags) {
-        novelsQuery.whereExists((query) => {
-          query
-            .select('*')
-            .from('novel_tag')
-            .whereColumn('novel_tag.novel_id', 'novels.id')
-            .where('novel_tag.tag_id', tag)
-        })
-      }
-    }
-
-    const novels = await novelsQuery
-      .preload('country')
-      .preload('latest_chapter', (query) => {
-        query.preload('volume')
-      })
-      .orderBy('id', 'desc')
-      .paginate(request.input('page', 1), request.input('take', 10))
-
-    const fields = request
-      .input('fields')
-      ?.split(',')
-      ?.filter((x) => x !== 'context')
-
-    if (fields) {
-      const novelsJSON = novels.toJSON()
-
-      return response.send({
-        ...novelsJSON,
-        data: novelsJSON.data.map((novel) => {
-          const result = {}
-          for (const field of fields) {
-            result[field] = novel[field]
-          }
-          return result
-        }),
-      })
+    if (have_fields) {
+      return response.send(novels)
     }
 
     return response.send(novels)
