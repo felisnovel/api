@@ -123,6 +123,18 @@ node ace list
 
 ---
 
+## 👥 Team
+
+Built with care by:  
+- [**İlker SARI**](https://github.com/Residenttt)  
+- [**Emre DEĞER**](https://github.com/lexor)  
+- **Yiğit Can DENLİ**
+- [**Ömer ALPI**](https://github.com/omeralpi)
+
+This repo is now archived.  
+We’re leaving the lights on. Just in case someone forgets their keys. 🗝️
+
+
 ## 📄 License
 
 MIT 
